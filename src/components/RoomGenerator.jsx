@@ -8,6 +8,16 @@ const RoomGenerator = () => {
   const [fileInputRef, setFileInputRef] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [editingRoom, setEditingRoom] = useState(null);
+  const [roomEditMenu, setRoomEditMenu] = useState({
+    isOpen: false,
+    room: null,
+    contentType: '',
+    specificType: '',
+    notes: '',
+    hasTreasure: false,
+    treasureLocation: ''
+  });
 
   // Random table data based on the instructions
   const exitTable = [
@@ -878,6 +888,98 @@ const RoomGenerator = () => {
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
     setSelectedRoom(null); // Clear selection when toggling mode
+    setRoomEditMenu({ isOpen: false, room: null, contentType: '', specificType: '', notes: '', hasTreasure: false, treasureLocation: '' }); // Close edit menu
+  };
+
+  const handleRoomDoubleClick = (room) => {
+    if (!isEditMode) return;
+    
+    // Prevent double-click from also triggering single click
+    setSelectedRoom(null);
+    
+    // Get the specific type details based on content type
+    let specificType = '';
+    if (room.contents.content === 'Hazard' && hazardTypes.includes(room.contents.details)) {
+      specificType = room.contents.details;
+    } else if (room.contents.content === 'Enigma' && enigmaTypes.includes(room.contents.details)) {
+      specificType = room.contents.details;
+    } else if (room.contents.content === 'Distractor' && distractorTypes.includes(room.contents.details)) {
+      specificType = room.contents.details;
+    }
+    
+    setRoomEditMenu({
+      isOpen: true,
+      room: room,
+      contentType: room.contents.content,
+      specificType: specificType,
+      notes: room.notes || '',
+      hasTreasure: room.contents.hasTreasure || false,
+      treasureLocation: room.contents.treasureLocation || ''
+    });
+  };
+
+  const closeRoomEditMenu = () => {
+    setRoomEditMenu({ isOpen: false, room: null, contentType: '', specificType: '', notes: '', hasTreasure: false, treasureLocation: '' });
+  };
+
+  const saveRoomChanges = () => {
+    if (!roomEditMenu.room) return;
+    
+    const updatedRooms = generatedRooms.map(room => {
+      if (room.id === roomEditMenu.room.id) {
+        let details = '';
+        
+        // Set details based on content type and specific type
+        switch (roomEditMenu.contentType) {
+          case 'Creature':
+            details = 'A creature inhabits this room. Consider inhabitants from page 240.';
+            break;
+          case 'Hazard':
+            details = roomEditMenu.specificType || getRandomArrayItem(hazardTypes);
+            break;
+          case 'Enigma':
+            details = roomEditMenu.specificType || getRandomArrayItem(enigmaTypes);
+            break;
+          case 'Distractor':
+            details = roomEditMenu.specificType || getRandomArrayItem(distractorTypes);
+            break;
+          case 'Empty':
+            details = 'This room appears empty and devoid of anything worth interacting with.';
+            break;
+          default:
+            details = room.contents.details;
+        }
+        
+        return {
+          ...room,
+          contents: {
+            ...room.contents,
+            content: roomEditMenu.contentType,
+            details: details,
+            hasTreasure: roomEditMenu.hasTreasure,
+            treasureLocation: roomEditMenu.hasTreasure ? roomEditMenu.treasureLocation : null
+          },
+          notes: roomEditMenu.notes
+        };
+      }
+      return room;
+    });
+    
+    setGeneratedRooms(updatedRooms);
+    closeRoomEditMenu();
+  };
+
+  const getSpecificTypesForContent = (contentType) => {
+    switch (contentType) {
+      case 'Hazard':
+        return hazardTypes;
+      case 'Enigma':
+        return enigmaTypes;
+      case 'Distractor':
+        return distractorTypes;
+      default:
+        return [];
+    }
   };
 
   return (
@@ -951,6 +1053,7 @@ const RoomGenerator = () => {
                 <h4>✏️ Edit Mode Active</h4>
                 <p>
                   Click on any two rooms to toggle their connection. Adjacent rooms show yellow lines, distant rooms show red lines.
+                  Double-click a room to edit its contents.
                   {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect.</span>}
                   {!selectedRoom && <span> Click a room to select it first.</span>}
                 </p>
@@ -993,6 +1096,7 @@ const RoomGenerator = () => {
                           key={key} 
                           className={roomClasses}
                           onClick={() => handleRoomClick(room)}
+                          onDoubleClick={() => handleRoomDoubleClick(room)}
                           style={{ cursor: isEditMode ? 'pointer' : 'default' }}
                         >
                           <div className="grid-room-id">R{room.id}</div>
@@ -1225,6 +1329,102 @@ const RoomGenerator = () => {
               Each room has specific (x,y) coordinates relative to the starting room. The exit count includes all 
               connections to and from the room. If generation gets stuck on dead ends, exits are automatically 
               rerolled to continue building the dungeon.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Room Edit Menu Modal */}
+      {roomEditMenu.isOpen && (
+        <div className="room-edit-overlay">
+          <div className="room-edit-modal">
+            <div className="room-edit-header">
+              <h3>Edit Room {roomEditMenu.room?.id}</h3>
+              <button className="close-btn" onClick={closeRoomEditMenu}>✕</button>
+            </div>
+            
+            <div className="room-edit-content">
+              <div className="edit-field">
+                <label htmlFor="contentType">Content Type:</label>
+                <select 
+                  id="contentType"
+                  value={roomEditMenu.contentType}
+                  onChange={(e) => setRoomEditMenu({
+                    ...roomEditMenu, 
+                    contentType: e.target.value,
+                    specificType: '' // Reset specific type when content type changes
+                  })}
+                >
+                  <option value="Creature">Creature</option>
+                  <option value="Hazard">Hazard</option>
+                  <option value="Enigma">Enigma</option>
+                  <option value="Distractor">Distractor</option>
+                  <option value="Empty">Empty</option>
+                </select>
+              </div>
+
+              {(roomEditMenu.contentType === 'Hazard' || roomEditMenu.contentType === 'Enigma' || roomEditMenu.contentType === 'Distractor') && (
+                <div className="edit-field">
+                  <label htmlFor="specificType">Specific Type:</label>
+                  <select 
+                    id="specificType"
+                    value={roomEditMenu.specificType}
+                    onChange={(e) => setRoomEditMenu({...roomEditMenu, specificType: e.target.value})}
+                  >
+                    <option value="">Random (will be auto-selected)</option>
+                    {getSpecificTypesForContent(roomEditMenu.contentType).map((type, index) => (
+                      <option key={index} value={type}>{type}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="edit-field">
+                <label htmlFor="hasTreasure">
+                  <input 
+                    type="checkbox"
+                    id="hasTreasure"
+                    checked={roomEditMenu.hasTreasure}
+                    onChange={(e) => setRoomEditMenu({
+                      ...roomEditMenu, 
+                      hasTreasure: e.target.checked,
+                      treasureLocation: e.target.checked ? roomEditMenu.treasureLocation || getRandomArrayItem(treasureLocations) : ''
+                    })}
+                  />
+                  Has Treasure
+                </label>
+              </div>
+
+              {roomEditMenu.hasTreasure && (
+                <div className="edit-field">
+                  <label htmlFor="treasureLocation">Treasure Location:</label>
+                  <select 
+                    id="treasureLocation"
+                    value={roomEditMenu.treasureLocation}
+                    onChange={(e) => setRoomEditMenu({...roomEditMenu, treasureLocation: e.target.value})}
+                  >
+                    {treasureLocations.map((location, index) => (
+                      <option key={index} value={location}>{location}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="edit-field">
+                <label htmlFor="roomNotes">Notes:</label>
+                <textarea 
+                  id="roomNotes"
+                  value={roomEditMenu.notes}
+                  onChange={(e) => setRoomEditMenu({...roomEditMenu, notes: e.target.value})}
+                  placeholder="Additional notes about this room..."
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            <div className="room-edit-actions">
+              <button className="save-btn" onClick={saveRoomChanges}>Save Changes</button>
+              <button className="cancel-btn" onClick={closeRoomEditMenu}>Cancel</button>
             </div>
           </div>
         </div>
