@@ -274,43 +274,71 @@
   margin-bottom: 2rem;
 }
 
-.grid-layout {
-  display: grid;
-  gap: 2px;
-  padding: 1rem;
+.grid-layout-wrapper {
+  position: relative;
+  padding: 2rem;
   background: #475569;
   border-radius: 8px;
   max-width: 100%;
-  overflow-x: auto;
+  overflow: visible;
+  min-height: 500px;
+  min-width: 500px;
+}
+
+.grid-layout {
+  display: grid;
+  gap: 50px;
+  position: relative;
+  z-index: 5;
 }
 
 .grid-cell {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 0.75rem;
   text-align: center;
+  position: relative;
+  z-index: 10;
 }
 
 .room-cell {
   background: #3b82f6;
   color: white;
   border: 2px solid #1d4ed8;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .room-cell.ingress {
   background: #ef4444;
   border: 2px solid #dc2626;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .empty-cell {
   background: #374151;
   color: #9ca3af;
   border: 1px solid #4b5563;
+}
+
+.connection-line {
+  background: #60a5fa !important;
+  box-shadow: 0 0 6px rgba(96, 165, 250, 0.7) !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 1 !important;
+  position: absolute !important;
+}
+
+.connection-line:hover {
+  background: #3b82f6 !important;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.9) !important;
+  height: 5px !important;
+  transform: translateY(-1px) !important;
 }
 
 .grid-room-id {

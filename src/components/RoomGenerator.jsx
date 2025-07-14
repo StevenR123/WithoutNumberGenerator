@@ -413,40 +413,59 @@ const RoomGenerator = () => {
         }
       }
       
-      // Final fallback: if we still don't have enough rooms, aggressively expand existing rooms
+      // Final fallback: use intelligent branching from rooms with least adjacent rooms
+      console.log(`🌿 FALLBACK ACTIVATED: Starting expansion from rooms with least adjacent rooms`);
+      // Extend from rooms with least adjacent rooms for more natural dungeon layouts
       while (rooms.length < numRooms) {
-        console.log(`🔄 Need ${numRooms - rooms.length} more rooms. Attempting aggressive expansion...`);
+        console.log(`🌿 Need ${numRooms - rooms.length} more rooms. Finding rooms with least adjacent rooms...`);
         
-        // Find all rooms that could potentially be expanded
-        const expandableRooms = rooms.filter(room => room.connectedRooms.size < 4);
-        
-        if (expandableRooms.length === 0) {
-          console.log(`⚠️ Cannot expand any rooms further. Generated ${rooms.length}/${numRooms} rooms.`);
+        // Calculate adjacent room counts and find rooms with least adjacent rooms (excluding ingress)
+        const nonIngressRooms = rooms.filter(room => !room.isIngress);
+        if (nonIngressRooms.length === 0) {
+          console.log(`⚠️ No non-ingress rooms to extend from.`);
           break;
         }
         
-        // Sort by rooms with most available capacity
-        expandableRooms.sort((a, b) => 
-          (4 - b.connectedRooms.size) - (4 - a.connectedRooms.size)
-        );
+        const roomsWithAdjacentCounts = nonIngressRooms.map(room => ({
+          room,
+          adjacentCount: getAdjacentRoomCount(room, rooms, occupiedCoordinates)
+        }));
+        
+        // Sort by adjacent count (least adjacent first)
+        roomsWithAdjacentCounts.sort((a, b) => a.adjacentCount - b.adjacentCount);
+        
+        // Take up to 2 rooms with least adjacent rooms
+        const leastAdjacentRooms = roomsWithAdjacentCounts.slice(0, 2).map(item => item.room);
+        
+        console.log(`📍 Rooms with least adjacent rooms:`, leastAdjacentRooms.map(r => 
+          `Room ${r.id} (adjacent: ${getAdjacentRoomCount(r, rooms, occupiedCoordinates)})`
+        ));
         
         let roomExpanded = false;
         
-        for (const room of expandableRooms) {
-          // Force expand this room to maximum exits
-          const originalMaxConnections = room.maxConnections;
+        // Try to expand each of the rooms with least adjacent rooms
+        for (const room of leastAdjacentRooms) {
+          // Force expand this room if needed
+          if (room.connectedRooms.size >= 4) {
+            continue; // Skip if already at max connections
+          }
+          
           const originalExits = Array.from(room.connectedRooms.keys());
           
+          // Force expand to allow more connections
           room.maxConnections = 4;
           room.exits = 'Four';
-          room.notes += ` (Force-expanded to Four exits for room generation)`;
+          room.notes += ` (Force-expanded for extension)`;
           
           // Generate all possible directions
           const allDirections = ['North', 'South', 'East', 'West', 'Northeast', 'Northwest', 'Southeast', 'Southwest'];
           const availableDirections = allDirections.filter(dir => !room.connectedRooms.has(dir));
           
-          // Try to create a new room in any available direction
+          // Try to create up to 2 new rooms from this room
+          let connectionsFromThisRoom = 0;
           for (const direction of availableDirections) {
+            if (connectionsFromThisRoom >= 2 || rooms.length >= numRooms) break;
+            
             const coordinateChange = getCoordinateChange(direction);
             const newCoordinates = {
               x: room.coordinates.x + coordinateChange.x,
@@ -463,7 +482,7 @@ const RoomGenerator = () => {
                 exits: generateExits(),
                 directions: [],
                 contents: generateRoomContents(),
-                notes: `Force-connected from Room ${room.id} (${direction}) at (${newCoordinates.x}, ${newCoordinates.y})`,
+                notes: `Extended from Room ${room.id} (${direction}) at (${newCoordinates.x}, ${newCoordinates.y})`,
                 connectedRooms: new Map(),
                 coordinates: newCoordinates,
                 maxConnections: getMaxConnectionsFromExits(generateExits())
@@ -487,23 +506,27 @@ const RoomGenerator = () => {
               occupiedCoordinates.set(coordKey, newRoom.id);
               roomQueue.push(newRoom);
               
-              console.log(`🏗️ Force-created Room ${newRoom.id} connected to Room ${room.id} via ${direction}/${oppositeDirection}`);
-              console.log(`   Room ${room.id} exits expanded: [${originalExits.join(', ')}] → [${Array.from(room.connectedRooms.keys()).join(', ')}]`);
+              console.log(`🌿 Created Room ${newRoom.id} extending from least-adjacent Room ${room.id} via ${direction}/${oppositeDirection}`);
+              console.log(`   Adjacent room count: ${getAdjacentRoomCount(room, rooms, occupiedCoordinates)}`);
               
               roomExpanded = true;
-              break;
+              connectionsFromThisRoom++;
             }
           }
           
-          if (roomExpanded) break;
+          if (rooms.length >= numRooms) break;
         }
         
-        // If we couldn't expand any room, we're stuck
+        // If we couldn't expand any of the rooms with least adjacent rooms, we're stuck
         if (!roomExpanded) {
-          console.log(`⚠️ Could not create more connected rooms. Final count: ${rooms.length}/${numRooms}`);
+          console.log(`⚠️ FALLBACK COMPLETE: Could not extend from rooms with least adjacent rooms. Final count: ${rooms.length}/${numRooms}`);
           break;
+        } else {
+          console.log(`✅ Fallback successfully expanded from least-adjacent room(s)`);
         }
       }
+      console.log(`🌿 FALLBACK FINISHED: Generated ${rooms.length}/${numRooms} rooms using intelligent branching strategy`);
+      
       
       // Update exit counts to reflect actual connections
       rooms.forEach(room => {
@@ -560,6 +583,12 @@ const RoomGenerator = () => {
     return changes[direction] || { x: 0, y: 0 };
   };
 
+  const getDistanceFromIngress = (room, ingressRoom) => {
+    const deltaX = Math.abs(room.coordinates.x - ingressRoom.coordinates.x);
+    const deltaY = Math.abs(room.coordinates.y - ingressRoom.coordinates.y);
+    return deltaX + deltaY; // Manhattan distance
+  };
+
   const getRoomTypeIcon = (content) => {
     switch (content) {
       case 'Creature': return '👹';
@@ -569,6 +598,32 @@ const RoomGenerator = () => {
       case 'Empty': return '🚪';
       default: return '❓';
     }
+  };
+
+  const getAdjacentRoomCount = (room, allRooms, occupiedCoordinates) => {
+    const adjacentDirections = [
+      { x: 0, y: 1 },   // North
+      { x: 0, y: -1 },  // South
+      { x: 1, y: 0 },   // East
+      { x: -1, y: 0 },  // West
+      { x: 1, y: 1 },   // Northeast
+      { x: -1, y: 1 },  // Northwest
+      { x: 1, y: -1 },  // Southeast
+      { x: -1, y: -1 }  // Southwest
+    ];
+    
+    let adjacentCount = 0;
+    for (const direction of adjacentDirections) {
+      const adjacentX = room.coordinates.x + direction.x;
+      const adjacentY = room.coordinates.y + direction.y;
+      const coordKey = `${adjacentX},${adjacentY}`;
+      
+      if (occupiedCoordinates.has(coordKey)) {
+        adjacentCount++;
+      }
+    }
+    
+    return adjacentCount;
   };
 
   return (
@@ -598,6 +653,153 @@ const RoomGenerator = () => {
           {isGenerating ? 'Generating...' : 'Generate Rooms'}
         </button>
       </div>
+
+                <div className="connection-map">
+            <h3>🗺️ Dungeon Grid Layout</h3>
+            <div className="grid-container">
+              {(() => {
+                // Calculate grid bounds
+                const minX = Math.min(...generatedRooms.map(r => r.coordinates.x)) - 1;
+                const maxX = Math.max(...generatedRooms.map(r => r.coordinates.x)) + 1;
+                const minY = Math.max(...generatedRooms.map(r => r.coordinates.y)) + 1;
+                const maxY = Math.min(...generatedRooms.map(r => r.coordinates.y)) - 1;
+                
+                const gridElements = [];
+                const connectionElements = [];
+                
+                // Create grid cells (Y from top to bottom, so we iterate from maxY to minY)
+                for (let y = minY; y >= maxY; y--) {
+                  for (let x = minX; x <= maxX; x++) {
+                    const room = generatedRooms.find(r => r.coordinates.x === x && r.coordinates.y === y);
+                    const key = `${x},${y}`;
+                    
+                    if (room) {
+                      gridElements.push(
+                        <div key={key} className={`grid-cell room-cell ${room.isIngress ? 'ingress' : ''}`}>
+                          <div className="grid-room-id">R{room.id}</div>
+                          <div className="grid-coordinates">({x},{y})</div>
+                          <div className="grid-room-type">{getRoomTypeIcon(room.contents.content)}</div>
+                        </div>
+                      );
+                      
+                      // Add connection lines for this room
+                      if (room.connectedRooms) {
+                        Array.from(room.connectedRooms.entries()).forEach(([direction, connectedRoomId]) => {
+                          const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
+                          if (connectedRoom) {
+                            // Calculate grid positions (convert from coordinate system to grid indices)
+                            const fromGridX = x - minX;
+                            const fromGridY = minY - y;
+                            const toGridX = connectedRoom.coordinates.x - minX;
+                            const toGridY = minY - connectedRoom.coordinates.y;
+                            
+                            // Only draw line if we haven't drawn it from the other direction
+                            // (to avoid duplicate lines)
+                            const connectionKey = `${Math.min(room.id, connectedRoomId)}-${Math.max(room.id, connectedRoomId)}`;
+                            
+                            // Check if this connection has already been added
+                            if (!connectionElements.some(el => el.key === connectionKey)) {
+                              // Determine connection type and create line element
+                              const deltaX = toGridX - fromGridX;
+                              const deltaY = toGridY - fromGridY;
+                              
+                              let connectionClass = 'connection-line';
+                              let lineStyle = {};
+                              
+                              // Calculate position and rotation for the line
+                              const centerFromX = fromGridX * 150 + 50; // 100px cell + 50px gap = 150px spacing, +50px to center
+                              const centerFromY = fromGridY * 150 + 50;
+                              const centerToX = toGridX * 150 + 50;
+                              const centerToY = toGridY * 150 + 50;
+                              
+                              const distance = Math.sqrt((centerToX - centerFromX) ** 2 + (centerToY - centerFromY) ** 2);
+                              const angle = Math.atan2(centerToY - centerFromY, centerToX - centerFromX) * 180 / Math.PI;
+                              
+                              lineStyle = {
+                                position: 'absolute',
+                                left: `${centerFromX}px`,
+                                top: `${centerFromY - 2}px`, // Center the line vertically
+                                width: `${distance}px`,
+                                height: '4px',
+                                backgroundColor: '#fbbf24', // Bright yellow for visibility
+                                transformOrigin: '0 50%',
+                                transform: `rotate(${angle}deg)`,
+                                zIndex: 15, // Even higher z-index
+                                borderRadius: '2px',
+                                border: '1px solid #f59e0b',
+                                boxShadow: '0 0 8px rgba(251, 191, 36, 0.8)',
+                                pointerEvents: 'none' // Prevent interference with room interactions
+                              };
+                              
+                              connectionElements.push(
+                                <div
+                                  key={connectionKey}
+                                  className={connectionClass}
+                                  style={lineStyle}
+                                  title={`Connection: Room ${room.id} ↔ Room ${connectedRoomId}`}
+                                />
+                              );
+                              
+                              // Debug log
+                              console.log(`Added connection line: ${connectionKey}, from (${centerFromX}, ${centerFromY}) to (${centerToX}, ${centerToY}), distance: ${distance}, angle: ${angle}`);
+                            }
+                          }
+                        });
+                      }
+                    } else {
+                      gridElements.push(
+                        <div key={key} className="grid-cell empty-cell">
+                          <div className="grid-coordinates">({x},{y})</div>
+                        </div>
+                      );
+                    }
+                  }
+                }
+                
+                return (
+                  <div className="grid-layout-wrapper" style={{ 
+                    position: 'relative',
+                    overflow: 'visible',
+                    padding: '20px'
+                  }}>
+                    <div 
+                      className="grid-layout" 
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${maxX - minX + 1}, 100px)`,
+                        gridTemplateRows: `repeat(${minY - maxY + 1}, 100px)`,
+                        gap: '50px', // Half the width of a square
+                        position: 'relative',
+                        zIndex: 5
+                      }}
+                    >
+                      {gridElements}
+                    </div>
+                    <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 1, width: '100%', height: '100%' }}>
+                      {connectionElements}
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+            
+            <div className="connection-list">
+              <h4>Room Connections:</h4>
+              {generatedRooms.map((room) => (
+                <div key={room.id} className="connection-summary">
+                  <strong>Room {room.id} ({room.coordinates.x}, {room.coordinates.y}):</strong>
+                  {room.connectedRooms && Array.from(room.connectedRooms.entries()).map(([direction, connectedRoomId]) => {
+                    const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
+                    return (
+                      <span key={direction} className="connection-detail">
+                        {direction} → R{connectedRoomId} ({connectedRoom?.coordinates.x}, {connectedRoom?.coordinates.y})
+                      </span>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
 
       {generatedRooms.length > 0 && (
         <div className="rooms-container">
@@ -659,74 +861,6 @@ const RoomGenerator = () => {
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="connection-map">
-            <h3>🗺️ Dungeon Grid Layout</h3>
-            <div className="grid-container">
-              {(() => {
-                // Calculate grid bounds
-                const minX = Math.min(...generatedRooms.map(r => r.coordinates.x)) - 1;
-                const maxX = Math.max(...generatedRooms.map(r => r.coordinates.x)) + 1;
-                const minY = Math.max(...generatedRooms.map(r => r.coordinates.y)) + 1;
-                const maxY = Math.min(...generatedRooms.map(r => r.coordinates.y)) - 1;
-                
-                const gridElements = [];
-                
-                // Create grid cells (Y from top to bottom, so we iterate from maxY to minY)
-                for (let y = minY; y >= maxY; y--) {
-                  for (let x = minX; x <= maxX; x++) {
-                    const room = generatedRooms.find(r => r.coordinates.x === x && r.coordinates.y === y);
-                    const key = `${x},${y}`;
-                    
-                    if (room) {
-                      gridElements.push(
-                        <div key={key} className={`grid-cell room-cell ${room.isIngress ? 'ingress' : ''}`}>
-                          <div className="grid-room-id">R{room.id}</div>
-                          <div className="grid-coordinates">({x},{y})</div>
-                          <div className="grid-room-type">{getRoomTypeIcon(room.contents.content)}</div>
-                        </div>
-                      );
-                    } else {
-                      gridElements.push(
-                        <div key={key} className="grid-cell empty-cell">
-                          <div className="grid-coordinates">({x},{y})</div>
-                        </div>
-                      );
-                    }
-                  }
-                }
-                
-                return (
-                  <div 
-                    className="grid-layout" 
-                    style={{
-                      gridTemplateColumns: `repeat(${maxX - minX + 1}, 1fr)`,
-                      gridTemplateRows: `repeat(${minY - maxY + 1}, 1fr)`
-                    }}
-                  >
-                    {gridElements}
-                  </div>
-                );
-              })()}
-            </div>
-            
-            <div className="connection-list">
-              <h4>Room Connections:</h4>
-              {generatedRooms.map((room) => (
-                <div key={room.id} className="connection-summary">
-                  <strong>Room {room.id} ({room.coordinates.x}, {room.coordinates.y}):</strong>
-                  {room.connectedRooms && Array.from(room.connectedRooms.entries()).map(([direction, connectedRoomId]) => {
-                    const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
-                    return (
-                      <span key={direction} className="connection-detail">
-                        {direction} → R{connectedRoomId} ({connectedRoom?.coordinates.x}, {connectedRoom?.coordinates.y})
-                      </span>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="instructions">
