@@ -6,6 +6,8 @@ const RoomGenerator = () => {
   const [generatedRooms, setGeneratedRooms] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fileInputRef, setFileInputRef] = useState(null);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Random table data based on the instructions
   const exitTable = [
@@ -708,6 +710,148 @@ const RoomGenerator = () => {
     }
   };
 
+  const handleRoomClick = (room) => {
+    if (!isEditMode) return;
+
+    if (!selectedRoom) {
+      // First room selected
+      setSelectedRoom(room);
+    } else if (selectedRoom.id === room.id) {
+      // Clicking the same room deselects it
+      setSelectedRoom(null);
+    } else {
+      // Second room selected - toggle connection
+      toggleConnection(selectedRoom, room);
+      setSelectedRoom(null);
+    }
+  };
+
+  const toggleConnection = (room1, room2) => {
+    // Check if rooms are adjacent (can only connect adjacent rooms)
+    const deltaX = Math.abs(room1.coordinates.x - room2.coordinates.x);
+    const deltaY = Math.abs(room1.coordinates.y - room2.coordinates.y);
+    
+    // Allow connections to adjacent rooms (including diagonals)
+    if (deltaX > 1 || deltaY > 1) {
+      alert('Rooms must be adjacent to connect!');
+      return;
+    }
+
+    // Calculate direction from room1 to room2
+    const direction = getDirectionBetweenRooms(room1, room2);
+    const oppositeDirection = getOppositeDirection(direction);
+
+    // Check if connection already exists
+    const room1HasConnection = room1.connectedRooms.has(direction);
+    const room2HasConnection = room2.connectedRooms.has(oppositeDirection);
+
+    const updatedRooms = generatedRooms.map(room => {
+      if (room.id === room1.id) {
+        const newConnectedRooms = new Map(room.connectedRooms);
+        const newDirections = [...room.directions];
+        
+        if (room1HasConnection) {
+          // Remove connection
+          newConnectedRooms.delete(direction);
+          const dirIndex = newDirections.indexOf(direction);
+          if (dirIndex > -1) {
+            newDirections.splice(dirIndex, 1);
+          }
+        } else {
+          // Add connection
+          newConnectedRooms.set(direction, room2.id);
+          if (!newDirections.includes(direction)) {
+            newDirections.push(direction);
+          }
+        }
+        
+        // Update exits count based on actual connections
+        const connectionCount = newConnectedRooms.size;
+        const newExits = connectionCount === 0 ? 'None' :
+                        connectionCount === 1 ? 'One' :
+                        connectionCount === 2 ? 'Two' :
+                        connectionCount === 3 ? 'Three' : 'Four';
+
+        return {
+          ...room,
+          connectedRooms: newConnectedRooms,
+          directions: newDirections,
+          exits: newExits,
+          maxConnections: Math.max(connectionCount, room.maxConnections)
+        };
+      } else if (room.id === room2.id) {
+        const newConnectedRooms = new Map(room.connectedRooms);
+        const newDirections = [...room.directions];
+        
+        if (room2HasConnection) {
+          // Remove connection
+          newConnectedRooms.delete(oppositeDirection);
+          const dirIndex = newDirections.indexOf(oppositeDirection);
+          if (dirIndex > -1) {
+            newDirections.splice(dirIndex, 1);
+          }
+        } else {
+          // Add connection
+          newConnectedRooms.set(oppositeDirection, room1.id);
+          if (!newDirections.includes(oppositeDirection)) {
+            newDirections.push(oppositeDirection);
+          }
+        }
+        
+        // Update exits count based on actual connections
+        const connectionCount = newConnectedRooms.size;
+        const newExits = connectionCount === 0 ? 'None' :
+                        connectionCount === 1 ? 'One' :
+                        connectionCount === 2 ? 'Two' :
+                        connectionCount === 3 ? 'Three' : 'Four';
+
+        return {
+          ...room,
+          connectedRooms: newConnectedRooms,
+          directions: newDirections,
+          exits: newExits,
+          maxConnections: Math.max(connectionCount, room.maxConnections)
+        };
+      }
+      return room;
+    });
+
+    setGeneratedRooms(updatedRooms);
+  };
+
+  const getDirectionBetweenRooms = (fromRoom, toRoom) => {
+    const deltaX = toRoom.coordinates.x - fromRoom.coordinates.x;
+    const deltaY = toRoom.coordinates.y - fromRoom.coordinates.y;
+
+    if (deltaX === 0 && deltaY === 1) return 'North';
+    if (deltaX === 0 && deltaY === -1) return 'South';
+    if (deltaX === 1 && deltaY === 0) return 'East';
+    if (deltaX === -1 && deltaY === 0) return 'West';
+    if (deltaX === 1 && deltaY === 1) return 'Northeast';
+    if (deltaX === -1 && deltaY === 1) return 'Northwest';
+    if (deltaX === 1 && deltaY === -1) return 'Southeast';
+    if (deltaX === -1 && deltaY === -1) return 'Southwest';
+    
+    return 'Unknown';
+  };
+
+  const areRoomsAdjacent = (room1, room2) => {
+    const deltaX = Math.abs(room1.coordinates.x - room2.coordinates.x);
+    const deltaY = Math.abs(room1.coordinates.y - room2.coordinates.y);
+    return deltaX <= 1 && deltaY <= 1 && !(deltaX === 0 && deltaY === 0);
+  };
+
+  const areRoomsConnected = (room1, room2) => {
+    if (!room1 || !room2) return false;
+    const direction = getDirectionBetweenRooms(room1, room2);
+    return room1.connectedRooms.has(direction);
+  };
+
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+    setSelectedRoom(null); // Clear selection when toggling mode
+  };
+
   return (
     <div className="room-generator">
       <header className="generator-header">
@@ -753,6 +897,15 @@ const RoomGenerator = () => {
             📁 Import JSON
           </button>
           
+          <button 
+            onClick={toggleEditMode}
+            disabled={generatedRooms.length === 0}
+            className={`edit-btn ${isEditMode ? 'active' : ''}`}
+            title="Toggle edit mode to add/remove connections between rooms"
+          >
+            ✏️ {isEditMode ? 'Exit Edit' : 'Edit Connections'}
+          </button>
+          
           <input
             type="file"
             accept=".json"
@@ -765,6 +918,16 @@ const RoomGenerator = () => {
 
                 <div className="connection-map">
             <h3>🗺️ Dungeon Grid Layout</h3>
+            {isEditMode && (
+              <div className="edit-instructions">
+                <h4>✏️ Edit Mode Active</h4>
+                <p>
+                  Click on two adjacent rooms to toggle their connection. 
+                  {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another adjacent room to connect/disconnect.</span>}
+                  {!selectedRoom && <span> Click a room to select it first.</span>}
+                </p>
+              </div>
+            )}
             <div className="grid-container">
               {(() => {
                 // Calculate grid bounds
@@ -783,11 +946,34 @@ const RoomGenerator = () => {
                     const key = `${x},${y}`;
                     
                     if (room) {
+                      const isSelected = selectedRoom && selectedRoom.id === room.id;
+                      const isConnectable = selectedRoom && selectedRoom.id !== room.id && areRoomsAdjacent(selectedRoom, room);
+                      const isConnected = selectedRoom && areRoomsConnected(selectedRoom, room);
+                      
+                      const roomClasses = [
+                        'grid-cell',
+                        'room-cell',
+                        room.isIngress ? 'ingress' : '',
+                        isEditMode ? 'editable' : '',
+                        isSelected ? 'selected' : '',
+                        isConnectable ? (isConnected ? 'connectable-connected' : 'connectable') : ''
+                      ].filter(Boolean).join(' ');
+
                       gridElements.push(
-                        <div key={key} className={`grid-cell room-cell ${room.isIngress ? 'ingress' : ''}`}>
+                        <div 
+                          key={key} 
+                          className={roomClasses}
+                          onClick={() => handleRoomClick(room)}
+                          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+                        >
                           <div className="grid-room-id">R{room.id}</div>
                           <div className="grid-coordinates">({x},{y})</div>
                           <div className="grid-room-type">{getRoomTypeIcon(room.contents.content)}</div>
+                          {isEditMode && isConnectable && (
+                            <div className="connection-indicator">
+                              {isConnected ? '🔗' : '➕'}
+                            </div>
+                          )}
                         </div>
                       );
                       
