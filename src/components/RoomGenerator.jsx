@@ -727,16 +727,6 @@ const RoomGenerator = () => {
   };
 
   const toggleConnection = (room1, room2) => {
-    // Check if rooms are adjacent (can only connect adjacent rooms)
-    const deltaX = Math.abs(room1.coordinates.x - room2.coordinates.x);
-    const deltaY = Math.abs(room1.coordinates.y - room2.coordinates.y);
-    
-    // Allow connections to adjacent rooms (including diagonals)
-    if (deltaX > 1 || deltaY > 1) {
-      alert('Rooms must be adjacent to connect!');
-      return;
-    }
-
     // Calculate direction from room1 to room2
     const direction = getDirectionBetweenRooms(room1, room2);
     const oppositeDirection = getOppositeDirection(direction);
@@ -823,16 +813,54 @@ const RoomGenerator = () => {
     const deltaX = toRoom.coordinates.x - fromRoom.coordinates.x;
     const deltaY = toRoom.coordinates.y - fromRoom.coordinates.y;
 
-    if (deltaX === 0 && deltaY === 1) return 'North';
-    if (deltaX === 0 && deltaY === -1) return 'South';
-    if (deltaX === 1 && deltaY === 0) return 'East';
-    if (deltaX === -1 && deltaY === 0) return 'West';
-    if (deltaX === 1 && deltaY === 1) return 'Northeast';
-    if (deltaX === -1 && deltaY === 1) return 'Northwest';
-    if (deltaX === 1 && deltaY === -1) return 'Southeast';
-    if (deltaX === -1 && deltaY === -1) return 'Southwest';
+    // For adjacent rooms, use exact directions
+    if (Math.abs(deltaX) <= 1 && Math.abs(deltaY) <= 1) {
+      if (deltaX === 0 && deltaY === 1) return 'North';
+      if (deltaX === 0 && deltaY === -1) return 'South';
+      if (deltaX === 1 && deltaY === 0) return 'East';
+      if (deltaX === -1 && deltaY === 0) return 'West';
+      if (deltaX === 1 && deltaY === 1) return 'Northeast';
+      if (deltaX === -1 && deltaY === 1) return 'Northwest';
+      if (deltaX === 1 && deltaY === -1) return 'Southeast';
+      if (deltaX === -1 && deltaY === -1) return 'Southwest';
+    }
+
+    // For non-adjacent rooms, determine general direction based on predominant axis
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
     
-    return 'Unknown';
+    if (absDeltaX > absDeltaY) {
+      // Primarily horizontal movement
+      if (deltaY === 0) {
+        return deltaX > 0 ? 'East' : 'West';
+      } else {
+        // Diagonal with horizontal predominance
+        if (deltaX > 0) {
+          return deltaY > 0 ? 'Northeast' : 'Southeast';
+        } else {
+          return deltaY > 0 ? 'Northwest' : 'Southwest';
+        }
+      }
+    } else if (absDeltaY > absDeltaX) {
+      // Primarily vertical movement
+      if (deltaX === 0) {
+        return deltaY > 0 ? 'North' : 'South';
+      } else {
+        // Diagonal with vertical predominance
+        if (deltaY > 0) {
+          return deltaX > 0 ? 'Northeast' : 'Northwest';
+        } else {
+          return deltaX > 0 ? 'Southeast' : 'Southwest';
+        }
+      }
+    } else {
+      // Equal horizontal and vertical movement (perfect diagonal)
+      if (deltaX > 0) {
+        return deltaY > 0 ? 'Northeast' : 'Southeast';
+      } else {
+        return deltaY > 0 ? 'Northwest' : 'Southwest';
+      }
+    }
   };
 
   const areRoomsAdjacent = (room1, room2) => {
@@ -922,8 +950,8 @@ const RoomGenerator = () => {
               <div className="edit-instructions">
                 <h4>✏️ Edit Mode Active</h4>
                 <p>
-                  Click on two adjacent rooms to toggle their connection. 
-                  {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another adjacent room to connect/disconnect.</span>}
+                  Click on any two rooms to toggle their connection. Adjacent rooms show yellow lines, distant rooms show red lines.
+                  {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect.</span>}
                   {!selectedRoom && <span> Click a room to select it first.</span>}
                 </p>
               </div>
@@ -947,8 +975,9 @@ const RoomGenerator = () => {
                     
                     if (room) {
                       const isSelected = selectedRoom && selectedRoom.id === room.id;
-                      const isConnectable = selectedRoom && selectedRoom.id !== room.id && areRoomsAdjacent(selectedRoom, room);
+                      const isConnectable = selectedRoom && selectedRoom.id !== room.id;
                       const isConnected = selectedRoom && areRoomsConnected(selectedRoom, room);
+                      const isAdjacent = selectedRoom && areRoomsAdjacent(selectedRoom, room);
                       
                       const roomClasses = [
                         'grid-cell',
@@ -956,7 +985,7 @@ const RoomGenerator = () => {
                         room.isIngress ? 'ingress' : '',
                         isEditMode ? 'editable' : '',
                         isSelected ? 'selected' : '',
-                        isConnectable ? (isConnected ? 'connectable-connected' : 'connectable') : ''
+                        isConnectable ? (isConnected ? 'connectable-connected' : (isAdjacent ? 'connectable' : 'connectable-distant')) : ''
                       ].filter(Boolean).join(' ');
 
                       gridElements.push(
@@ -971,7 +1000,7 @@ const RoomGenerator = () => {
                           <div className="grid-room-type">{getRoomTypeIcon(room.contents.content)}</div>
                           {isEditMode && isConnectable && (
                             <div className="connection-indicator">
-                              {isConnected ? '🔗' : '➕'}
+                              {isConnected ? '🔗' : (isAdjacent ? '➕' : '🔗➕')}
                             </div>
                           )}
                         </div>
@@ -998,7 +1027,10 @@ const RoomGenerator = () => {
                               const deltaX = toGridX - fromGridX;
                               const deltaY = toGridY - fromGridY;
                               
-                              let connectionClass = 'connection-line';
+                              // Check if rooms are adjacent (distance of 1 in both X and Y)
+                              const isAdjacent = Math.abs(deltaX) <= 1 && Math.abs(deltaY) <= 1;
+                              
+                              let connectionClass = isAdjacent ? 'connection-line' : 'connection-line distant';
                               let lineStyle = {};
                               
                               // Calculate position and rotation for the line
@@ -1010,19 +1042,24 @@ const RoomGenerator = () => {
                               const distance = Math.sqrt((centerToX - centerFromX) ** 2 + (centerToY - centerFromY) ** 2);
                               const angle = Math.atan2(centerToY - centerFromY, centerToX - centerFromX) * 180 / Math.PI;
                               
+                              // Use different colors for adjacent vs distant connections
+                              const lineColor = isAdjacent ? '#fbbf24' : '#dc2626'; // Yellow for adjacent, darker red core for distant
+                              const borderColor = isAdjacent ? '#f59e0b' : '#991b1b'; // Darker border for distant
+                              const shadowColor = isAdjacent ? 'rgba(251, 191, 36, 0.8)' : 'rgba(220, 38, 38, 1.0)'; // More intense red shadow
+                              
                               lineStyle = {
                                 position: 'absolute',
                                 left: `${centerFromX}px`,
                                 top: `${centerFromY - 2}px`, // Center the line vertically
                                 width: `${distance}px`,
-                                height: '4px',
-                                backgroundColor: '#fbbf24', // Bright yellow for visibility
+                                height: isAdjacent ? '4px' : '6px', // Make distant connections slightly thicker
+                                backgroundColor: lineColor,
                                 transformOrigin: '0 50%',
                                 transform: `rotate(${angle}deg)`,
                                 zIndex: 15, // Even higher z-index
                                 borderRadius: '2px',
-                                border: '1px solid #f59e0b',
-                                boxShadow: '0 0 8px rgba(251, 191, 36, 0.8)',
+                                border: `2px solid ${borderColor}`, // Thicker border for distant connections
+                                boxShadow: `0 0 ${isAdjacent ? '8px' : '12px'} ${shadowColor}`, // More prominent glow for distant
                                 pointerEvents: 'none' // Prevent interference with room interactions
                               };
                               
@@ -1036,7 +1073,7 @@ const RoomGenerator = () => {
                               );
                               
                               // Debug log
-                              console.log(`Added connection line: ${connectionKey}, from (${centerFromX}, ${centerFromY}) to (${centerToX}, ${centerToY}), distance: ${distance}, angle: ${angle}`);
+                              console.log(`Added ${isAdjacent ? 'adjacent' : 'distant'} connection line: ${connectionKey}, from (${centerFromX}, ${centerFromY}) to (${centerToX}, ${centerToY}), distance: ${distance}, angle: ${angle}`);
                             }
                           }
                         });
@@ -1080,6 +1117,16 @@ const RoomGenerator = () => {
             
             <div className="connection-list">
               <h4>Room Connections:</h4>
+              <div className="connection-legend">
+                <div className="legend-item">
+                  <div className="legend-line adjacent"></div>
+                  <span>Adjacent Room Connections</span>
+                </div>
+                <div className="legend-item">
+                  <div className="legend-line distant"></div>
+                  <span>Distant Room Connections</span>
+                </div>
+              </div>
               {generatedRooms.map((room) => (
                 <div key={room.id} className="connection-summary">
                   <strong>Room {room.id} ({room.coordinates.x}, {room.coordinates.y}):</strong>

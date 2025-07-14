@@ -586,6 +586,16 @@
   box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
 }
 
+.room-cell.connectable-distant {
+  border: 2px solid #8b5cf6 !important;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+}
+
+.room-cell.connectable-distant:hover {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+}
+
 .connection-indicator {
   position: absolute;
   top: -5px;
@@ -599,4 +609,49 @@
   justify-content: center;
   font-size: 12px;
   border: 2px solid currentColor;
+}
+
+.connection-line.distant {
+  z-index: 14; /* Slightly lower than adjacent connections to show priority */
+  opacity: 0.9;
+}
+
+.connection-legend {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #374151;
+  border-radius: 6px;
+  border: 1px solid #4b5563;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-line {
+  width: 30px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.legend-line.adjacent {
+  background: #fbbf24;
+  border: 1px solid #f59e0b;
+  box-shadow: 0 0 4px rgba(251, 191, 36, 0.5);
+}
+
+.legend-line.distant {
+  background: #dc2626;
+  border: 2px solid #991b1b;
+  box-shadow: 0 0 6px rgba(220, 38, 38, 1.0);
+  height: 6px;
+}
+
+.legend-item span {
+  color: #cbd5e1;
+  font-size: 0.9rem;
 }
