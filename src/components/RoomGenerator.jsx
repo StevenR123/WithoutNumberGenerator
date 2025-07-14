@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RoomGenerator.css';
 
 const RoomGenerator = () => {
@@ -9,6 +9,13 @@ const RoomGenerator = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
+  const [dragState, setDragState] = useState({
+    isDragging: false,
+    draggedRoom: null,
+    startPos: null,
+    currentPos: null,
+    dragStarted: false // Track if we've actually started dragging
+  });
   const [roomEditMenu, setRoomEditMenu] = useState({
     isOpen: false,
     room: null,
@@ -226,7 +233,7 @@ const RoomGenerator = () => {
         directions: [],
         contents: generateRoomContents(),
         notes: 'Starting room - place index card on table',
-        connectedRooms: new Map(), // direction -> roomId
+        connectedRooms: new Map(), // direction -> [roomId1, roomId2, ...]
         coordinates: { x: 0, y: 0 },
         maxConnections: 0 // Will be set based on exits roll
       };
@@ -262,7 +269,7 @@ const RoomGenerator = () => {
         for (let i = 0; i < currentRoom.directions.length && rooms.length < numRooms && connectionsAdded < availableConnectionSlots; i++) {
           const direction = currentRoom.directions[i];
           
-          // Check if this direction already has a connection
+          // Check if this direction already has a connection (during generation, only one per direction)
           if (!currentRoom.connectedRooms.has(direction)) {
             // Calculate new coordinates based on direction
             const coordinateChange = getCoordinateChange(direction);
@@ -294,10 +301,10 @@ const RoomGenerator = () => {
               // Generate directions for the new room (but we'll reserve one connection for the back-connection)
               newRoom.directions = generateDirections(newRoom.exits);
               
-              // Create bidirectional connection
-              currentRoom.connectedRooms.set(direction, newRoom.id);
+              // Create bidirectional connection (single connection during generation)
+              currentRoom.connectedRooms.set(direction, [newRoom.id]);
               const oppositeDirection = getOppositeDirection(direction);
-              newRoom.connectedRooms.set(oppositeDirection, currentRoom.id);
+              newRoom.connectedRooms.set(oppositeDirection, [currentRoom.id]);
               
               // Remove the opposite direction from new room's available directions
               // since it's already connected back to current room
@@ -314,15 +321,20 @@ const RoomGenerator = () => {
               const oppositeDirection = getOppositeDirection(direction);
               
               // Check if both rooms have capacity for this connection
-              const existingRoomConnections = existingRoom.connectedRooms.size;
+              const existingRoomConnections = Array.from(existingRoom.connectedRooms.values()).flat().length;
               const existingRoomHasCapacity = existingRoomConnections < existingRoom.maxConnections;
               
-              // Only connect if both rooms have capacity and don't already have this connection
-              if (existingRoom && !existingRoom.connectedRooms.has(oppositeDirection) && existingRoomHasCapacity) {
+              // Check if this specific connection already exists
+              const existingOppositeConnections = existingRoom.connectedRooms.get(oppositeDirection) || [];
+              const connectionAlreadyExists = existingOppositeConnections.includes(currentRoom.id);
+              
+              // Only connect if both rooms have capacity and don't already have this specific connection
+              if (existingRoom && !connectionAlreadyExists && existingRoomHasCapacity) {
                 const originalExits = Array.from(existingRoom.connectedRooms.keys());
                 
-                currentRoom.connectedRooms.set(direction, existingRoom.id);
-                existingRoom.connectedRooms.set(oppositeDirection, currentRoom.id);
+                // Create bidirectional connection (single connection during generation)
+                currentRoom.connectedRooms.set(direction, [existingRoom.id]);
+                existingRoom.connectedRooms.set(oppositeDirection, [currentRoom.id]);
                 
                 // Add the opposite direction to existing room's directions if not already present
                 if (!existingRoom.directions.includes(oppositeDirection)) {
@@ -504,10 +516,10 @@ const RoomGenerator = () => {
               // Generate directions for the new room
               newRoom.directions = generateDirections(newRoom.exits);
               
-              // Create bidirectional connection
+              // Create bidirectional connection (single connection during generation)
               const oppositeDirection = getOppositeDirection(direction);
-              room.connectedRooms.set(direction, newRoom.id);
-              newRoom.connectedRooms.set(oppositeDirection, room.id);
+              room.connectedRooms.set(direction, [newRoom.id]);
+              newRoom.connectedRooms.set(oppositeDirection, [room.id]);
               
               // Update room directions
               if (!room.directions.includes(direction)) {
@@ -658,7 +670,12 @@ const RoomGenerator = () => {
       rooms: generatedRooms.map(room => ({
         ...room,
         // Convert Map to Object for JSON serialization
-        connectedRooms: Object.fromEntries(room.connectedRooms || new Map())
+        connectedRooms: Object.fromEntries(
+          Array.from(room.connectedRooms.entries()).map(([direction, roomIds]) => [
+            direction, 
+            Array.isArray(roomIds) ? roomIds : [roomIds] // Ensure backward compatibility
+          ])
+        )
       }))
     };
 
@@ -693,7 +710,12 @@ const RoomGenerator = () => {
         // Convert Object back to Map for connectedRooms
         const processedRooms = importData.rooms.map(room => ({
           ...room,
-          connectedRooms: new Map(Object.entries(room.connectedRooms || {}))
+          connectedRooms: new Map(
+            Object.entries(room.connectedRooms || {}).map(([direction, roomIds]) => [
+              direction,
+              Array.isArray(roomIds) ? roomIds : [roomIds] // Handle both old and new formats
+            ])
+          )
         }));
 
         // Update state
@@ -722,12 +744,21 @@ const RoomGenerator = () => {
 
   const handleRoomClick = (room, event) => {
     if (!isEditMode) return;
+    
+    // Don't handle click if we actually started a drag operation
+    if (dragState.dragStarted) return;
 
     // Check for shift+click to edit room contents
     if (event && event.shiftKey) {
+      // Prevent the click from doing anything else
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('Shift+click detected, editing room:', room.id);
       handleRoomEdit(room);
       return;
     }
+
+    console.log('Regular click on room:', room.id, 'Edit mode:', isEditMode);
 
     if (!selectedRoom) {
       // First room selected
@@ -748,75 +779,91 @@ const RoomGenerator = () => {
     const oppositeDirection = getOppositeDirection(direction);
 
     // Check if connection already exists
-    const room1HasConnection = room1.connectedRooms.has(direction);
-    const room2HasConnection = room2.connectedRooms.has(oppositeDirection);
+    const room1Connections = room1.connectedRooms.get(direction) || [];
+    const room2Connections = room2.connectedRooms.get(oppositeDirection) || [];
+    const room1HasConnection = room1Connections.includes(room2.id);
+    const room2HasConnection = room2Connections.includes(room1.id);
 
     const updatedRooms = generatedRooms.map(room => {
       if (room.id === room1.id) {
         const newConnectedRooms = new Map(room.connectedRooms);
-        const newDirections = [...room.directions];
+        const currentConnections = newConnectedRooms.get(direction) || [];
+        let newDirections = [...room.directions];
         
         if (room1HasConnection) {
           // Remove connection
-          newConnectedRooms.delete(direction);
-          const dirIndex = newDirections.indexOf(direction);
-          if (dirIndex > -1) {
-            newDirections.splice(dirIndex, 1);
+          const updatedConnections = currentConnections.filter(id => id !== room2.id);
+          if (updatedConnections.length === 0) {
+            newConnectedRooms.delete(direction);
+            const dirIndex = newDirections.indexOf(direction);
+            if (dirIndex > -1) {
+              newDirections.splice(dirIndex, 1);
+            }
+          } else {
+            newConnectedRooms.set(direction, updatedConnections);
           }
         } else {
           // Add connection
-          newConnectedRooms.set(direction, room2.id);
+          const updatedConnections = [...currentConnections, room2.id];
+          newConnectedRooms.set(direction, updatedConnections);
           if (!newDirections.includes(direction)) {
             newDirections.push(direction);
           }
         }
         
-        // Update exits count based on actual connections
-        const connectionCount = newConnectedRooms.size;
-        const newExits = connectionCount === 0 ? 'None' :
-                        connectionCount === 1 ? 'One' :
-                        connectionCount === 2 ? 'Two' :
-                        connectionCount === 3 ? 'Three' : 'Four';
+        // Calculate total connections across all directions
+        const totalConnections = Array.from(newConnectedRooms.values()).reduce((sum, connections) => sum + connections.length, 0);
+        const newExits = totalConnections === 0 ? 'None' :
+                        totalConnections === 1 ? 'One' :
+                        totalConnections === 2 ? 'Two' :
+                        totalConnections === 3 ? 'Three' : 'Four';
 
         return {
           ...room,
           connectedRooms: newConnectedRooms,
           directions: newDirections,
           exits: newExits,
-          maxConnections: Math.max(connectionCount, room.maxConnections)
+          maxConnections: Math.max(totalConnections, room.maxConnections)
         };
       } else if (room.id === room2.id) {
         const newConnectedRooms = new Map(room.connectedRooms);
-        const newDirections = [...room.directions];
+        const currentConnections = newConnectedRooms.get(oppositeDirection) || [];
+        let newDirections = [...room.directions];
         
         if (room2HasConnection) {
           // Remove connection
-          newConnectedRooms.delete(oppositeDirection);
-          const dirIndex = newDirections.indexOf(oppositeDirection);
-          if (dirIndex > -1) {
-            newDirections.splice(dirIndex, 1);
+          const updatedConnections = currentConnections.filter(id => id !== room1.id);
+          if (updatedConnections.length === 0) {
+            newConnectedRooms.delete(oppositeDirection);
+            const dirIndex = newDirections.indexOf(oppositeDirection);
+            if (dirIndex > -1) {
+              newDirections.splice(dirIndex, 1);
+            }
+          } else {
+            newConnectedRooms.set(oppositeDirection, updatedConnections);
           }
         } else {
           // Add connection
-          newConnectedRooms.set(oppositeDirection, room1.id);
+          const updatedConnections = [...currentConnections, room1.id];
+          newConnectedRooms.set(oppositeDirection, updatedConnections);
           if (!newDirections.includes(oppositeDirection)) {
             newDirections.push(oppositeDirection);
           }
         }
         
-        // Update exits count based on actual connections
-        const connectionCount = newConnectedRooms.size;
-        const newExits = connectionCount === 0 ? 'None' :
-                        connectionCount === 1 ? 'One' :
-                        connectionCount === 2 ? 'Two' :
-                        connectionCount === 3 ? 'Three' : 'Four';
+        // Calculate total connections across all directions
+        const totalConnections = Array.from(newConnectedRooms.values()).reduce((sum, connections) => sum + connections.length, 0);
+        const newExits = totalConnections === 0 ? 'None' :
+                        totalConnections === 1 ? 'One' :
+                        totalConnections === 2 ? 'Two' :
+                        totalConnections === 3 ? 'Three' : 'Four';
 
         return {
           ...room,
           connectedRooms: newConnectedRooms,
           directions: newDirections,
           exits: newExits,
-          maxConnections: Math.max(connectionCount, room.maxConnections)
+          maxConnections: Math.max(totalConnections, room.maxConnections)
         };
       }
       return room;
@@ -888,16 +935,19 @@ const RoomGenerator = () => {
   const areRoomsConnected = (room1, room2) => {
     if (!room1 || !room2) return false;
     const direction = getDirectionBetweenRooms(room1, room2);
-    return room1.connectedRooms.has(direction);
+    const connectionsInDirection = room1.connectedRooms.get(direction) || [];
+    return connectionsInDirection.includes(room2.id);
   };
 
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
     setSelectedRoom(null); // Clear selection when toggling mode
+    setDragState({ isDragging: false, draggedRoom: null, startPos: null, currentPos: null, dragStarted: false }); // Clear drag state
     setRoomEditMenu({ isOpen: false, room: null, contentType: '', specificType: '', notes: '', hasTreasure: false, treasureLocation: '' }); // Close edit menu
   };
 
   const handleRoomEdit = (room) => {
+    console.log('handleRoomEdit called for room:', room.id, 'Edit mode:', isEditMode);
     if (!isEditMode) return;
     
     // Clear any room selection when editing
@@ -913,6 +963,7 @@ const RoomGenerator = () => {
       specificType = room.contents.details;
     }
     
+    console.log('Opening room edit menu for room:', room.id);
     setRoomEditMenu({
       isOpen: true,
       room: room,
@@ -988,6 +1039,193 @@ const RoomGenerator = () => {
     }
   };
 
+  const handleMouseDown = (room, event) => {
+    if (!isEditMode) return;
+    
+    // Don't start drag on shift+click (used for editing) - let the click handler deal with it
+    if (event.shiftKey) {
+      return; // Don't prevent default, let the click event handle it normally
+    }
+    
+    // Prevent text selection during drag preparation
+    event.preventDefault();
+    
+    const rect = event.currentTarget.getBoundingClientRect();
+    const startPos = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    };
+    
+    // Prepare for potential drag, but don't mark as dragging yet
+    setDragState({
+      isDragging: false, // Don't mark as dragging until mouse moves
+      draggedRoom: room,
+      startPos: startPos,
+      currentPos: { x: event.clientX, y: event.clientY },
+      dragStarted: false
+    });
+  };
+
+  const handleMouseMove = (event) => {
+    if (!dragState.draggedRoom) return;
+    
+    event.preventDefault();
+    
+    // Calculate distance moved from start position
+    const deltaX = Math.abs(event.clientX - dragState.currentPos.x);
+    const deltaY = Math.abs(event.clientY - dragState.currentPos.y);
+    const dragThreshold = 5; // Minimum pixels to move before considering it a drag
+    
+    // If we've moved enough distance, start actual dragging
+    if (!dragState.isDragging && (deltaX > dragThreshold || deltaY > dragThreshold)) {
+      setDragState(prev => ({
+        ...prev,
+        isDragging: true,
+        dragStarted: true,
+        currentPos: {
+          x: event.clientX,
+          y: event.clientY
+        }
+      }));
+    } else if (dragState.isDragging) {
+      // Update position if already dragging
+      setDragState(prev => ({
+        ...prev,
+        currentPos: {
+          x: event.clientX,
+          y: event.clientY
+        }
+      }));
+    }
+  };
+
+  const handleMouseUp = (event) => {
+    if (!dragState.draggedRoom) return;
+    
+    // Only process room movement if we actually started dragging
+    if (dragState.isDragging && dragState.dragStarted) {
+      // Find the grid cell we're dropping onto
+      const gridContainer = document.querySelector('.grid-layout');
+      if (gridContainer) {
+        const rect = gridContainer.getBoundingClientRect();
+        const dropX = event.clientX - rect.left;
+        const dropY = event.clientY - rect.top;
+        
+        // Calculate which grid cell this corresponds to
+        const cellWidth = 100 + 50; // cell width + gap
+        const cellHeight = 100 + 50; // cell height + gap
+        
+        // Calculate grid bounds
+        const minX = Math.min(...generatedRooms.map(r => r.coordinates.x)) - 1;
+        const maxX = Math.max(...generatedRooms.map(r => r.coordinates.x)) + 1;
+        const minY = Math.max(...generatedRooms.map(r => r.coordinates.y)) + 1;
+        const maxY = Math.min(...generatedRooms.map(r => r.coordinates.y)) - 1;
+        
+        const gridCol = Math.floor(dropX / cellWidth);
+        const gridRow = Math.floor(dropY / cellHeight);
+        
+        // Convert grid position to coordinates
+        const newX = minX + gridCol;
+        const newY = minY - gridRow; // Y is inverted in the display
+        
+        // Check if the target position is valid and not occupied by another room
+        const targetOccupied = generatedRooms.some(room => 
+          room.id !== dragState.draggedRoom.id && 
+          room.coordinates.x === newX && 
+          room.coordinates.y === newY
+        );
+        
+        if (!targetOccupied && newX >= minX && newX <= maxX && newY >= maxY && newY <= minY) {
+          // Move the room to the new position
+          moveRoomToPosition(dragState.draggedRoom, { x: newX, y: newY });
+        }
+      }
+    }
+    
+    // Reset drag state
+    setDragState({ 
+      isDragging: false, 
+      draggedRoom: null, 
+      startPos: null, 
+      currentPos: null, 
+      dragStarted: false 
+    });
+  };
+
+  const moveRoomToPosition = (room, newCoordinates) => {
+    // First, update the room's coordinates
+    let updatedRooms = generatedRooms.map(r => {
+      if (r.id === room.id) {
+        return {
+          ...r,
+          coordinates: newCoordinates,
+          notes: r.notes + ` (Moved to ${newCoordinates.x}, ${newCoordinates.y})`
+        };
+      }
+      return r;
+    });
+
+    // Now recalculate all connections and directions for affected rooms
+    updatedRooms = updatedRooms.map(currentRoom => {
+      // Get all rooms that this room is connected to (flatten all direction arrays)
+      const allConnectedRoomIds = Array.from(currentRoom.connectedRooms.values()).flat();
+      
+      // If this room has connections, we need to update the directions
+      if (allConnectedRoomIds.length > 0) {
+        const newConnectedRooms = new Map();
+        const newDirections = [];
+        
+        // Group connected rooms by their new directions
+        allConnectedRoomIds.forEach(connectedRoomId => {
+          const connectedRoom = updatedRooms.find(r => r.id === connectedRoomId);
+          if (connectedRoom) {
+            // Calculate new direction from current room to connected room
+            const newDirection = getDirectionBetweenRooms(currentRoom, connectedRoom);
+            
+            // Add to the array of rooms in this direction
+            const existingConnections = newConnectedRooms.get(newDirection) || [];
+            newConnectedRooms.set(newDirection, [...existingConnections, connectedRoomId]);
+            
+            // Add direction to directions array if not already present
+            if (!newDirections.includes(newDirection)) {
+              newDirections.push(newDirection);
+            }
+          }
+        });
+        
+        return {
+          ...currentRoom,
+          connectedRooms: newConnectedRooms,
+          directions: newDirections
+        };
+      }
+      
+      return currentRoom;
+    });
+    
+    setGeneratedRooms(updatedRooms);
+  };
+
+  // Add global mouse event listeners for drag and drop
+  React.useEffect(() => {
+    if (dragState.draggedRoom) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      
+      if (dragState.isDragging) {
+        document.body.style.cursor = 'grabbing';
+        document.body.style.userSelect = 'none';
+      }
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+    }
+  }, [dragState.draggedRoom, dragState.isDragging, generatedRooms]);
+  
   return (
     <div className="room-generator">
       <header className="generator-header">
@@ -1052,14 +1290,15 @@ const RoomGenerator = () => {
         </div>
       </div>
 
-                <div className="connection-map">
-            <h3>🗺️ Dungeon Grid Layout</h3>
+          {generatedRooms.length > 0 && (
+        <div className="connection-map">
+          <h3>🗺️ Dungeon Grid Layout</h3>
             {isEditMode && (
               <div className="edit-instructions">
                 <h4>✏️ Edit Mode Active</h4>
                 <p>
                   Click on any two rooms to toggle their connection. Adjacent rooms show yellow lines, distant rooms show red lines.
-                  Shift+click a room to edit its contents.
+                  Shift+click a room to edit its contents. Drag and drop rooms to move them to different positions.
                   {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect.</span>}
                   {!selectedRoom && <span> Click a room to select it first.</span>}
                 </p>
@@ -1087,6 +1326,7 @@ const RoomGenerator = () => {
                       const isConnectable = selectedRoom && selectedRoom.id !== room.id;
                       const isConnected = selectedRoom && areRoomsConnected(selectedRoom, room);
                       const isAdjacent = selectedRoom && areRoomsAdjacent(selectedRoom, room);
+                      const isDragging = dragState.isDragging && dragState.draggedRoom?.id === room.id;
                       
                       const roomClasses = [
                         'grid-cell',
@@ -1094,15 +1334,23 @@ const RoomGenerator = () => {
                         room.isIngress ? 'ingress' : '',
                         isEditMode ? 'editable' : '',
                         isSelected ? 'selected' : '',
+                        isDragging ? 'dragging' : '',
                         isConnectable ? (isConnected ? 'connectable-connected' : (isAdjacent ? 'connectable' : 'connectable-distant')) : ''
                       ].filter(Boolean).join(' ');
+
+                      const cellStyle = {
+                        cursor: isEditMode ? (isDragging ? 'grabbing' : 'grab') : 'default',
+                        opacity: isDragging ? 0.3 : 1, // Make original semi-transparent when dragging
+                        pointerEvents: isDragging ? 'none' : 'auto'
+                      };
 
                       gridElements.push(
                         <div 
                           key={key} 
                           className={roomClasses}
                           onClick={(e) => handleRoomClick(room, e)}
-                          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+                          style={cellStyle}
+                          onMouseDown={(e) => handleMouseDown(room, e)}
                         >
                           <div className="grid-room-id">R{room.id}</div>
                           <div className="grid-coordinates">({x},{y})</div>
@@ -1117,16 +1365,20 @@ const RoomGenerator = () => {
                       
                       // Add connection lines for this room
                       if (room.connectedRooms) {
-                        Array.from(room.connectedRooms.entries()).forEach(([direction, connectedRoomId]) => {
-                          const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
-                          if (connectedRoom) {
-                            // Calculate grid positions (convert from coordinate system to grid indices)
-                            const fromGridX = x - minX;
-                            const fromGridY = minY - y;
-                            const toGridX = connectedRoom.coordinates.x - minX;
-                            const toGridY = minY - connectedRoom.coordinates.y;
-                            
-                            // Only draw line if we haven't drawn it from the other direction
+                        Array.from(room.connectedRooms.entries()).forEach(([direction, connectedRoomIds]) => {
+                          // Handle both old format (single ID) and new format (array of IDs)
+                          const roomIds = Array.isArray(connectedRoomIds) ? connectedRoomIds : [connectedRoomIds];
+                          
+                          roomIds.forEach(connectedRoomId => {
+                            const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
+                            if (connectedRoom) {
+                              // Calculate grid positions (convert from coordinate system to grid indices)
+                              const fromGridX = x - minX;
+                              const fromGridY = minY - y;
+                              const toGridX = connectedRoom.coordinates.x - minX;
+                              const toGridY = minY - connectedRoom.coordinates.y;
+                              
+                              // Only draw line if we haven't drawn it from the other direction
                             // (to avoid duplicate lines)
                             const connectionKey = `${Math.min(room.id, connectedRoomId)}-${Math.max(room.id, connectedRoomId)}`;
                             
@@ -1186,6 +1438,7 @@ const RoomGenerator = () => {
                             }
                           }
                         });
+                      });
                       }
                     } else {
                       gridElements.push(
@@ -1219,6 +1472,25 @@ const RoomGenerator = () => {
                     <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 1, width: '100%', height: '100%' }}>
                       {connectionElements}
                     </div>
+                    {/* Drag preview element */}
+                    {dragState.isDragging && dragState.draggedRoom && dragState.currentPos && (
+                      <div
+                        style={{
+                          position: 'fixed',
+                          left: dragState.currentPos.x,
+                          top: dragState.currentPos.y,
+                          zIndex: 1000,
+                          transform: 'translate(-50%, -50%)',
+                          opacity: 0.8,
+                          pointerEvents: 'none'
+                        }}
+                        className="grid-cell room-cell dragging"
+                      >
+                        <div className="grid-room-id">R{dragState.draggedRoom.id}</div>
+                        <div className="grid-coordinates">({dragState.draggedRoom.coordinates.x},{dragState.draggedRoom.coordinates.y})</div>
+                        <div className="grid-room-type">{getRoomTypeIcon(dragState.draggedRoom.contents.content)}</div>
+                      </div>
+                    )}
                   </div>
                 );
               })()}
@@ -1239,18 +1511,23 @@ const RoomGenerator = () => {
               {generatedRooms.map((room) => (
                 <div key={room.id} className="connection-summary">
                   <strong>Room {room.id} ({room.coordinates.x}, {room.coordinates.y}):</strong>
-                  {room.connectedRooms && Array.from(room.connectedRooms.entries()).map(([direction, connectedRoomId]) => {
-                    const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
-                    return (
-                      <span key={direction} className="connection-detail">
-                        {direction} → R{connectedRoomId} ({connectedRoom?.coordinates.x}, {connectedRoom?.coordinates.y})
-                      </span>
-                    );
-                  })}
+                  {room.connectedRooms && Array.from(room.connectedRooms.entries()).map(([direction, connectedRoomIds]) => {
+                    // Handle both old format (single ID) and new format (array of IDs)
+                    const roomIds = Array.isArray(connectedRoomIds) ? connectedRoomIds : [connectedRoomIds];
+                    return roomIds.map(connectedRoomId => {
+                      const connectedRoom = generatedRooms.find(r => r.id === connectedRoomId);
+                      return (
+                        <span key={`${direction}-${connectedRoomId}`} className="connection-detail">
+                          {direction} → R{connectedRoomId} ({connectedRoom?.coordinates.x}, {connectedRoom?.coordinates.y})
+                        </span>
+                      );
+                    });
+                  }).flat()}
                 </div>
               ))}
             </div>
           </div>
+        )}
 
       {generatedRooms.length > 0 && (
         <div className="rooms-container">
@@ -1279,10 +1556,11 @@ const RoomGenerator = () => {
                         <strong>Connections:</strong>
                         <ul className="connections-list">
                           {room.directions.map((direction, index) => {
-                            const connectedRoomId = room.connectedRooms?.get(direction);
+                            const connectedRoomIds = room.connectedRooms?.get(direction) || [];
+                            const roomIds = Array.isArray(connectedRoomIds) ? connectedRoomIds : [connectedRoomIds];
                             return (
                               <li key={index}>
-                                <strong>{direction}:</strong> {connectedRoomId ? `→ Room ${connectedRoomId}` : 'Unconnected'}
+                                <strong>{direction}:</strong> {roomIds.length > 0 ? roomIds.map(id => `Room ${id}`).join(', ') : 'Unconnected'}
                               </li>
                             );
                           })}
@@ -1343,13 +1621,10 @@ const RoomGenerator = () => {
       {roomEditMenu.isOpen && (
         <div className="room-edit-overlay">
           <div className="room-edit-modal">
-            <div className="room-edit-header">
-              <h3>Edit Room {roomEditMenu.room?.id}</h3>
-              <button className="close-btn" onClick={closeRoomEditMenu}>✕</button>
-            </div>
+            <h3>Edit Room {roomEditMenu.room?.id}</h3>
             
-            <div className="room-edit-content">
-              <div className="edit-field">
+            <div className="room-edit-form">
+              <div className="form-group">
                 <label htmlFor="contentType">Content Type:</label>
                 <select 
                   id="contentType"
@@ -1369,7 +1644,7 @@ const RoomGenerator = () => {
               </div>
 
               {(roomEditMenu.contentType === 'Hazard' || roomEditMenu.contentType === 'Enigma' || roomEditMenu.contentType === 'Distractor') && (
-                <div className="edit-field">
+                <div className="form-group">
                   <label htmlFor="specificType">Specific Type:</label>
                   <select 
                     id="specificType"
@@ -1384,7 +1659,7 @@ const RoomGenerator = () => {
                 </div>
               )}
 
-              <div className="edit-field">
+              <div className="form-group">
                 <label htmlFor="hasTreasure">
                   <input 
                     type="checkbox"
@@ -1401,7 +1676,7 @@ const RoomGenerator = () => {
               </div>
 
               {roomEditMenu.hasTreasure && (
-                <div className="edit-field">
+                <div className="form-group">
                   <label htmlFor="treasureLocation">Treasure Location:</label>
                   <select 
                     id="treasureLocation"
@@ -1415,7 +1690,7 @@ const RoomGenerator = () => {
                 </div>
               )}
 
-              <div className="edit-field">
+              <div className="form-group">
                 <label htmlFor="roomNotes">Notes:</label>
                 <textarea 
                   id="roomNotes"
@@ -1427,9 +1702,9 @@ const RoomGenerator = () => {
               </div>
             </div>
 
-            <div className="room-edit-actions">
-              <button className="save-btn" onClick={saveRoomChanges}>Save Changes</button>
-              <button className="cancel-btn" onClick={closeRoomEditMenu}>Cancel</button>
+            <div className="modal-buttons">
+              <button className="modal-button secondary" onClick={closeRoomEditMenu}>Cancel</button>
+              <button className="modal-button primary" onClick={saveRoomChanges}>Save Changes</button>
             </div>
           </div>
         </div>
