@@ -5,6 +5,7 @@ const RoomGenerator = () => {
   const [numRooms, setNumRooms] = useState(5);
   const [generatedRooms, setGeneratedRooms] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [fileInputRef, setFileInputRef] = useState(null);
 
   // Random table data based on the instructions
   const exitTable = [
@@ -626,6 +627,87 @@ const RoomGenerator = () => {
     return adjacentCount;
   };
 
+  const exportToJSON = () => {
+    if (generatedRooms.length === 0) {
+      alert('No rooms to export. Please generate rooms first.');
+      return;
+    }
+
+    // Create export data with metadata
+    const exportData = {
+      metadata: {
+        exportDate: new Date().toISOString(),
+        version: '1.0',
+        totalRooms: generatedRooms.length,
+        generatorSettings: {
+          requestedRooms: numRooms
+        }
+      },
+      rooms: generatedRooms.map(room => ({
+        ...room,
+        // Convert Map to Object for JSON serialization
+        connectedRooms: Object.fromEntries(room.connectedRooms || new Map())
+      }))
+    };
+
+    // Create and download file
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dungeon-layout-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const importFromJSON = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importData = JSON.parse(e.target.result);
+        
+        // Validate the imported data
+        if (!importData.rooms || !Array.isArray(importData.rooms)) {
+          throw new Error('Invalid file format: missing rooms array');
+        }
+
+        // Convert Object back to Map for connectedRooms
+        const processedRooms = importData.rooms.map(room => ({
+          ...room,
+          connectedRooms: new Map(Object.entries(room.connectedRooms || {}))
+        }));
+
+        // Update state
+        setGeneratedRooms(processedRooms);
+        if (importData.metadata?.generatorSettings?.requestedRooms) {
+          setNumRooms(importData.metadata.generatorSettings.requestedRooms);
+        }
+
+        alert(`Successfully imported ${processedRooms.length} rooms from ${importData.metadata?.exportDate ? new Date(importData.metadata.exportDate).toLocaleDateString() : 'unknown date'}`);
+      } catch (error) {
+        alert(`Error importing file: ${error.message}`);
+        console.error('Import error:', error);
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+  };
+
+  const triggerFileImport = () => {
+    if (fileInputRef) {
+      fileInputRef.click();
+    }
+  };
+
   return (
     <div className="room-generator">
       <header className="generator-header">
@@ -645,13 +727,40 @@ const RoomGenerator = () => {
             onChange={(e) => setNumRooms(parseInt(e.target.value) || 1)}
           />
         </div>
-        <button 
-          onClick={generateRooms}
-          disabled={isGenerating}
-          className="generate-btn"
-        >
-          {isGenerating ? 'Generating...' : 'Generate Rooms'}
-        </button>
+        <div className="button-group">
+          <button 
+            onClick={generateRooms}
+            disabled={isGenerating}
+            className="generate-btn"
+          >
+            {isGenerating ? 'Generating...' : 'Generate Rooms'}
+          </button>
+          
+          <button 
+            onClick={exportToJSON}
+            disabled={generatedRooms.length === 0}
+            className="export-btn"
+            title="Export current dungeon layout to JSON file"
+          >
+            📄 Export JSON
+          </button>
+          
+          <button 
+            onClick={triggerFileImport}
+            className="import-btn"
+            title="Import dungeon layout from JSON file"
+          >
+            📁 Import JSON
+          </button>
+          
+          <input
+            type="file"
+            accept=".json"
+            onChange={importFromJSON}
+            ref={(ref) => setFileInputRef(ref)}
+            style={{ display: 'none' }}
+          />
+        </div>
       </div>
 
                 <div className="connection-map">
