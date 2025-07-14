@@ -1,0 +1,408 @@
+.room-generator {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0f1419;
+  color: #e6e6e6;
+  min-height: 100vh;
+}
+
+.generator-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-radius: 12px;
+  border: 1px solid #475569;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.generator-header h1 {
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.generator-header p {
+  color: #cbd5e1;
+  font-size: 1.1rem;
+}
+
+.input-section {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.input-group input {
+  padding: 0.75rem;
+  border: 2px solid #475569;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100px;
+  text-align: center;
+  background-color: #334155;
+  color: #f1f5f9;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+.generate-btn {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.generate-btn:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}
+
+.rooms-container h2 {
+  text-align: center;
+  color: #f1f5f9;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.room-card {
+  background: #1e293b;
+  border: 2px solid #475569;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.room-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  border-color: #64748b;
+}
+
+.room-card.ingress {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #1e293b 0%, #3f2937 100%);
+}
+
+.room-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #475569;
+}
+
+.room-header h3 {
+  margin: 0;
+  color: #f1f5f9;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ingress-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.room-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exits-section, .contents-section, .treasure-section, .notes-section {
+  padding: 0.75rem;
+  border-radius: 4px;
+  color: #f1f5f9;
+}
+
+.exits-section {
+  background: #1e3a8a;
+  border-left: 4px solid #3b82f6;
+}
+
+.contents-section {
+  background: #14532d;
+  border-left: 4px solid #22c55e;
+}
+
+.treasure-section {
+  background: #92400e;
+  border-left: 4px solid #f59e0b;
+}
+
+.notes-section {
+  background: #374151;
+  border-left: 4px solid #9ca3af;
+}
+
+.layout-tip {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #065f46;
+  border-left: 4px solid #10b981;
+  border-radius: 4px;
+  color: #d1fae5;
+  font-size: 0.9rem;
+}
+
+.layout-tip strong {
+  color: #6ee7b7;
+}
+
+.directions {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.content-details {
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.instructions {
+  background: #1e293b;
+  border: 2px solid #475569;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.instructions h3 {
+  color: #f1f5f9;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.instructions li {
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+}
+
+.connections-list {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+
+.connections-list li {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.connections-list li strong {
+  color: #f1f5f9;
+}
+
+.connection-map {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #1e293b;
+  border: 2px solid #475569;
+  border-radius: 8px;
+}
+
+.connection-map h3 {
+  color: #f1f5f9;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.grid-layout {
+  display: grid;
+  gap: 2px;
+  padding: 1rem;
+  background: #475569;
+  border-radius: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.grid-cell {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.room-cell {
+  background: #3b82f6;
+  color: white;
+  border: 2px solid #1d4ed8;
+}
+
+.room-cell.ingress {
+  background: #ef4444;
+  border: 2px solid #dc2626;
+}
+
+.empty-cell {
+  background: #374151;
+  color: #9ca3af;
+  border: 1px solid #4b5563;
+}
+
+.grid-room-id {
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.grid-coordinates {
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+
+.grid-room-type {
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+.connection-list {
+  margin-top: 1rem;
+}
+
+.connection-list h4 {
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+}
+
+.connection-summary {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  background: #334155;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.connection-summary strong {
+  color: #f1f5f9;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.connection-detail {
+  display: inline-block;
+  margin-right: 1rem;
+  margin-bottom: 0.25rem;
+  color: #cbd5e1;
+  background: #475569;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.room-coordinates {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: normal;
+  margin-top: 0.25rem;
+}
+
+.max-connections {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: normal;
+  margin-left: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .room-generator {
+    padding: 10px;
+  }
+  
+  .input-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .rooms-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .generator-header h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Animation for generating state */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.generate-btn:disabled {
+  animation: pulse 1s infinite;
+}
