@@ -720,8 +720,14 @@ const RoomGenerator = () => {
     }
   };
 
-  const handleRoomClick = (room) => {
+  const handleRoomClick = (room, event) => {
     if (!isEditMode) return;
+
+    // Check for shift+click to edit room contents
+    if (event && event.shiftKey) {
+      handleRoomEdit(room);
+      return;
+    }
 
     if (!selectedRoom) {
       // First room selected
@@ -891,10 +897,10 @@ const RoomGenerator = () => {
     setRoomEditMenu({ isOpen: false, room: null, contentType: '', specificType: '', notes: '', hasTreasure: false, treasureLocation: '' }); // Close edit menu
   };
 
-  const handleRoomDoubleClick = (room) => {
+  const handleRoomEdit = (room) => {
     if (!isEditMode) return;
     
-    // Prevent double-click from also triggering single click
+    // Clear any room selection when editing
     setSelectedRoom(null);
     
     // Get the specific type details based on content type
@@ -1053,7 +1059,7 @@ const RoomGenerator = () => {
                 <h4>✏️ Edit Mode Active</h4>
                 <p>
                   Click on any two rooms to toggle their connection. Adjacent rooms show yellow lines, distant rooms show red lines.
-                  Double-click a room to edit its contents.
+                  Shift+click a room to edit its contents.
                   {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect.</span>}
                   {!selectedRoom && <span> Click a room to select it first.</span>}
                 </p>
@@ -1095,8 +1101,7 @@ const RoomGenerator = () => {
                         <div 
                           key={key} 
                           className={roomClasses}
-                          onClick={() => handleRoomClick(room)}
-                          onDoubleClick={() => handleRoomDoubleClick(room)}
+                          onClick={(e) => handleRoomClick(room, e)}
                           style={{ cursor: isEditMode ? 'pointer' : 'default' }}
                         >
                           <div className="grid-room-id">R{room.id}</div>
