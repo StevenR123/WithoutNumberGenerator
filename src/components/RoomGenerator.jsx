@@ -1048,7 +1048,8 @@ const RoomGenerator = () => {
             content: roomEditMenu.contentType,
             details: details,
             hasTreasure: roomEditMenu.hasTreasure,
-            treasureLocation: roomEditMenu.hasTreasure ? roomEditMenu.treasureLocation : null
+            treasureLocation: roomEditMenu.hasTreasure ? 
+              (roomEditMenu.treasureLocation || getRandomArrayItem(treasureLocations)) : null
           },
           notes: roomEditMenu.notes
         };
@@ -1805,6 +1806,7 @@ const RoomGenerator = () => {
                     value={roomEditMenu.treasureLocation}
                     onChange={(e) => setRoomEditMenu({...roomEditMenu, treasureLocation: e.target.value})}
                   >
+                    <option value="">Random (will be auto-selected)</option>
                     {treasureLocations.map((location, index) => (
                       <option key={index} value={location}>{location}</option>
                     ))}
