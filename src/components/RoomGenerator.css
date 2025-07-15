@@ -719,3 +719,63 @@
 .modal-button.secondary:hover {
   background: #475569;
 }
+
+/* Room selection and connection states */
+.room-cell.selected {
+  border: 3px solid #60a5fa;
+  box-shadow: 0 4px 16px rgba(96, 165, 250, 0.4);
+  transform: scale(1.05);
+}
+
+.room-cell.connectable {
+  border: 3px solid #fbbf24;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
+  cursor: pointer;
+}
+
+.room-cell.connectable-connected {
+  border: 3px solid #10b981;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+  cursor: pointer;
+}
+
+.room-cell.connectable-distant {
+  border: 3px solid #ef4444;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+  cursor: pointer;
+}
+
+.room-cell.deletable {
+  border: 3px solid #ef4444;
+  background: #dc2626;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.6);
+  animation: delete-pulse 1.5s infinite;
+}
+
+@keyframes delete-pulse {
+  0% { 
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.6);
+  }
+  50% { 
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.8);
+    transform: scale(1.1);
+  }
+  100% { 
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.6);
+  }
+}
+
+.connection-indicator {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+}

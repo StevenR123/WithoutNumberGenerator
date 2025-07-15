@@ -770,6 +770,43 @@ const RoomGenerator = () => {
     }
   };
 
+  const deleteSelectedRoom = () => {
+    if (!selectedRoom || !isEditMode) return;
+    
+    // Don't allow deletion of ingress room
+    if (selectedRoom.isIngress) {
+      console.log('Cannot delete ingress room');
+      return;
+    }
+    
+    // Check if room has any connections
+    const totalConnections = Array.from(selectedRoom.connectedRooms.values()).reduce((sum, connections) => {
+      return sum + (Array.isArray(connections) ? connections.length : 1);
+    }, 0);
+    
+    if (totalConnections > 0) {
+      console.log('Cannot delete room with connections');
+      return;
+    }
+    
+    // Remove the room from the rooms array
+    const updatedRooms = generatedRooms.filter(room => room.id !== selectedRoom.id);
+    setGeneratedRooms(updatedRooms);
+    setSelectedRoom(null);
+    
+    console.log(`Deleted Room ${selectedRoom.id}`);
+  };
+
+  const isRoomDeletable = (room) => {
+    if (!room || room.isIngress) return false;
+    
+    const totalConnections = Array.from(room.connectedRooms.values()).reduce((sum, connections) => {
+      return sum + (Array.isArray(connections) ? connections.length : 1);
+    }, 0);
+    
+    return totalConnections === 0;
+  };
+
   const toggleConnection = (room1, room2) => {
     // Calculate direction from room1 to room2
     const direction = getDirectionBetweenRooms(room1, room2);
@@ -1221,6 +1258,26 @@ const RoomGenerator = () => {
       };
     }
   }, [dragState.draggedRoom, dragState.isDragging, generatedRooms]);
+
+  // Add keyboard event listener for delete functionality
+  React.useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!isEditMode || !selectedRoom) return;
+      
+      if (event.key === 'Delete' || event.key === 'Backspace') {
+        event.preventDefault();
+        deleteSelectedRoom();
+      }
+    };
+
+    if (isEditMode) {
+      document.addEventListener('keydown', handleKeyDown);
+      
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [isEditMode, selectedRoom, generatedRooms]);
   
   const createNewRoom = (coordinates) => {
     if (!isEditMode) return;
@@ -1351,7 +1408,8 @@ const RoomGenerator = () => {
                 <p>
                   Click on any two rooms to toggle their connection. Adjacent rooms show yellow lines, distant rooms show red lines.
                   Shift+click a room to edit its contents. Shift+click an empty grid square to create a new room. Drag and drop rooms to move them to different positions.
-                  {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect.</span>}
+                  Press Delete or Backspace to remove a selected room that has no connections.
+                  {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect{isRoomDeletable(selectedRoom) ? ', or press Delete/Backspace to remove this room' : ''}.</span>}
                   {!selectedRoom && <span> Click a room to select it first.</span>}
                 </p>
               </div>
@@ -1379,6 +1437,7 @@ const RoomGenerator = () => {
                       const isConnected = selectedRoom && areRoomsConnected(selectedRoom, room);
                       const isAdjacent = selectedRoom && areRoomsAdjacent(selectedRoom, room);
                       const isDragging = dragState.isDragging && dragState.draggedRoom?.id === room.id;
+                      const isDeletable = isSelected && isRoomDeletable(room);
                       
                       const roomClasses = [
                         'grid-cell',
@@ -1387,6 +1446,7 @@ const RoomGenerator = () => {
                         isEditMode ? 'editable' : '',
                         isSelected ? 'selected' : '',
                         isDragging ? 'dragging' : '',
+                        isDeletable ? 'deletable' : '',
                         isConnectable ? (isConnected ? 'connectable-connected' : (isAdjacent ? 'connectable' : 'connectable-distant')) : ''
                       ].filter(Boolean).join(' ');
 
