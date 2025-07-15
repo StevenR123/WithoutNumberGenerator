@@ -232,7 +232,7 @@ const RoomGenerator = () => {
         exits: generateExits(),
         directions: [],
         contents: generateRoomContents(),
-        notes: 'Starting room - place index card on table',
+        notes: '',
         connectedRooms: new Map(), // direction -> [roomId1, roomId2, ...]
         coordinates: { x: 0, y: 0 },
         maxConnections: 0 // Will be set based on exits roll
@@ -292,7 +292,7 @@ const RoomGenerator = () => {
                 exits: newRoomExits,
                 directions: [],
                 contents: generateRoomContents(),
-                notes: `Connected from Room ${currentRoom.id} (${direction}) at (${newCoordinates.x}, ${newCoordinates.y})`,
+                notes: '',
                 connectedRooms: new Map(),
                 coordinates: newCoordinates,
                 maxConnections: newRoomMaxConnections
@@ -381,7 +381,6 @@ const RoomGenerator = () => {
                     const originalExits = Array.from(roomToExpand.connectedRooms.keys());
                     roomToExpand.exits = newExits;
                     roomToExpand.maxConnections = newMaxConnections;
-                    roomToExpand.notes += ` (Exits rerolled: ${newExits})`;
                     
                     // Generate additional directions if needed
                     const additionalDirectionsNeeded = newMaxConnections - roomToExpand.connectedRooms.size;
@@ -413,7 +412,6 @@ const RoomGenerator = () => {
                 const newMaxConnections = 4;
                 firstRoom.exits = newExits;
                 firstRoom.maxConnections = newMaxConnections;
-                firstRoom.notes += ' (Exits force-expanded to continue generation)';
                 
                 const newDirections = generateDirections(firstRoom.exits);
                 const availableDirections = newDirections.filter(dir => !firstRoom.connectedRooms.has(dir));
@@ -480,7 +478,6 @@ const RoomGenerator = () => {
           // Force expand to allow more connections
           room.maxConnections = 4;
           room.exits = 'Four';
-          room.notes += ` (Force-expanded for extension)`;
           
           // Generate all possible directions
           const allDirections = ['North', 'South', 'East', 'West', 'Northeast', 'Northwest', 'Southeast', 'Southwest'];
@@ -507,7 +504,7 @@ const RoomGenerator = () => {
                 exits: generateExits(),
                 directions: [],
                 contents: generateRoomContents(),
-                notes: `Extended from Room ${room.id} (${direction}) at (${newCoordinates.x}, ${newCoordinates.y})`,
+                notes: '',
                 connectedRooms: new Map(),
                 coordinates: newCoordinates,
                 maxConnections: getMaxConnectionsFromExits(generateExits())
@@ -1158,8 +1155,7 @@ const RoomGenerator = () => {
       if (r.id === room.id) {
         return {
           ...r,
-          coordinates: newCoordinates,
-          notes: r.notes + ` (Moved to ${newCoordinates.x}, ${newCoordinates.y})`
+          coordinates: newCoordinates
         };
       }
       return r;
