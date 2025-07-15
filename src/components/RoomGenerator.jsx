@@ -1222,6 +1222,62 @@ const RoomGenerator = () => {
     }
   }, [dragState.draggedRoom, dragState.isDragging, generatedRooms]);
   
+  const createNewRoom = (coordinates) => {
+    if (!isEditMode) return;
+    
+    // Check if coordinates are already occupied
+    const existingRoom = generatedRooms.find(room => 
+      room.coordinates.x === coordinates.x && room.coordinates.y === coordinates.y
+    );
+    
+    if (existingRoom) {
+      console.log('Cannot create room - position already occupied');
+      return;
+    }
+    
+    // Find the highest room ID to assign the next sequential ID
+    const maxId = Math.max(...generatedRooms.map(room => room.id), 0);
+    const newRoomId = maxId + 1;
+    
+    // Create the new room
+    const newRoom = {
+      id: newRoomId,
+      isIngress: false,
+      exits: generateExits(),
+      directions: [],
+      contents: generateRoomContents(),
+      notes: '',
+      connectedRooms: new Map(),
+      coordinates: coordinates,
+      maxConnections: 0
+    };
+    
+    // Set max connections based on exits
+    newRoom.maxConnections = getMaxConnectionsFromExits(newRoom.exits);
+    
+    // Generate directions for the new room
+    newRoom.directions = generateDirections(newRoom.exits);
+    
+    // Add the new room to the rooms array
+    const updatedRooms = [...generatedRooms, newRoom];
+    setGeneratedRooms(updatedRooms);
+    
+    console.log(`Created new Room ${newRoomId} at coordinates (${coordinates.x}, ${coordinates.y})`);
+  };
+
+  const handleEmptyCellClick = (coordinates, event) => {
+    if (!isEditMode) return;
+    
+    // Check for shift+click to create new room
+    if (event && event.shiftKey) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('Shift+click detected on empty cell, creating new room at:', coordinates);
+      createNewRoom(coordinates);
+      return;
+    }
+  };
+
   return (
     <div className="room-generator">
       <header className="generator-header">
@@ -1294,7 +1350,7 @@ const RoomGenerator = () => {
                 <h4>✏️ Edit Mode Active</h4>
                 <p>
                   Click on any two rooms to toggle their connection. Adjacent rooms show yellow lines, distant rooms show red lines.
-                  Shift+click a room to edit its contents. Drag and drop rooms to move them to different positions.
+                  Shift+click a room to edit its contents. Shift+click an empty grid square to create a new room. Drag and drop rooms to move them to different positions.
                   {selectedRoom && <span> <strong>Room {selectedRoom.id} selected</strong> - click another room to connect/disconnect.</span>}
                   {!selectedRoom && <span> Click a room to select it first.</span>}
                 </p>
@@ -1438,8 +1494,18 @@ const RoomGenerator = () => {
                       }
                     } else {
                       gridElements.push(
-                        <div key={key} className="grid-cell empty-cell">
+                        <div 
+                          key={key} 
+                          className="grid-cell empty-cell"
+                          onClick={(e) => handleEmptyCellClick({ x, y }, e)}
+                          style={{
+                            cursor: isEditMode ? 'pointer' : 'default'
+                          }}
+                        >
                           <div className="grid-coordinates">({x},{y})</div>
+                          {isEditMode && (
+                            <div className="empty-cell-hint">Shift+click to add room</div>
+                          )}
                         </div>
                       );
                     }

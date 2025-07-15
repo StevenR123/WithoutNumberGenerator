@@ -378,6 +378,25 @@
   background: #374151;
   color: #9ca3af;
   border: 1px solid #4b5563;
+  transition: background-color 0.2s ease;
+}
+
+.empty-cell:hover {
+  background-color: #475569;
+}
+
+.empty-cell-hint {
+  font-size: 0.6rem;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 4px;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.empty-cell:hover .empty-cell-hint {
+  color: #60a5fa;
+  opacity: 1;
 }
 
 .connection-line {
