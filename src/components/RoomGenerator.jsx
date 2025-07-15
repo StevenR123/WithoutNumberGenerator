@@ -1619,7 +1619,7 @@ const RoomGenerator = () => {
               })()}
             </div>
             
-            <div className="connection-list">
+            {/* <div className="connection-list">
               <h4>Room Connections:</h4>
               <div className="connection-legend">
                 <div className="legend-item">
@@ -1648,7 +1648,7 @@ const RoomGenerator = () => {
                   }).flat()}
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         )}
 
@@ -1715,7 +1715,7 @@ const RoomGenerator = () => {
             ))}
           </div>
 
-          <div className="instructions">
+          {/* <div className="instructions">
             <h3>📋 GM Instructions</h3>
             <ol>
               <li>Place Room 1 (Ingress) at the center of your play area - this represents grid position (0,0)</li>
@@ -1736,7 +1736,7 @@ const RoomGenerator = () => {
               connections to and from the room. If generation gets stuck on dead ends, exits are automatically 
               rerolled to continue building the dungeon.
             </div>
-          </div>
+          </div> */}
         </div>
       )}
 
