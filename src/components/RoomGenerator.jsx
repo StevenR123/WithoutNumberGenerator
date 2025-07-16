@@ -1381,7 +1381,7 @@ const RoomGenerator = () => {
             type="number"
             id="numRooms"
             min="1"
-            max="20"
+            max="50"
             value={numRooms}
             onChange={(e) => setNumRooms(parseInt(e.target.value) || 1)}
           />

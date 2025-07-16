@@ -231,16 +231,16 @@ const getRoomTypeIcon = (content) => {
 };
 
 // Component to render connection lines between rooms
-const ConnectionLines = ({ rooms, minX, minY, maxX, maxY }) => {
+const ConnectionLines = ({ rooms, minX, minY, maxX, maxY, scaleFactor = 1 }) => {
   if (!rooms || rooms.length === 0) return null;
 
   const lines = [];
   const processedConnections = new Set();
   
-  // These values must match exactly with the grid cell styling
-  const cellSize = 45;
-  const cellMargin = 5; // marginRight from gridCell style
-  const rowMargin = 5; // marginBottom from gridRow style
+  // These values must match exactly with the grid cell styling, scaled
+  const cellSize = 45 * scaleFactor;
+  const cellMargin = 5 * scaleFactor; // marginRight from gridCell style
+  const rowMargin = 5 * scaleFactor; // marginBottom from gridRow style
 
   rooms.forEach(room => {
     if (room.connectedRooms) {
@@ -278,7 +278,7 @@ const ConnectionLines = ({ rooms, minX, minY, maxX, maxY }) => {
 
               // Create dotted line with smaller, more frequent dots
               const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-              const dotSpacing = 4; // Pixels between dots
+              const dotSpacing = 4 * scaleFactor; // Pixels between dots, scaled
               const steps = Math.max(1, Math.floor(length / dotSpacing));
               const stepX = deltaX / steps;
               const stepY = deltaY / steps;
@@ -290,12 +290,12 @@ const ConnectionLines = ({ rooms, minX, minY, maxX, maxY }) => {
                     key={`${connectionKey}-${i}`}
                     style={{
                       position: 'absolute',
-                      left: fromCenterX + (stepX * i) - 1,
-                      top: fromCenterY + (stepY * i) - 1,
-                      width: 2,
-                      height: 2,
+                      left: fromCenterX + (stepX * i) - (1 * scaleFactor),
+                      top: fromCenterY + (stepY * i) - (1 * scaleFactor),
+                      width: 2 * scaleFactor,
+                      height: 2 * scaleFactor,
                       backgroundColor: '#fbbf24',
-                      borderRadius: 1,
+                      borderRadius: 1 * scaleFactor,
                     }}
                   />
                 );
@@ -319,6 +319,32 @@ const GridLayout = ({ rooms }) => {
   const maxX = Math.max(...rooms.map(r => r.coordinates.x)) + 1;
   const minY = Math.max(...rooms.map(r => r.coordinates.y)) + 1;
   const maxY = Math.min(...rooms.map(r => r.coordinates.y)) - 1;
+
+  // Calculate grid dimensions
+  const gridWidth = maxX - minX + 1;
+  const gridHeight = minY - maxY + 1;
+
+  // Calculate required space for the grid (without scaling)
+  const baseCellSize = 45;
+  const baseCellMargin = 5;
+  const baseRowMargin = 5;
+  const baseRequiredWidth = gridWidth * (baseCellSize + baseCellMargin) - baseCellMargin;
+  const baseRequiredHeight = gridHeight * (baseCellSize + baseRowMargin) - baseRowMargin;
+
+  // Available space (accounting for container padding and margins)
+  // PDF page width is approximately 555 points for A4, accounting for page padding (20px) and container padding
+  const availableWidth = 555 - 40 - 30; // page padding + container padding + extra margin
+  const availableHeight = 250; // Reserve space for title and room details below
+
+  // Calculate scale factor to fit within available space
+  const scaleX = availableWidth / baseRequiredWidth;
+  const scaleY = availableHeight / baseRequiredHeight;
+  const scaleFactor = Math.min(1, scaleX, scaleY); // Don't scale up, only down
+
+  // Apply scaled dimensions
+  const cellSize = baseCellSize * scaleFactor;
+  const cellMargin = baseCellMargin * scaleFactor;
+  const rowMargin = baseRowMargin * scaleFactor;
 
   const gridRows = [];
   
@@ -360,26 +386,54 @@ const GridLayout = ({ rooms }) => {
           <View 
             key={`${x},${y}`} 
             style={[
-              styles.gridCell, 
+              {
+                width: cellSize,
+                height: cellSize,
+                border: `1px solid ${room.contents.hasTreasure ? '#ffd700' : '#64748b'}`,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 4 * scaleFactor,
+                fontSize: 8 * scaleFactor,
+                marginRight: cellMargin,
+              },
               cellStyle,
-              room.contents.hasTreasure ? styles.treasureCell : null
+              room.contents.hasTreasure ? {
+                borderColor: '#ffd700',
+                borderWidth: 3 * scaleFactor,
+              } : null
             ]}
           >
-            <Text style={{ fontSize: 7, fontWeight: 'bold' }}>R{room.id}</Text>
-            <Text style={{ fontSize: 7, fontWeight: 'bold' }}>{getRoomTypeIcon(room.contents.content)}</Text>
+            <Text style={{ fontSize: 7 * scaleFactor, fontWeight: 'bold' }}>R{room.id}</Text>
+            <Text style={{ fontSize: 7 * scaleFactor, fontWeight: 'bold' }}>{getRoomTypeIcon(room.contents.content)}</Text>
           </View>
         );
       } else {
         gridCells.push(
-          <View key={`${x},${y}`} style={[styles.gridCell, styles.emptyCell]}>
-            <Text style={{ fontSize: 5, color: '#9ca3af' }}>({x},{y})</Text>
+          <View key={`${x},${y}`} style={[
+            {
+              width: cellSize,
+              height: cellSize,
+              border: '1px solid #4b5563',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 4 * scaleFactor,
+              fontSize: 5 * scaleFactor,
+              marginRight: cellMargin,
+              backgroundColor: '#374151',
+              color: '#9ca3af',
+            }
+          ]}>
+            <Text style={{ fontSize: 5 * scaleFactor, color: '#9ca3af' }}>({x},{y})</Text>
           </View>
         );
       }
     }
     
     gridRows.push(
-      <View key={y} style={styles.gridRow}>
+      <View key={y} style={{
+        flexDirection: 'row',
+        marginBottom: rowMargin,
+      }}>
         {gridCells}
       </View>
     );
@@ -391,7 +445,7 @@ const GridLayout = ({ rooms }) => {
         <View>
           {gridRows}
         </View>
-        <ConnectionLines rooms={rooms} minX={minX} minY={minY} maxX={maxX} maxY={maxY} />
+        <ConnectionLines rooms={rooms} minX={minX} minY={minY} maxX={maxX} maxY={maxY} scaleFactor={scaleFactor} />
       </View>
     </View>
   );
