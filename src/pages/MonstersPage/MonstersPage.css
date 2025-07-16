@@ -1,106 +1,531 @@
 .monsters-page {
-  margin: 0 auto;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0f1419;
-  color: #e6e6e6;
   min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #ffffff;
+  padding: 20px;
+  position: relative;
 }
 
 .monsters-header {
   text-align: center;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border-radius: 12px;
-  border: 1px solid #475569;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  position: relative;
+  margin-bottom: 30px;
 }
 
 .back-button {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
+  top: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #4a5568;
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .back-button:hover {
-  background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #718096;
 }
 
 .monsters-header h1 {
-  color: #f1f5f9;
-  margin-bottom: 0.5rem;
   font-size: 2.5rem;
+  margin: 20px 0;
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .monsters-header p {
-  color: #cbd5e1;
+  font-size: 1.1rem;
+  color: #a0aec0;
+  margin-bottom: 20px;
+}
+
+.input-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.generate-btn, .clear-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.generate-btn:hover:not(:disabled), .clear-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.generate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.clear-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.clear-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.monsters-container {
+  margin-top: 30px;
+}
+
+.monsters-container h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #feca57;
+}
+
+.monsters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.monster-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 25px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.monster-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.monster-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 15px;
+}
+
+.monster-title-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.monster-icon-selector {
+  display: flex;
+  align-items: center;
+}
+
+.icon-display {
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  min-height: 50px;
+}
+
+.icon-display:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #feca57;
+  transform: scale(1.1);
+}
+
+.monster-name-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #feca57;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 200px;
+}
+
+.monster-name-input:focus {
+  outline: none;
+  border-color: #feca57;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.monster-name-input::placeholder {
+  color: rgba(254, 202, 87, 0.5);
+}
+
+.monster-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #feca57;
+}
+
+.monster-timestamp {
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.monster-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.animal-type-section,
+.body-plan-section,
+.survival-section,
+.hunting-section,
+.monstrous-drive-section,
+.body-parts-section {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.clickable-section {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.clickable-section:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.clickable-section::after {
+  content: "Click to change";
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.clickable-section:hover::after {
+  opacity: 1;
+}
+
+.animal-type-section {
+  border-left-color: #ff6b6b;
+}
+
+.body-plan-section {
+  border-left-color: #feca57;
+}
+
+.survival-section {
+  border-left-color: #48dbfb;
+}
+
+.hunting-section {
+  border-left-color: #ff9ff3;
+}
+
+.monstrous-drive-section {
+  border-left-color: #5f27cd;
+}
+
+.body-parts-section {
+  border-left-color: #54a0ff;
+}
+
+.animal-type-section strong,
+.body-plan-section strong,
+.survival-section strong,
+.hunting-section strong,
+.monstrous-drive-section strong,
+.body-parts-section strong {
+  color: #feca57;
+  display: block;
+  margin-bottom: 8px;
   font-size: 1.1rem;
 }
 
-.monsters-content {
+.detail-description {
+  color: #e2e8f0;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.body-parts-list {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.coming-soon {
-  text-align: center;
-  padding: 3rem;
-  background: #1e293b;
-  border: 2px solid #475569;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+.body-part {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
-.coming-soon h2 {
-  color: #f1f5f9;
-  margin-bottom: 1rem;
-  font-size: 2rem;
+.body-part.mammalian {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.4);
 }
 
-.coming-soon p {
-  color: #cbd5e1;
-  font-size: 1.2rem;
+.body-part.insectile {
+  background: rgba(254, 202, 87, 0.2);
+  border-color: rgba(254, 202, 87, 0.4);
+}
+
+.body-part.reptilian {
+  background: rgba(72, 219, 251, 0.2);
+  border-color: rgba(72, 219, 251, 0.4);
+}
+
+.body-part.avian {
+  background: rgba(255, 159, 243, 0.2);
+  border-color: rgba(255, 159, 243, 0.4);
+}
+
+.body-part.piscene {
+  background: rgba(84, 160, 255, 0.2);
+  border-color: rgba(84, 160, 255, 0.4);
+}
+
+.body-part.exotic {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.body-part:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
   .monsters-page {
-    padding: 10px;
+    padding: 15px;
   }
   
-  .monsters-header {
-    padding: 1.5rem;
+  .monsters-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
   
-  .back-button {
-    position: static;
-    margin-bottom: 1rem;
+  .monster-card {
+    padding: 20px;
   }
   
-  .monsters-header h1 {
-    font-size: 2rem;
+  .monster-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
   
-  .coming-soon {
-    margin: 1rem;
-    padding: 2rem;
+  .button-group {
+    flex-direction: column;
+    align-items: center;
   }
+  
+  .generate-btn, .clear-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 15px;
+  padding: 0;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #feca57;
+  font-size: 1.3rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ff6b6b;
+}
+
+.modal-body {
+  padding: 25px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 15px;
+}
+
+.icon-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  aspect-ratio: 1;
+}
+
+.icon-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #feca57;
+  transform: scale(1.1);
+}
+
+.icon-option.selected {
+  background: rgba(254, 202, 87, 0.2);
+  border-color: #feca57;
+  box-shadow: 0 0 20px rgba(254, 202, 87, 0.4);
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(5px);
+}
+
+.option-item.selected {
+  background: rgba(254, 202, 87, 0.1);
+  border-color: #feca57;
+  box-shadow: 0 0 15px rgba(254, 202, 87, 0.3);
+}
+
+.option-number {
+  background: rgba(255, 255, 255, 0.1);
+  color: #feca57;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.option-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.option-title {
+  color: #feca57;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.option-text {
+  color: #e2e8f0;
+  line-height: 1.4;
+  font-style: italic;
 }
