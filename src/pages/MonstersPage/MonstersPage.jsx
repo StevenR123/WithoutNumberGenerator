@@ -7,6 +7,10 @@ const MonstersPage = ({ onBack }) => {
   const [editingMonster, setEditingMonster] = useState(null);
   const [showSelectionModal, setShowSelectionModal] = useState(null);
   const [showDamagePowerModal, setShowDamagePowerModal] = useState(null);
+  const [showMovementPowerModal, setShowMovementPowerModal] = useState(null);
+  const [showDebilitatingPowerModal, setShowDebilitatingPowerModal] = useState(null);
+  const [showAugmentingPowerModal, setShowAugmentingPowerModal] = useState(null);
+  const [showIntrinsicPowerModal, setShowIntrinsicPowerModal] = useState(null);
 
   const monsterIcons = ['👹', '🦍', '🕷️', '🦅', '🪲', '🐺', '🐴', '🐅', '🐟', '🦎', '🐍', '🐻', '🐝', '🐲', '🦇', '🐙', '🦈', '🐊', '🕸️', '🦂'];
 
@@ -54,6 +58,75 @@ const MonstersPage = ({ onBack }) => {
       { id: 'onTurn', points: 2, description: 'The power can be used once per round as an On Turn action' }
     ]
   };
+
+  const movementPowers = [
+    { points: 2, description: 'Flight ability at its movement rate, including the ability to fight on the wing' },
+    { points: 2, description: 'Passes through any solid object' },
+    { points: 1, description: 'Ignores a type of solid barrier substance' },
+    { points: 2, description: 'Extra Move action each round' },
+    { points: 1, description: 'Movement increased by 50%' },
+    { points: 1, description: 'It makes Fighting Withdrawals as On Turn actions' },
+    { points: 1, description: 'Can leap its full movement rate' },
+    { points: 1, description: 'Can swim, climb, or navigate some other usually-troublesome medium at full speed' },
+    { points: 2, description: 'It can teleport at its movement rate' },
+    { points: 2, description: 'Can teleport long distances through shadows, flame, or other characteristic substances' },
+    { points: 1, description: 'Gets a free Instant Move action when some characteristic event or circumstance obtains' },
+    { points: 1, description: 'It can split its Move action\'s movement around its Main Action' }
+  ];
+
+  const debilitatingPowers = {
+    basePowers: [
+      { points: 1, description: 'Melee or ranged attacks must be rolled twice and the worst hit and damage used' },
+      { points: 1, description: 'Lose a Move action for the round' },
+      { points: 3, description: 'Suffer paralysis, unconsciousness, or other fight-ending status after being hit twice with this ability. 5 points if only one hit is needed.' },
+      { points: 2, description: 'Suffer 1d6 damage/2 HD of the creature when you do a common type of activity' },
+      { points: 2, description: 'Lose a Main action for the round' },
+      { points: 2, description: 'Become unable to cast spells or use arts for 1d4 rounds' },
+      { points: 1, description: 'Suffer double damage from the creature' }
+    ],
+    modifiers: [
+      { id: 'savePenalty', points: 1, description: 'The power applies a -2 penalty to any saves against it' },
+      { id: 'areaEffect', multiplier: 3, description: 'The power automatically affects all foes around it, with a save to resist' },
+      { id: 'persistent', multiplier: 2, description: 'The penalty lasts longer than just the scene' },
+      { id: 'limitedUse', multiplier: 0.5, description: 'The power is only usable 1-3 times a fight' },
+      { id: 'onTurnAction', multiplier: 2, description: 'Use the power as an On Turn action once per round' }
+    ]
+  };
+
+  const augmentingPowers = {
+    basePowers: [
+      { points: 1, description: 'Gain an extra normal attack' },
+      { points: 1, description: 'Double an attack\'s normal damage or Shock' },
+      { points: 2, description: 'Gain a bonus Main Action' },
+      { points: 1, description: 'Regenerate its HD in lost hit points each round until you\'re slain' },
+      { points: 1, description: 'Gain a +4 bonus to AC or become immune to Shock' },
+      { points: 2, description: 'One attack per round becomes unavoidable' },
+      { points: 1, description: 'Become immune to certain general types of spells and magical effects' },
+      { points: 3, description: 'Gain an entire bonus round of action' },
+      { points: 2, description: 'Automatically succeed at one save per round' }
+    ],
+    modifiers: [
+      { id: 'shortDuration', points: 0, description: 'The buff trigger lasts only a short while or is difficult to arrange' },
+      { id: 'longDuration', points: 1, description: 'The buff trigger either lasts a long while once achieved or is not hard to make happen' },
+      { id: 'maintainRequired', points: -1, description: 'The creature has to work continuously to maintain or obtain the trigger situation' },
+      { id: 'alwaysActive', multiplier: 2, description: 'The buff is normally in effect, either because it\'s intrinsic or very easy to trigger' }
+    ]
+  };
+
+  const intrinsicPowers = [
+    { points: 2, description: 'Use a first or second-level spell equivalent' },
+    { points: 4, description: 'Use a third or fourth-level spell equivalent' },
+    { points: 6, description: 'Use a fifth level spell equivalent' },
+    { points: 1, description: 'Use a Mage art equivalent once a scene' },
+    { points: 2, description: 'Use a Mage art equivalent at will' },
+    { points: 1, description: 'Gain the benefits of one level of a Focus' },
+    { points: 2, description: 'Be immune to a general class of weapon: piercing, slashing, crushing, or the like' },
+    { points: 3, description: 'Be immune to non-magical weapons' },
+    { points: 6, description: 'Require a specific type of weapon or form of injury to harm it' },
+    { points: 1, description: 'Be immune to an uncommon harm like poison, frost, or electricity' },
+    { points: 2, description: 'Be immune to a fairly common harm like fire or mind-affecting magic' },
+    { points: 3, description: 'Be immune to an entire large class of material, such as metal, plant matter, or directly damaging spells' }
+  ];
   const animalTypes = [
     { roll: 1, type: 'Apish', description: 'Distorted humanoid outlines' },
     { roll: 2, type: 'Arachnid', description: 'Webs, many limbs, many eyes' },
@@ -305,8 +378,216 @@ const MonstersPage = ({ onBack }) => {
 
   const calculateRemainingPowerPoints = (monster) => {
     const totalPoints = monster.powerLevel.points;
-    const usedPoints = monster.damagePowers?.reduce((sum, power) => sum + power.totalCost, 0) || 0;
+    const damagePoints = monster.damagePowers?.reduce((sum, power) => sum + power.totalCost, 0) || 0;
+    const movementPoints = monster.movementPowers?.reduce((sum, power) => sum + power.points, 0) || 0;
+    const debilitatingPoints = monster.debilitatingPowers?.reduce((sum, power) => sum + power.totalCost, 0) || 0;
+    const augmentingPoints = monster.augmentingPowers?.reduce((sum, power) => sum + power.totalCost, 0) || 0;
+    const intrinsicPoints = monster.intrinsicPowers?.reduce((sum, power) => sum + power.points, 0) || 0;
+    
+    const usedPoints = damagePoints + movementPoints + debilitatingPoints + augmentingPoints + intrinsicPoints;
     return totalPoints - usedPoints;
+  };
+
+  // Movement Power Functions
+  const openMovementPowerModal = (monsterId) => {
+    setShowMovementPowerModal({ monsterId });
+  };
+
+  const addMovementPower = (power) => {
+    const monster = generatedMonsters.find(m => m.id === showMovementPowerModal.monsterId);
+    const movementPower = {
+      id: Date.now(),
+      points: power.points,
+      description: power.description
+    };
+    
+    const updatedMovementPowers = [...(monster.movementPowers || []), movementPower];
+    updateMonsterField(showMovementPowerModal.monsterId, 'movementPowers', updatedMovementPowers);
+    setShowMovementPowerModal(null);
+  };
+
+  const removeMovementPower = (monsterId, powerId) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    const updatedMovementPowers = monster.movementPowers.filter(power => power.id !== powerId);
+    updateMonsterField(monsterId, 'movementPowers', updatedMovementPowers);
+  };
+
+  // Debilitating Power Functions
+  const openDebilitatingPowerModal = (monsterId) => {
+    setShowDebilitatingPowerModal({
+      monsterId,
+      selectedBasePower: null,
+      selectedModifiers: {},
+      totalCost: 0
+    });
+  };
+
+  const calculateDebilitatingPowerCost = (basePower, modifiers) => {
+    if (!basePower) return 0;
+    
+    let cost = basePower.points;
+    let multiplier = 1;
+    
+    // Apply point modifiers first
+    debilitatingPowers.modifiers.forEach(modifier => {
+      if (modifiers[modifier.id] && modifier.points !== undefined) {
+        cost += modifier.points;
+      }
+    });
+    
+    // Apply multipliers
+    debilitatingPowers.modifiers.forEach(modifier => {
+      if (modifiers[modifier.id] && modifier.multiplier !== undefined) {
+        multiplier *= modifier.multiplier;
+      }
+    });
+    
+    const finalCost = cost * multiplier;
+    return Math.ceil(finalCost);
+  };
+
+  const updateDebilitatingPowerSelection = (field, value) => {
+    setShowDebilitatingPowerModal(prev => {
+      const updated = { ...prev, [field]: value };
+      updated.totalCost = calculateDebilitatingPowerCost(updated.selectedBasePower, updated.selectedModifiers);
+      return updated;
+    });
+  };
+
+  const addDebilitatingPower = () => {
+    if (!showDebilitatingPowerModal.selectedBasePower) return;
+    
+    const monster = generatedMonsters.find(m => m.id === showDebilitatingPowerModal.monsterId);
+    const debilitatingPower = {
+      id: Date.now(),
+      basePower: showDebilitatingPowerModal.selectedBasePower,
+      modifiers: showDebilitatingPowerModal.selectedModifiers,
+      totalCost: showDebilitatingPowerModal.totalCost,
+      description: generateDebilitatingPowerDescription(showDebilitatingPowerModal.selectedBasePower, showDebilitatingPowerModal.selectedModifiers)
+    };
+    
+    const updatedDebilitatingPowers = [...(monster.debilitatingPowers || []), debilitatingPower];
+    updateMonsterField(showDebilitatingPowerModal.monsterId, 'debilitatingPowers', updatedDebilitatingPowers);
+    setShowDebilitatingPowerModal(null);
+  };
+
+  const generateDebilitatingPowerDescription = (basePower, modifiers) => {
+    let description = basePower.description;
+    const activeModifiers = debilitatingPowers.modifiers.filter(mod => modifiers[mod.id]);
+    
+    if (activeModifiers.length > 0) {
+      const modifierTexts = activeModifiers.map(mod => mod.description.toLowerCase());
+      description += ` (${modifierTexts.join(', ')})`;
+    }
+    
+    return description;
+  };
+
+  const removeDebilitatingPower = (monsterId, powerId) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    const updatedDebilitatingPowers = monster.debilitatingPowers.filter(power => power.id !== powerId);
+    updateMonsterField(monsterId, 'debilitatingPowers', updatedDebilitatingPowers);
+  };
+
+  // Augmenting Power Functions
+  const openAugmentingPowerModal = (monsterId) => {
+    setShowAugmentingPowerModal({
+      monsterId,
+      selectedBasePower: null,
+      selectedModifiers: {},
+      totalCost: 0
+    });
+  };
+
+  const calculateAugmentingPowerCost = (basePower, modifiers) => {
+    if (!basePower) return 0;
+    
+    let cost = basePower.points;
+    let multiplier = 1;
+    
+    // Apply point modifiers first
+    augmentingPowers.modifiers.forEach(modifier => {
+      if (modifiers[modifier.id] && modifier.points !== undefined) {
+        cost += modifier.points;
+      }
+    });
+    
+    // Apply multipliers
+    augmentingPowers.modifiers.forEach(modifier => {
+      if (modifiers[modifier.id] && modifier.multiplier !== undefined) {
+        multiplier *= modifier.multiplier;
+      }
+    });
+    
+    const finalCost = cost * multiplier;
+    return Math.ceil(finalCost);
+  };
+
+  const updateAugmentingPowerSelection = (field, value) => {
+    setShowAugmentingPowerModal(prev => {
+      const updated = { ...prev, [field]: value };
+      updated.totalCost = calculateAugmentingPowerCost(updated.selectedBasePower, updated.selectedModifiers);
+      return updated;
+    });
+  };
+
+  const addAugmentingPower = () => {
+    if (!showAugmentingPowerModal.selectedBasePower) return;
+    
+    const monster = generatedMonsters.find(m => m.id === showAugmentingPowerModal.monsterId);
+    const augmentingPower = {
+      id: Date.now(),
+      basePower: showAugmentingPowerModal.selectedBasePower,
+      modifiers: showAugmentingPowerModal.selectedModifiers,
+      totalCost: showAugmentingPowerModal.totalCost,
+      description: generateAugmentingPowerDescription(showAugmentingPowerModal.selectedBasePower, showAugmentingPowerModal.selectedModifiers)
+    };
+    
+    const updatedAugmentingPowers = [...(monster.augmentingPowers || []), augmentingPower];
+    updateMonsterField(showAugmentingPowerModal.monsterId, 'augmentingPowers', updatedAugmentingPowers);
+    setShowAugmentingPowerModal(null);
+  };
+
+  const generateAugmentingPowerDescription = (basePower, modifiers) => {
+    let description = basePower.description;
+    const activeModifiers = augmentingPowers.modifiers.filter(mod => modifiers[mod.id]);
+    
+    if (activeModifiers.length > 0) {
+      const modifierTexts = activeModifiers.map(mod => mod.description.toLowerCase());
+      description += ` (${modifierTexts.join(', ')})`;
+    }
+    
+    return description;
+  };
+
+  const removeAugmentingPower = (monsterId, powerId) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    const updatedAugmentingPowers = monster.augmentingPowers.filter(power => power.id !== powerId);
+    updateMonsterField(monsterId, 'augmentingPowers', updatedAugmentingPowers);
+  };
+
+  // Intrinsic Power Functions
+  const openIntrinsicPowerModal = (monsterId) => {
+    setShowIntrinsicPowerModal({ monsterId });
+  };
+
+  const addIntrinsicPower = (power) => {
+    const monster = generatedMonsters.find(m => m.id === showIntrinsicPowerModal.monsterId);
+    const intrinsicPower = {
+      id: Date.now(),
+      points: power.points,
+      description: power.description
+    };
+    
+    const updatedIntrinsicPowers = [...(monster.intrinsicPowers || []), intrinsicPower];
+    updateMonsterField(showIntrinsicPowerModal.monsterId, 'intrinsicPowers', updatedIntrinsicPowers);
+    setShowIntrinsicPowerModal(null);
+  };
+
+  const removeIntrinsicPower = (monsterId, powerId) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    const updatedIntrinsicPowers = monster.intrinsicPowers.filter(power => power.id !== powerId);
+    updateMonsterField(monsterId, 'intrinsicPowers', updatedIntrinsicPowers);
   };
 
   const generateMonster = () => {
@@ -380,6 +661,10 @@ const MonstersPage = ({ onBack }) => {
         monstrousDrive: monstrousDrive,
         powerLevel: powerLevel,
         damagePowers: [],
+        movementPowers: [],
+        debilitatingPowers: [],
+        augmentingPowers: [],
+        intrinsicPowers: [],
         bodyParts: selectedBodyParts,
         generatedAt: new Date().toLocaleTimeString()
       };
@@ -571,6 +856,154 @@ const MonstersPage = ({ onBack }) => {
                       ) : (
                         <div className="no-damage-powers">
                           No damage powers assigned
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Movement Powers Section */}
+                  <div className="movement-powers-section">
+                    <div className="power-header">
+                      <strong>Movement Powers:</strong>
+                      <button 
+                        className="add-power-btn"
+                        onClick={() => openMovementPowerModal(monster.id)}
+                        title="Add movement power"
+                      >
+                        + Add Power
+                      </button>
+                    </div>
+                    <div className="powers-list">
+                      {monster.movementPowers && monster.movementPowers.length > 0 ? (
+                        monster.movementPowers.map((power) => (
+                          <div key={power.id} className="power-item">
+                            <div className="power-content">
+                              <span className="power-cost">{power.points} pts</span>
+                              <span className="power-description">{power.description}</span>
+                            </div>
+                            <button 
+                              className="remove-power"
+                              onClick={() => removeMovementPower(monster.id, power.id)}
+                              title="Remove this power"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="no-powers">
+                          No movement powers assigned
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Debilitating Powers Section */}
+                  <div className="debilitating-powers-section">
+                    <div className="power-header">
+                      <strong>Debilitating Powers:</strong>
+                      <button 
+                        className="add-power-btn"
+                        onClick={() => openDebilitatingPowerModal(monster.id)}
+                        title="Add debilitating power"
+                      >
+                        + Add Power
+                      </button>
+                    </div>
+                    <div className="powers-list">
+                      {monster.debilitatingPowers && monster.debilitatingPowers.length > 0 ? (
+                        monster.debilitatingPowers.map((power) => (
+                          <div key={power.id} className="power-item">
+                            <div className="power-content">
+                              <span className="power-cost">{power.totalCost} pts</span>
+                              <span className="power-description">{power.description}</span>
+                            </div>
+                            <button 
+                              className="remove-power"
+                              onClick={() => removeDebilitatingPower(monster.id, power.id)}
+                              title="Remove this power"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="no-powers">
+                          No debilitating powers assigned
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Augmenting Powers Section */}
+                  <div className="augmenting-powers-section">
+                    <div className="power-header">
+                      <strong>Augmenting Powers:</strong>
+                      <button 
+                        className="add-power-btn"
+                        onClick={() => openAugmentingPowerModal(monster.id)}
+                        title="Add augmenting power"
+                      >
+                        + Add Power
+                      </button>
+                    </div>
+                    <div className="powers-list">
+                      {monster.augmentingPowers && monster.augmentingPowers.length > 0 ? (
+                        monster.augmentingPowers.map((power) => (
+                          <div key={power.id} className="power-item">
+                            <div className="power-content">
+                              <span className="power-cost">{power.totalCost} pts</span>
+                              <span className="power-description">{power.description}</span>
+                            </div>
+                            <button 
+                              className="remove-power"
+                              onClick={() => removeAugmentingPower(monster.id, power.id)}
+                              title="Remove this power"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="no-powers">
+                          No augmenting powers assigned
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Intrinsic Powers Section */}
+                  <div className="intrinsic-powers-section">
+                    <div className="power-header">
+                      <strong>Intrinsic Powers:</strong>
+                      <button 
+                        className="add-power-btn"
+                        onClick={() => openIntrinsicPowerModal(monster.id)}
+                        title="Add intrinsic power"
+                      >
+                        + Add Power
+                      </button>
+                    </div>
+                    <div className="powers-list">
+                      {monster.intrinsicPowers && monster.intrinsicPowers.length > 0 ? (
+                        monster.intrinsicPowers.map((power) => (
+                          <div key={power.id} className="power-item">
+                            <div className="power-content">
+                              <span className="power-cost">{power.points} pts</span>
+                              <span className="power-description">{power.description}</span>
+                            </div>
+                            <button 
+                              className="remove-power"
+                              onClick={() => removeIntrinsicPower(monster.id, power.id)}
+                              title="Remove this power"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="no-powers">
+                          No intrinsic powers assigned
                         </div>
                       )}
                     </div>
@@ -793,6 +1226,252 @@ const MonstersPage = ({ onBack }) => {
                     Add Power
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Movement Power Modal */}
+      {showMovementPowerModal && (
+        <div className="modal-overlay" onClick={() => setShowMovementPowerModal(null)}>
+          <div className="modal-content simple-power-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Movement Power</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowMovementPowerModal(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="power-list">
+                {movementPowers.map((power, index) => (
+                  <div
+                    key={index}
+                    className="power-option"
+                    onClick={() => addMovementPower(power)}
+                  >
+                    <span className="power-cost">{power.points} pts</span>
+                    <span className="power-description">{power.description}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Debilitating Power Modal */}
+      {showDebilitatingPowerModal && (
+        <div className="modal-overlay" onClick={() => setShowDebilitatingPowerModal(null)}>
+          <div className="modal-content damage-power-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Debilitating Power</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowDebilitatingPowerModal(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="damage-power-builder">
+                {/* Base Power Selection */}
+                <div className="power-section">
+                  <h4>Base Power</h4>
+                  <div className="base-powers-list">
+                    {debilitatingPowers.basePowers.map((power, index) => (
+                      <div
+                        key={index}
+                        className={`power-option ${showDebilitatingPowerModal.selectedBasePower && 
+                          showDebilitatingPowerModal.selectedBasePower.points === power.points && 
+                          showDebilitatingPowerModal.selectedBasePower.description === power.description ? 'selected' : ''}`}
+                        onClick={() => updateDebilitatingPowerSelection('selectedBasePower', power)}
+                      >
+                        <span className="power-cost">{power.points} pts</span>
+                        <span className="power-description">{power.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Modifiers Selection */}
+                <div className="power-section">
+                  <h4>Modifiers</h4>
+                  <div className="modifiers-list">
+                    {debilitatingPowers.modifiers.map((modifier) => (
+                      <label key={modifier.id} className="modifier-option">
+                        <input
+                          type="checkbox"
+                          checked={showDebilitatingPowerModal.selectedModifiers[modifier.id] || false}
+                          onChange={(e) => {
+                            const newModifiers = {
+                              ...showDebilitatingPowerModal.selectedModifiers,
+                              [modifier.id]: e.target.checked
+                            };
+                            updateDebilitatingPowerSelection('selectedModifiers', newModifiers);
+                          }}
+                        />
+                        <span className="modifier-cost">
+                          {modifier.points !== undefined ? 
+                            (modifier.points >= 0 ? `+${modifier.points}` : modifier.points) + ' pts' :
+                            `×${modifier.multiplier}`
+                          }
+                        </span>
+                        <span className="modifier-description">{modifier.description}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Total Cost Display */}
+                <div className="power-section">
+                  <div className="total-cost-display">
+                    <strong>Total Cost: {showDebilitatingPowerModal.totalCost} points</strong>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="modal-actions">
+                  <button 
+                    className="cancel-btn"
+                    onClick={() => setShowDebilitatingPowerModal(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="add-btn"
+                    onClick={addDebilitatingPower}
+                    disabled={!showDebilitatingPowerModal.selectedBasePower}
+                  >
+                    Add Power
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Augmenting Power Modal */}
+      {showAugmentingPowerModal && (
+        <div className="modal-overlay" onClick={() => setShowAugmentingPowerModal(null)}>
+          <div className="modal-content damage-power-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Augmenting Power</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowAugmentingPowerModal(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="damage-power-builder">
+                {/* Base Power Selection */}
+                <div className="power-section">
+                  <h4>Base Power</h4>
+                  <div className="base-powers-list">
+                    {augmentingPowers.basePowers.map((power, index) => (
+                      <div
+                        key={index}
+                        className={`power-option ${showAugmentingPowerModal.selectedBasePower && 
+                          showAugmentingPowerModal.selectedBasePower.points === power.points && 
+                          showAugmentingPowerModal.selectedBasePower.description === power.description ? 'selected' : ''}`}
+                        onClick={() => updateAugmentingPowerSelection('selectedBasePower', power)}
+                      >
+                        <span className="power-cost">{power.points} pts</span>
+                        <span className="power-description">{power.description}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Modifiers Selection */}
+                <div className="power-section">
+                  <h4>Modifiers</h4>
+                  <div className="modifiers-list">
+                    {augmentingPowers.modifiers.map((modifier) => (
+                      <label key={modifier.id} className="modifier-option">
+                        <input
+                          type="checkbox"
+                          checked={showAugmentingPowerModal.selectedModifiers[modifier.id] || false}
+                          onChange={(e) => {
+                            const newModifiers = {
+                              ...showAugmentingPowerModal.selectedModifiers,
+                              [modifier.id]: e.target.checked
+                            };
+                            updateAugmentingPowerSelection('selectedModifiers', newModifiers);
+                          }}
+                        />
+                        <span className="modifier-cost">
+                          {modifier.points !== undefined ? 
+                            (modifier.points >= 0 ? `+${modifier.points}` : modifier.points) + ' pts' :
+                            `×${modifier.multiplier}`
+                          }
+                        </span>
+                        <span className="modifier-description">{modifier.description}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Total Cost Display */}
+                <div className="power-section">
+                  <div className="total-cost-display">
+                    <strong>Total Cost: {showAugmentingPowerModal.totalCost} points</strong>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="modal-actions">
+                  <button 
+                    className="cancel-btn"
+                    onClick={() => setShowAugmentingPowerModal(null)}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="add-btn"
+                    onClick={addAugmentingPower}
+                    disabled={!showAugmentingPowerModal.selectedBasePower}
+                  >
+                    Add Power
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Intrinsic Power Modal */}
+      {showIntrinsicPowerModal && (
+        <div className="modal-overlay" onClick={() => setShowIntrinsicPowerModal(null)}>
+          <div className="modal-content simple-power-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Intrinsic Power</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowIntrinsicPowerModal(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="power-list">
+                {intrinsicPowers.map((power, index) => (
+                  <div
+                    key={index}
+                    className="power-option"
+                    onClick={() => addIntrinsicPower(power)}
+                  >
+                    <span className="power-cost">{power.points} pts</span>
+                    <span className="power-description">{power.description}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

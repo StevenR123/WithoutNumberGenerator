@@ -993,3 +993,176 @@
   cursor: not-allowed;
   transform: none;
 }
+
+/* New Power Sections Styling */
+.movement-powers-section,
+.debilitating-powers-section,
+.augmenting-powers-section,
+.intrinsic-powers-section {
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.power-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.add-power-btn {
+  background: rgba(46, 204, 113, 0.8);
+  border: 1px solid #2ecc71;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.add-power-btn:hover {
+  background: rgba(46, 204, 113, 1);
+  transform: translateY(-1px);
+}
+
+.powers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.power-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.power-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.power-cost {
+  background: rgba(231, 76, 60, 0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+.power-description {
+  font-size: 13px;
+  color: #e2e8f0;
+}
+
+.remove-power {
+  background: rgba(231, 76, 60, 0.8);
+  border: none;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.remove-power:hover {
+  background: rgba(231, 76, 60, 1);
+  transform: scale(1.1);
+}
+
+.no-powers {
+  color: #a0aec0;
+  font-style: italic;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Simple Power Modal Styling */
+.simple-power-modal {
+  max-width: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.power-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.power-list .power-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.power-list .power-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #3498db;
+  transform: translateY(-1px);
+}
+
+.power-list .power-cost {
+  background: rgba(231, 76, 60, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 50px;
+  text-align: center;
+}
+
+.power-list .power-description {
+  font-size: 14px;
+  color: #e2e8f0;
+  flex: 1;
+}
+
+/* Color variations for different power types */
+.movement-powers-section {
+  background: rgba(155, 89, 182, 0.1);
+  border-color: #9b59b6;
+}
+
+.debilitating-powers-section {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: #e74c3c;
+}
+
+.augmenting-powers-section {
+  background: rgba(46, 204, 113, 0.1);
+  border-color: #2ecc71;
+}
+
+.intrinsic-powers-section {
+  background: rgba(241, 196, 15, 0.1);
+  border-color: #f1c40f;
+}
