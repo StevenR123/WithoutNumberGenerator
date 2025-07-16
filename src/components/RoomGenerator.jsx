@@ -10,7 +10,6 @@ const RoomGenerator = () => {
   const [fileInputRef, setFileInputRef] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editingRoom, setEditingRoom] = useState(null);
   const { generatePDF } = useDungeonPDFGenerator();
   const [dragState, setDragState] = useState({
     isDragging: false,
