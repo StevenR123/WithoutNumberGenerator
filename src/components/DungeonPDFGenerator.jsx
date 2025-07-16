@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#334155',
     padding: 10,
     borderRadius: 6,
+    textAlign: 'center',
   },
   gridSection: {
     marginBottom: 30,
@@ -99,12 +100,19 @@ const styles = StyleSheet.create({
   roomsSection: {
     marginTop: 20,
   },
+  roomsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   roomCard: {
     border: '2px solid #475569',
     borderRadius: 8,
-    padding: 12,
-    marginBottom: 12,
+    padding: 8,
+    marginBottom: 8,
     backgroundColor: '#1e293b',
+    width: '31%', // Slightly less than 33% to account for margins
+    minWidth: 150,
   },
   roomHeader: {
     flexDirection: 'row',
@@ -115,16 +123,16 @@ const styles = StyleSheet.create({
     borderBottom: '2px solid #475569',
   },
   roomTitle: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#f1f5f9',
   },
   roomCoordinates: {
-    fontSize: 9,
+    fontSize: 8,
     color: '#94a3b8',
   },
   roomDetails: {
-    marginBottom: 8,
+    marginBottom: 6,
   },
   roomLabel: {
     fontWeight: 'bold',
@@ -158,14 +166,14 @@ const styles = StyleSheet.create({
   },
   exitsSection: {
     backgroundColor: '#1e3a8a',
-    padding: 8,
+    padding: 6,
     borderRadius: 4,
     marginTop: 4,
     borderLeft: '4px solid #3b82f6',
   },
   contentsSection: {
     backgroundColor: '#14532d',
-    padding: 8,
+    padding: 6,
     borderRadius: 4,
     marginTop: 4,
     borderLeft: '4px solid #22c55e',
@@ -208,13 +216,16 @@ const getRoomTypeIcon = (content) => {
 };
 
 // Component to render connection lines between rooms
-const ConnectionLines = ({ rooms, minX, minY }) => {
+const ConnectionLines = ({ rooms, minX, minY, maxX, maxY }) => {
   if (!rooms || rooms.length === 0) return null;
 
   const lines = [];
-  const processedConnections = new Set();              const cellSize = 45;
-              const cellMargin = 5;
-  const rowMargin = 5;
+  const processedConnections = new Set();
+  
+  // These values must match exactly with the grid cell styling
+  const cellSize = 45;
+  const cellMargin = 5; // marginRight from gridCell style
+  const rowMargin = 5; // marginBottom from gridRow style
 
   rooms.forEach(room => {
     if (room.connectedRooms) {
@@ -227,46 +238,49 @@ const ConnectionLines = ({ rooms, minX, minY }) => {
             
             const connectedRoom = rooms.find(r => r.id === connectedRoomId);
             if (connectedRoom) {
-              // Calculate grid positions
+              // Calculate grid positions (0-based from top-left corner)
               const fromGridX = room.coordinates.x - minX;
-              const fromGridY = minY - room.coordinates.y;
+              const fromGridY = minY - room.coordinates.y; // Flip Y coordinate for top-to-bottom rendering
               const toGridX = connectedRoom.coordinates.x - minX;
-              const toGridY = minY - connectedRoom.coordinates.y;
+              const toGridY = minY - connectedRoom.coordinates.y; // Flip Y coordinate for top-to-bottom rendering
 
-              // Calculate actual positions with margins
+              // Calculate actual pixel positions matching the grid layout
+              // Each cell takes up (cellSize + cellMargin) pixels horizontally
+              // Each row takes up (cellSize + rowMargin) pixels vertically
               const fromX = fromGridX * (cellSize + cellMargin);
               const fromY = fromGridY * (cellSize + rowMargin);
               const toX = toGridX * (cellSize + cellMargin);
               const toY = toGridY * (cellSize + rowMargin);
 
-              // Calculate center points
-              const fromCenterX = fromX + cellSize / 2;
-              const fromCenterY = fromY + cellSize / 2;
-              const toCenterX = toX + cellSize / 2;
-              const toCenterY = toY + cellSize / 2;
+              // Calculate center points of each cell
+              const fromCenterX = fromX + (cellSize / 2);
+              const fromCenterY = fromY + (cellSize / 2);
+              const toCenterX = toX + (cellSize / 2);
+              const toCenterY = toY + (cellSize / 2);
 
               const deltaX = toCenterX - fromCenterX;
               const deltaY = toCenterY - fromCenterY;
 
-              // Use dotted lines for all connections (horizontal, vertical, and diagonal)
+              // Create dotted line with smaller, more frequent dots
               const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-              const steps = Math.floor(length / 3);
+              const dotSpacing = 4; // Pixels between dots
+              const steps = Math.max(1, Math.floor(length / dotSpacing));
               const stepX = deltaX / steps;
               const stepY = deltaY / steps;
 
+              // Generate dots along the connection line
               for (let i = 0; i <= steps; i++) {
                 lines.push(
                   <View
                     key={`${connectionKey}-${i}`}
                     style={{
                       position: 'absolute',
-                      left: fromCenterX + (stepX * i) - 1.5,
-                      top: fromCenterY + (stepY * i) - 1.5,
-                      width: 3,
-                      height: 3,
+                      left: fromCenterX + (stepX * i) - 1,
+                      top: fromCenterY + (stepY * i) - 1,
+                      width: 2,
+                      height: 2,
                       backgroundColor: '#fbbf24',
-                      borderRadius: 2,
-                      border: '0.5px solid #f59e0b',
+                      borderRadius: 1,
                     }}
                   />
                 );
@@ -361,7 +375,7 @@ const GridLayout = ({ rooms }) => {
         <View>
           {gridRows}
         </View>
-        <ConnectionLines rooms={rooms} minX={minX} minY={minY} />
+        <ConnectionLines rooms={rooms} minX={minX} minY={minY} maxX={maxX} maxY={maxY} />
       </View>
     </View>
   );
@@ -372,7 +386,7 @@ const RoomDetails = ({ rooms }) => {
   if (!rooms || rooms.length === 0) return null;
 
   return (
-    <View>
+    <View style={styles.roomsGrid}>
       {rooms.map((room) => (
         <View key={room.id} style={[
           styles.roomCard,
@@ -385,10 +399,10 @@ const RoomDetails = ({ rooms }) => {
                 <Text style={{ 
                   backgroundColor: '#ef4444', 
                   color: '#ffffff', 
-                  fontSize: 8,
-                  padding: 2,
-                  borderRadius: 3,
-                  marginLeft: 5
+                  fontSize: 7,
+                  padding: 1,
+                  borderRadius: 2,
+                  marginLeft: 3
                 }}> [INGRESS]</Text>
               )}
             </Text>
@@ -405,12 +419,12 @@ const RoomDetails = ({ rooms }) => {
             </View>
             
             {room.directions && room.directions.length > 0 && (
-              <View style={[styles.connectionsList, { backgroundColor: '#334155', padding: 6, borderRadius: 4, marginTop: 4 }]}>
-                <Text style={[styles.roomLabel, { color: '#cbd5e1' }]}>Connections:</Text>
+              <View style={[styles.connectionsList, { backgroundColor: '#334155', padding: 4, borderRadius: 3, marginTop: 3 }]}>
+                <Text style={[styles.roomLabel, { color: '#cbd5e1', fontSize: 8 }]}>Connections:</Text>
                 {room.directions.map((direction, index) => {
                   const connectedRooms = room.connectedRooms.get(direction) || [];
                   return (
-                    <Text key={index} style={[styles.connectionItem, { color: '#e2e8f0' }]}>
+                    <Text key={index} style={[styles.connectionItem, { color: '#e2e8f0', fontSize: 7 }]}>
                       • {direction}: Room(s) {connectedRooms.join(', ')}
                     </Text>
                   );
@@ -419,11 +433,11 @@ const RoomDetails = ({ rooms }) => {
             )}
 
             <View style={styles.contentsSection}>
-              <Text style={[styles.roomLabel, { color: '#4ade80' }]}>
-                Contents: <Text style={[styles.roomContent, { color: '#dcfce7' }]}>{room.contents.content}</Text>
+              <Text style={[styles.roomLabel, { color: '#4ade80', fontSize: 8 }]}>
+                Contents: <Text style={[styles.roomContent, { color: '#dcfce7', fontSize: 8 }]}>{room.contents.content}</Text>
               </Text>
               
-              <Text style={[styles.roomContent, { fontStyle: 'italic', marginTop: 4, color: '#bbf7d0' }]}>
+              <Text style={[styles.roomContent, { fontStyle: 'italic', marginTop: 3, color: '#bbf7d0', fontSize: 7 }]}>
                 {room.contents.details}
               </Text>
             </View>
@@ -431,16 +445,16 @@ const RoomDetails = ({ rooms }) => {
 
           {room.contents.hasTreasure && (
             <View style={styles.treasureSection}>
-              <Text style={[styles.roomLabel, { color: '#fbbf24' }]}>
-                [TREASURE]: <Text style={[styles.roomContent, { color: '#fef3c7' }]}>{room.contents.treasureLocation}</Text>
+              <Text style={[styles.roomLabel, { color: '#fbbf24', fontSize: 8 }]}>
+                [TREASURE]: <Text style={[styles.roomContent, { color: '#fef3c7', fontSize: 7 }]}>{room.contents.treasureLocation}</Text>
               </Text>
             </View>
           )}
 
           {room.notes && (
             <View style={styles.notesSection}>
-              <Text style={[styles.roomLabel, { color: '#d1d5db' }]}>
-                [NOTES]: <Text style={[styles.roomContent, { color: '#f3f4f6' }]}>{room.notes}</Text>
+              <Text style={[styles.roomLabel, { color: '#d1d5db', fontSize: 8 }]}>
+                [NOTES]: <Text style={[styles.roomContent, { color: '#f3f4f6', fontSize: 7 }]}>{room.notes}</Text>
               </Text>
             </View>
           )}
