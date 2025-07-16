@@ -616,7 +616,7 @@ export const useDungeonPDFGenerator = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${filename}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      link.download = `${filename}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

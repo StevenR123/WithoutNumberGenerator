@@ -4,6 +4,7 @@ import { useDungeonPDFGenerator } from './DungeonPDFGenerator';
 
 const RoomGenerator = () => {
   const [numRooms, setNumRooms] = useState(5);
+  const [dungeonName, setDungeonName] = useState('');
   const [generatedRooms, setGeneratedRooms] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fileInputRef, setFileInputRef] = useState(null);
@@ -672,6 +673,7 @@ const RoomGenerator = () => {
         exportDate: new Date().toISOString(),
         version: '1.0',
         totalRooms: generatedRooms.length,
+        dungeonName: dungeonName || 'Unnamed Dungeon',
         generatorSettings: {
           requestedRooms: numRooms
         }
@@ -688,6 +690,12 @@ const RoomGenerator = () => {
       }))
     };
 
+    // Create filename with name and timestamp
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = dungeonName 
+      ? `${dungeonName.replace(/[^a-z0-9]/gi, '_')}_${timestamp}.json`
+      : `dungeon_${timestamp}.json`;
+
     // Create and download file
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -695,7 +703,7 @@ const RoomGenerator = () => {
     
     const link = document.createElement('a');
     link.href = url;
-    link.download = `dungeon-layout-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -709,7 +717,13 @@ const RoomGenerator = () => {
     }
 
     try {
-      const success = await generatePDF(generatedRooms, 'dungeon-layout');
+      // Create filename with name and timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = dungeonName 
+        ? `${dungeonName.replace(/[^a-z0-9]/gi, '_')}_${timestamp}`
+        : `dungeon_${timestamp}`;
+      
+      const success = await generatePDF(generatedRooms, filename);
       if (success) {
         console.log('PDF generated successfully');
       } else {
@@ -1375,6 +1389,16 @@ const RoomGenerator = () => {
       </header>
 
       <div className="input-section">
+        <div className="input-group">
+          <label htmlFor="dungeonName">Name:</label>
+          <input
+            type="text"
+            id="dungeonName"
+            placeholder="Dungeon Name"
+            value={dungeonName}
+            onChange={(e) => setDungeonName(e.target.value)}
+          />
+        </div>
         <div className="input-group">
           <label htmlFor="numRooms">Number of Rooms:</label>
           <input
