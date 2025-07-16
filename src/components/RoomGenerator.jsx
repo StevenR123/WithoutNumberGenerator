@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './RoomGenerator.css';
+import { useDungeonPDFGenerator } from './DungeonPDFGenerator';
 
 const RoomGenerator = () => {
   const [numRooms, setNumRooms] = useState(5);
@@ -9,6 +10,7 @@ const RoomGenerator = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingRoom, setEditingRoom] = useState(null);
+  const { generatePDF } = useDungeonPDFGenerator();
   const [dragState, setDragState] = useState({
     isDragging: false,
     draggedRoom: null,
@@ -700,6 +702,25 @@ const RoomGenerator = () => {
     URL.revokeObjectURL(url);
   };
 
+  const exportToPDF = async () => {
+    if (generatedRooms.length === 0) {
+      alert('No rooms to export. Please generate rooms first.');
+      return;
+    }
+
+    try {
+      const success = await generatePDF(generatedRooms, 'dungeon-layout');
+      if (success) {
+        console.log('PDF generated successfully');
+      } else {
+        alert('Error generating PDF. Please try again.');
+      }
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      alert('Error generating PDF. Please try again.');
+    }
+  };
+
   const importFromJSON = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -1381,6 +1402,15 @@ const RoomGenerator = () => {
             title="Export current dungeon layout to JSON file"
           >
             📄 Export JSON
+          </button>
+          
+          <button 
+            onClick={exportToPDF}
+            disabled={generatedRooms.length === 0}
+            className="export-btn"
+            title="Export current dungeon layout to PDF file"
+          >
+            📋 Export PDF
           </button>
           
           <button 
