@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import RoomGenerator from './components/RoomGenerator';
-import MainMenu from './components/MainMenu';
-import MonstersPage from './components/MonstersPage';
+import RoomGenerator from './pages/RuinsGenerator';
+import MainMenu from './pages/MainMenu';
+import MonstersPage from './pages/MonstersPage';
 import './App.css';
 
 function App() {
