@@ -1341,24 +1341,18 @@ const RoomGenerator = () => {
     const maxId = Math.max(...generatedRooms.map(room => room.id), 0);
     const newRoomId = maxId + 1;
     
-    // Create the new room
+    // Create the new room with no exits initially (to be connected manually)
     const newRoom = {
       id: newRoomId,
       isIngress: false,
-      exits: generateExits(),
+      exits: 'None',
       directions: [],
       contents: generateRoomContents(),
       notes: '',
       connectedRooms: new Map(),
       coordinates: coordinates,
-      maxConnections: 0
+      maxConnections: null
     };
-    
-    // Set max connections based on exits
-    newRoom.maxConnections = getMaxConnectionsFromExits(newRoom.exits);
-    
-    // Generate directions for the new room
-    newRoom.directions = generateDirections(newRoom.exits);
     
     // Add the new room to the rooms array
     const updatedRooms = [...generatedRooms, newRoom];
