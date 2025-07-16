@@ -108,8 +108,16 @@
 .monsters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  max-width: 1400px;
+  margin: 20px auto 0;
   gap: 20px;
-  margin-top: 20px;
+}
+
+@media (min-width: 1400px) {
+  .monsters-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1440px;
+  }
 }
 
 .monster-card {
@@ -272,6 +280,30 @@
   border-left-color: #54a0ff;
 }
 
+.body-parts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.add-body-part-btn {
+  background: linear-gradient(135deg, #54a0ff 0%, #2e86de 100%);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(84, 160, 255, 0.3);
+}
+
+.add-body-part-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(84, 160, 255, 0.5);
+}
+
 .animal-type-section strong,
 .body-plan-section strong,
 .survival-section strong,
@@ -304,6 +336,31 @@
   font-size: 0.9rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.remove-body-part {
+  background: rgba(255, 107, 107, 0.8);
+  border: none;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.remove-body-part:hover {
+  background: #ff6b6b;
+  transform: scale(1.2);
 }
 
 .body-part.mammalian {
@@ -435,6 +492,7 @@
   padding: 25px;
   max-height: 60vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .icon-grid {
@@ -528,4 +586,114 @@
   color: #e2e8f0;
   line-height: 1.4;
   font-style: italic;
+}
+
+/* Body Part Modal Styles */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.category-option {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.category-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #feca57;
+  transform: translateY(-3px);
+}
+
+.category-name {
+  display: block;
+  color: #feca57;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.category-count {
+  color: #a0aec0;
+  font-size: 0.9rem;
+}
+
+.body-part-options {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.body-part-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.body-part-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateX(5px);
+}
+
+.category-tag {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  min-width: 80px;
+  text-align: center;
+}
+
+.category-tag.mammalian {
+  background: rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.category-tag.insectile {
+  background: rgba(254, 202, 87, 0.3);
+  color: #feca57;
+}
+
+.category-tag.reptilian {
+  background: rgba(72, 219, 251, 0.3);
+  color: #48dbfb;
+}
+
+.category-tag.avian {
+  background: rgba(255, 159, 243, 0.3);
+  color: #ff9ff3;
+}
+
+.category-tag.piscene {
+  background: rgba(84, 160, 255, 0.3);
+  color: #54a0ff;
+}
+
+.category-tag.exotic {
+  background: rgba(102, 126, 234, 0.3);
+  color: #667eea;
+}
+
+.part-name {
+  color: #e2e8f0;
+  font-size: 1rem;
 }

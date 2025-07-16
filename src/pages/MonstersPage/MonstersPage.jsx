@@ -148,6 +148,54 @@ const MonstersPage = ({ onBack }) => {
     }
   };
 
+  const removeBodyPart = (monsterId, partIndex) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    const updatedBodyParts = monster.bodyParts.filter((_, index) => index !== partIndex);
+    updateMonsterField(monsterId, 'bodyParts', updatedBodyParts);
+  };
+
+  const addBodyPart = (monsterId, category, feature) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    const newBodyPart = { category, feature };
+    
+    // Check if this feature already exists
+    if (!monster.bodyParts.some(part => part.feature === feature)) {
+      const updatedBodyParts = [...monster.bodyParts, newBodyPart];
+      updateMonsterField(monsterId, 'bodyParts', updatedBodyParts);
+    }
+  };
+
+  const openBodyPartCategoryModal = (monsterId) => {
+    const categories = Object.keys(bodyParts);
+    setShowSelectionModal({
+      monsterId,
+      field: 'bodyPartCategory',
+      options: categories,
+      currentValue: null
+    });
+  };
+
+  const openBodyPartSelectionModal = (monsterId, category) => {
+    setShowSelectionModal({
+      monsterId,
+      field: 'bodyPartSelection',
+      options: bodyParts[category],
+      currentValue: null,
+      selectedCategory: category
+    });
+  };
+
+  const handleBodyPartSelection = (option) => {
+    if (showSelectionModal.field === 'bodyPartCategory') {
+      // User selected a category, now show parts in that category
+      openBodyPartSelectionModal(showSelectionModal.monsterId, option);
+    } else if (showSelectionModal.field === 'bodyPartSelection') {
+      // User selected a specific body part
+      addBodyPart(showSelectionModal.monsterId, showSelectionModal.selectedCategory, option);
+      setShowSelectionModal(null);
+    }
+  };
+
   const generateMonster = () => {
     setIsGenerating(true);
     
@@ -165,7 +213,7 @@ const MonstersPage = ({ onBack }) => {
       const huntingMethod = getTableResult(huntingMethodRoll, huntingMethods);
       
       // Roll for 1-3 characteristic body parts
-      const numBodyParts = rollDie(3);
+      const numBodyParts = 2;
       const selectedBodyParts = [];
       
       for (let i = 0; i < numBodyParts; i++) {
@@ -271,9 +319,6 @@ const MonstersPage = ({ onBack }) => {
                       placeholder="Monster Name"
                     />
                   </div>
-                  <div className="monster-timestamp">
-                    Generated: {monster.generatedAt}
-                  </div>
                 </div>
                 
                 <div className="monster-details">
@@ -328,11 +373,27 @@ const MonstersPage = ({ onBack }) => {
                   </div>
 
                   <div className="body-parts-section">
-                    <strong>Characteristic Features:</strong>
+                    <div className="body-parts-header">
+                      <strong>Characteristic Features:</strong>
+                      <button 
+                        className="add-body-part-btn"
+                        onClick={() => openBodyPartCategoryModal(monster.id)}
+                        title="Add new body part"
+                      >
+                        + Add Feature
+                      </button>
+                    </div>
                     <div className="body-parts-list">
                       {monster.bodyParts.map((part, index) => (
                         <span key={index} className={`body-part ${part.category}`}>
                           {part.feature}
+                          <button 
+                            className="remove-body-part"
+                            onClick={() => removeBodyPart(monster.id, index)}
+                            title="Remove this feature"
+                          >
+                            ×
+                          </button>
                         </span>
                       ))}
                     </div>
@@ -355,7 +416,9 @@ const MonstersPage = ({ onBack }) => {
                  showSelectionModal.field === 'bodyPlan' ? 'Choose Body Plan' :
                  showSelectionModal.field === 'survivalMethod' ? 'Choose Survival Method' :
                  showSelectionModal.field === 'huntingMethod' ? 'Choose Hunting Method' :
-                 showSelectionModal.field === 'monstrousDrive' ? 'Choose Monstrous Drive' : 
+                 showSelectionModal.field === 'monstrousDrive' ? 'Choose Monstrous Drive' :
+                 showSelectionModal.field === 'bodyPartCategory' ? 'Choose Body Part Category' :
+                 showSelectionModal.field === 'bodyPartSelection' ? `Choose ${showSelectionModal.selectedCategory} Feature` :
                  'Choose Option'}
               </h3>
               <button 
@@ -375,6 +438,36 @@ const MonstersPage = ({ onBack }) => {
                       onClick={() => selectOption(icon)}
                     >
                       {icon}
+                    </div>
+                  ))}
+                </div>
+              ) : showSelectionModal.field === 'bodyPartCategory' ? (
+                <div className="category-grid">
+                  {showSelectionModal.options.map((category, index) => (
+                    <div
+                      key={index}
+                      className="category-option"
+                      onClick={() => handleBodyPartSelection(category)}
+                    >
+                      <span className="category-name">{category}</span>
+                      <span className="category-count">
+                        {bodyParts[category].length} options
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : showSelectionModal.field === 'bodyPartSelection' ? (
+                <div className="body-part-options">
+                  {showSelectionModal.options.map((part, index) => (
+                    <div
+                      key={index}
+                      className="body-part-option"
+                      onClick={() => handleBodyPartSelection(part)}
+                    >
+                      <span className={`category-tag ${showSelectionModal.selectedCategory}`}>
+                        {showSelectionModal.selectedCategory}
+                      </span>
+                      <span className="part-name">{part}</span>
                     </div>
                   ))}
                 </div>
