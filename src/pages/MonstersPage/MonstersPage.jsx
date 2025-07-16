@@ -23,6 +23,18 @@ const MonstersPage = ({ onBack }) => {
     'Magical compulsion or curse',
     'Simple malevolence toward all life'
   ];
+
+  const creaturePowerLevels = [
+    { points: 0, description: 'Perfectly ordinary beast or person' },
+    { points: 2, description: 'Minor hero or significant mage' },
+    { points: 3, description: 'Minor magical beast or construct' },
+    { points: 4, description: 'Species of magically-potent sentient' },
+    { points: 5, description: 'Significant magical beast or being' },
+    { points: 6, description: 'Major hero or famous mage' },
+    { points: 8, description: 'Hero of a magically-potent species / Regionally-significant magical beast' },
+    { points: 10, description: 'Legendary magical beast / Legate or famous major hero' },
+    { points: 15, description: 'Imperator or other demi-divine being' }
+  ];
   const animalTypes = [
     { roll: 1, type: 'Apish', description: 'Distorted humanoid outlines' },
     { roll: 2, type: 'Arachnid', description: 'Webs, many limbs, many eyes' },
@@ -242,6 +254,19 @@ const MonstersPage = ({ onBack }) => {
       const monstrousDriveRoll = rollD12();
       const monstrousDrive = monstrousDrives[monstrousDriveRoll - 1];
       
+      // Roll for creature power level (weighted towards lower levels)
+      const powerLevelRoll = rollDie(100);
+      let powerLevel;
+      if (powerLevelRoll <= 30) powerLevel = creaturePowerLevels[0]; // 0 points - 30%
+      else if (powerLevelRoll <= 50) powerLevel = creaturePowerLevels[1]; // 2 points - 20%
+      else if (powerLevelRoll <= 65) powerLevel = creaturePowerLevels[2]; // 3 points - 15%
+      else if (powerLevelRoll <= 78) powerLevel = creaturePowerLevels[3]; // 4 points - 13%
+      else if (powerLevelRoll <= 88) powerLevel = creaturePowerLevels[4]; // 5 points - 10%
+      else if (powerLevelRoll <= 94) powerLevel = creaturePowerLevels[5]; // 6 points - 6%
+      else if (powerLevelRoll <= 97) powerLevel = creaturePowerLevels[6]; // 8 points - 3%
+      else if (powerLevelRoll <= 99) powerLevel = creaturePowerLevels[7]; // 10 points - 2%
+      else powerLevel = creaturePowerLevels[8]; // 15 points - 1%
+      
       // Create monster object
       const monster = {
         id: generatedMonsters.length + 1,
@@ -252,6 +277,7 @@ const MonstersPage = ({ onBack }) => {
         survivalMethod: survivalMethod,
         huntingMethod: huntingMethod,
         monstrousDrive: monstrousDrive,
+        powerLevel: powerLevel,
         bodyParts: selectedBodyParts,
         generatedAt: new Date().toLocaleTimeString()
       };
@@ -398,6 +424,19 @@ const MonstersPage = ({ onBack }) => {
                       ))}
                     </div>
                   </div>
+
+                  <div 
+                    className="power-level-section clickable-section"
+                    onClick={() => openSelectionModal(monster.id, 'powerLevel', creaturePowerLevels)}
+                  >
+                    <strong>Creature Power Level: 🎲</strong>
+                    <div className="power-level-display">
+                      <span className="power-points">{monster.powerLevel.points} Points</span>
+                      <div className="detail-description">
+                        {monster.powerLevel.description}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -417,6 +456,7 @@ const MonstersPage = ({ onBack }) => {
                  showSelectionModal.field === 'survivalMethod' ? 'Choose Survival Method' :
                  showSelectionModal.field === 'huntingMethod' ? 'Choose Hunting Method' :
                  showSelectionModal.field === 'monstrousDrive' ? 'Choose Monstrous Drive' :
+                 showSelectionModal.field === 'powerLevel' ? 'Choose Creature Power Level' :
                  showSelectionModal.field === 'bodyPartCategory' ? 'Choose Body Part Category' :
                  showSelectionModal.field === 'bodyPartSelection' ? `Choose ${showSelectionModal.selectedCategory} Feature` :
                  'Choose Option'}
@@ -483,6 +523,22 @@ const MonstersPage = ({ onBack }) => {
                       <span className="option-text">{drive}</span>
                     </div>
                   ))}
+                </div>
+              ) : showSelectionModal.field === 'powerLevel' ? (
+                <div className="options-list">
+                  {showSelectionModal.options.map((level, index) => {
+                    const isSelected = JSON.stringify(level) === JSON.stringify(showSelectionModal.currentValue);
+                    return (
+                      <div
+                        key={index}
+                        className={`option-item ${isSelected ? 'selected' : ''}`}
+                        onClick={() => selectOption(level)}
+                      >
+                        <span className="option-number">{level.points} pts</span>
+                        <span className="option-text">{level.description}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="options-list">

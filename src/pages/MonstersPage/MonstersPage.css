@@ -276,6 +276,10 @@
   border-left-color: #5f27cd;
 }
 
+.power-level-section {
+  border-left-color: #ff6348;
+}
+
 .body-parts-section {
   border-left-color: #54a0ff;
 }
@@ -309,6 +313,7 @@
 .survival-section strong,
 .hunting-section strong,
 .monstrous-drive-section strong,
+.power-level-section strong,
 .body-parts-section strong {
   color: #feca57;
   display: block;
@@ -320,6 +325,23 @@
   color: #e2e8f0;
   line-height: 1.5;
   font-style: italic;
+}
+
+.power-level-display {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.power-points {
+  color: #ff6348;
+  font-weight: bold;
+  font-size: 1rem;
+  background: rgba(255, 99, 72, 0.1);
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-block;
+  width: fit-content;
 }
 
 .body-parts-list {
