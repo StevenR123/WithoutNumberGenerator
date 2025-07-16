@@ -375,6 +375,16 @@
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
+.room-cell.treasure {
+  border: 3px solid #ffd700;
+  box-shadow: 0 2px 12px rgba(255, 215, 0, 0.5), inset 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.room-cell.ingress.treasure {
+  border: 3px solid #ffd700;
+  box-shadow: 0 2px 12px rgba(255, 215, 0, 0.5), 0 2px 8px rgba(239, 68, 68, 0.3), inset 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
 .empty-cell {
   background: #374151;
   color: #9ca3af;

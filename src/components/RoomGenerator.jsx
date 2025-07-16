@@ -1484,6 +1484,7 @@ const RoomGenerator = () => {
                         'grid-cell',
                         'room-cell',
                         room.isIngress ? 'ingress' : '',
+                        room.contents.hasTreasure ? 'treasure' : '',
                         isEditMode ? 'editable' : '',
                         isSelected ? 'selected' : '',
                         isDragging ? 'dragging' : '',
@@ -1649,7 +1650,7 @@ const RoomGenerator = () => {
                           opacity: 0.8,
                           pointerEvents: 'none'
                         }}
-                        className="grid-cell room-cell dragging"
+                        className={`grid-cell room-cell dragging ${dragState.draggedRoom.isIngress ? 'ingress' : ''} ${dragState.draggedRoom.contents.hasTreasure ? 'treasure' : ''}`}
                       >
                         <div className="grid-room-id">R{dragState.draggedRoom.id}</div>
                         <div className="grid-coordinates">({dragState.draggedRoom.coordinates.x},{dragState.draggedRoom.coordinates.y})</div>
