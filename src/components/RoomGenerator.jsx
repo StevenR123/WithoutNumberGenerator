@@ -479,62 +479,72 @@ const RoomGenerator = () => {
           room.maxConnections = 4;
           room.exits = 'Four';
           
-          // Generate all possible directions
-          const allDirections = ['North', 'South', 'East', 'West', 'Northeast', 'Northwest', 'Southeast', 'Southwest'];
-          const availableDirections = allDirections.filter(dir => !room.connectedRooms.has(dir));
-          
-          // Try to create up to 2 new rooms from this room
-          let connectionsFromThisRoom = 0;
-          for (const direction of availableDirections) {
-            if (connectionsFromThisRoom >= 2 || rooms.length >= numRooms) break;
-            
-            const coordinateChange = getCoordinateChange(direction);
-            const newCoordinates = {
-              x: room.coordinates.x + coordinateChange.x,
-              y: room.coordinates.y + coordinateChange.y
-            };
-            const coordKey = `${newCoordinates.x},${newCoordinates.y}`;
-            
-            // Check if coordinates are available
-            if (!occupiedCoordinates.has(coordKey)) {
-              // Create a new connected room
-              const newRoom = {
-                id: roomIdCounter++,
-                isIngress: false,
-                exits: generateExits(),
-                directions: [],
-                contents: generateRoomContents(),
-                notes: '',
-                connectedRooms: new Map(),
-                coordinates: newCoordinates,
-                maxConnections: getMaxConnectionsFromExits(generateExits())
-              };
-              
-              // Generate directions for the new room
-              newRoom.directions = generateDirections(newRoom.exits);
-              
-              // Create bidirectional connection (single connection during generation)
-              const oppositeDirection = getOppositeDirection(direction);
-              room.connectedRooms.set(direction, [newRoom.id]);
-              newRoom.connectedRooms.set(oppositeDirection, [room.id]);
-              
-              // Update room directions
-              if (!room.directions.includes(direction)) {
-                room.directions.push(direction);
-              }
-              newRoom.directions = newRoom.directions.filter(dir => dir !== oppositeDirection);
-              
-              rooms.push(newRoom);
-              occupiedCoordinates.set(coordKey, newRoom.id);
-              roomQueue.push(newRoom);
-              
-              console.log(`🌿 Created Room ${newRoom.id} extending from least-adjacent Room ${room.id} via ${direction}/${oppositeDirection}`);
-              console.log(`   Adjacent room count: ${getAdjacentRoomCount(room, rooms, occupiedCoordinates)}`);
-              
-              roomExpanded = true;
-              connectionsFromThisRoom++;
-            }
+        // Generate all possible directions
+        const allDirections = ['North', 'South', 'East', 'West', 'Northeast', 'Northwest', 'Southeast', 'Southwest'];
+        const availableDirections = allDirections.filter(dir => !room.connectedRooms.has(dir));
+
+        // Randomly pick up to 2 directions from availableDirections
+        function getRandomDirections(arr, n) {
+          const shuffled = arr.slice();
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
           }
+          return shuffled.slice(0, n);
+        }
+        const pickedDirections = getRandomDirections(availableDirections, 2);
+
+        let connectionsFromThisRoom = 0;
+        for (const direction of pickedDirections) {
+          if (connectionsFromThisRoom >= 2 || rooms.length >= numRooms) break;
+
+          const coordinateChange = getCoordinateChange(direction);
+          const newCoordinates = {
+            x: room.coordinates.x + coordinateChange.x,
+            y: room.coordinates.y + coordinateChange.y
+          };
+          const coordKey = `${newCoordinates.x},${newCoordinates.y}`;
+
+          // Check if coordinates are available
+          if (!occupiedCoordinates.has(coordKey)) {
+            // Create a new connected room
+            const newRoom = {
+              id: roomIdCounter++,
+              isIngress: false,
+              exits: generateExits(),
+              directions: [],
+              contents: generateRoomContents(),
+              notes: '',
+              connectedRooms: new Map(),
+              coordinates: newCoordinates,
+              maxConnections: getMaxConnectionsFromExits(generateExits())
+            };
+
+            // Generate directions for the new room
+            newRoom.directions = generateDirections(newRoom.exits);
+
+            // Create bidirectional connection (single connection during generation)
+            const oppositeDirection = getOppositeDirection(direction);
+            room.connectedRooms.set(direction, [newRoom.id]);
+            newRoom.connectedRooms.set(oppositeDirection, [room.id]);
+
+            // Update room directions
+            if (!room.directions.includes(direction)) {
+              room.directions.push(direction);
+            }
+            newRoom.directions = newRoom.directions.filter(dir => dir !== oppositeDirection);
+
+            rooms.push(newRoom);
+            occupiedCoordinates.set(coordKey, newRoom.id);
+            roomQueue.push(newRoom);
+
+            console.log(`🌿 Created Room ${newRoom.id} extending from least-adjacent Room ${room.id} via ${direction}/${oppositeDirection}`);
+            console.log(`   Adjacent room count: ${getAdjacentRoomCount(room, rooms, occupiedCoordinates)}`);
+
+            roomExpanded = true;
+            connectionsFromThisRoom++;
+          }
+        }
           
           if (rooms.length >= numRooms) break;
         }
@@ -1387,7 +1397,7 @@ const RoomGenerator = () => {
             className={`edit-btn ${isEditMode ? 'active' : ''}`}
             title="Toggle edit mode to add/remove connections between rooms"
           >
-            ✏️ {isEditMode ? 'Exit Edit' : 'Edit Connections'}
+            ✏️ {isEditMode ? 'Exit Edit' : 'Edit Mode'}
           </button>
           
           <input
