@@ -324,9 +324,12 @@
 .grid-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 2rem;
+  overflow-x: auto;
   overflow-y: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .grid-layout-wrapper {
@@ -334,10 +337,10 @@
   padding: 2rem;
   background: #475569;
   border-radius: 8px;
-  max-width: 100%;
   overflow: visible;
   min-height: 500px;
-  min-width: 500px;
+  width: max-content;
+  min-width: 100%;
 }
 
 .grid-layout {

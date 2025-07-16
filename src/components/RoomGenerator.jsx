@@ -1455,7 +1455,7 @@ const RoomGenerator = () => {
                 </p>
               </div>
             )}
-            <div className="grid-container" style={{ overflowX: 'auto', width: '100%' }}>
+            <div className="grid-container">
               {(() => {
                 // Calculate grid bounds
                 const minX = Math.min(...generatedRooms.map(r => r.coordinates.x)) - 1;
@@ -1618,8 +1618,7 @@ const RoomGenerator = () => {
                   <div className="grid-layout-wrapper" style={{ 
                     position: 'relative',
                     overflow: 'visible',
-                    padding: '20px',
-                    minWidth: 'fit-content'
+                    padding: '20px'
                   }}>
                     <div 
                       className="grid-layout" 
@@ -1630,7 +1629,7 @@ const RoomGenerator = () => {
                         gap: '50px', // Half the width of a square
                         position: 'relative',
                         zIndex: 5,
-                        minWidth: 'fit-content'
+                        width: 'max-content'
                       }}
                     >
                       {gridElements}
