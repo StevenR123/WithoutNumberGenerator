@@ -344,10 +344,10 @@ const RoomGenerator = () => {
                 }
                 
                 const newExits = Array.from(existingRoom.connectedRooms.keys());
-                console.log(`🔗 Connection added to existing Room ${existingRoom.id}:`);
-                console.log(`   Original exits: [${originalExits.join(', ')}]`);
-                console.log(`   New exits: [${newExits.join(', ')}]`);
-                console.log(`   Connected from Room ${currentRoom.id} via ${direction}/${oppositeDirection}`);
+                // console.log(`🔗 Connection added to existing Room ${existingRoom.id}:`);
+                // console.log(`   Original exits: [${originalExits.join(', ')}]`);
+                // console.log(`   New exits: [${newExits.join(', ')}]`);
+                // console.log(`   Connected from Room ${currentRoom.id} via ${direction}/${oppositeDirection}`);
                 
                 connectionsAdded++;
               }
@@ -395,8 +395,8 @@ const RoomGenerator = () => {
                       const uniqueNewDirections = availableDirections.filter(dir => !roomToExpand.directions.includes(dir));
                       roomToExpand.directions = [...roomToExpand.directions, ...uniqueNewDirections];
                       
-                      console.log(`🎲 Rerolled Room ${roomToExpand.id} exits:`);
-                      console.log(`   Original: [${originalExits.join(', ')}] → New potential: [${[...originalExits, ...uniqueNewDirections].join(', ')}]`);
+                      // console.log(`🎲 Rerolled Room ${roomToExpand.id} exits:`);
+                      // console.log(`   Original: [${originalExits.join(', ')}] → New potential: [${[...originalExits, ...uniqueNewDirections].join(', ')}]`);
                       
                       if (uniqueNewDirections.length > 0) {
                         roomQueue.push(roomToExpand);
@@ -421,10 +421,10 @@ const RoomGenerator = () => {
                 firstRoom.directions = [...firstRoom.directions, ...uniqueNewDirections];
                 
                 const finalExits = [...originalExits, ...uniqueNewDirections];
-                console.log(`🚀 Force-expanded ingress Room ${firstRoom.id}:`);
-                console.log(`   Original exits: [${originalExits.join(', ')}]`);
-                console.log(`   New potential exits: [${finalExits.join(', ')}]`);
-                console.log(`   Max connections increased to: ${newMaxConnections}`);
+                // console.log(`🚀 Force-expanded ingress Room ${firstRoom.id}:`);
+                // console.log(`   Original exits: [${originalExits.join(', ')}]`);
+                // console.log(`   New potential exits: [${finalExits.join(', ')}]`);
+                // console.log(`   Max connections increased to: ${newMaxConnections}`);
                 
                 if (uniqueNewDirections.length > 0) {
                   roomQueue.push(firstRoom);
@@ -439,15 +439,15 @@ const RoomGenerator = () => {
       }
       
       // Final fallback: use intelligent branching from rooms with least adjacent rooms
-      console.log(`🌿 FALLBACK ACTIVATED: Starting expansion from rooms with least adjacent rooms`);
+      // console.log(`🌿 FALLBACK ACTIVATED: Starting expansion from rooms with least adjacent rooms`);
       // Extend from rooms with least adjacent rooms for more natural dungeon layouts
       while (rooms.length < numRooms) {
-        console.log(`🌿 Need ${numRooms - rooms.length} more rooms. Finding rooms with least adjacent rooms...`);
+        // console.log(`🌿 Need ${numRooms - rooms.length} more rooms. Finding rooms with least adjacent rooms...`);
         
         // Calculate adjacent room counts and find rooms with least adjacent rooms (excluding ingress)
         const nonIngressRooms = rooms.filter(room => !room.isIngress);
         if (nonIngressRooms.length === 0) {
-          console.log(`⚠️ No non-ingress rooms to extend from.`);
+          // console.log(`⚠️ No non-ingress rooms to extend from.`);
           break;
         }
         
@@ -462,9 +462,9 @@ const RoomGenerator = () => {
         // Take up to 2 rooms with least adjacent rooms
         const leastAdjacentRooms = roomsWithAdjacentCounts.slice(0, 2).map(item => item.room);
         
-        console.log(`📍 Rooms with least adjacent rooms:`, leastAdjacentRooms.map(r => 
-          `Room ${r.id} (adjacent: ${getAdjacentRoomCount(r, rooms, occupiedCoordinates)})`
-        ));
+        // console.log(`📍 Rooms with least adjacent rooms:`, leastAdjacentRooms.map(r => 
+        //   `Room ${r.id} (adjacent: ${getAdjacentRoomCount(r, rooms, occupiedCoordinates)})`
+        // ));
         
         let roomExpanded = false;
         
@@ -540,8 +540,8 @@ const RoomGenerator = () => {
             occupiedCoordinates.set(coordKey, newRoom.id);
             roomQueue.push(newRoom);
 
-            console.log(`🌿 Created Room ${newRoom.id} extending from least-adjacent Room ${room.id} via ${direction}/${oppositeDirection}`);
-            console.log(`   Adjacent room count: ${getAdjacentRoomCount(room, rooms, occupiedCoordinates)}`);
+            // console.log(`🌿 Created Room ${newRoom.id} extending from least-adjacent Room ${room.id} via ${direction}/${oppositeDirection}`);
+            // console.log(`   Adjacent room count: ${getAdjacentRoomCount(room, rooms, occupiedCoordinates)}`);
 
             roomExpanded = true;
             connectionsFromThisRoom++;
@@ -553,13 +553,13 @@ const RoomGenerator = () => {
         
         // If we couldn't expand any of the rooms with least adjacent rooms, we're stuck
         if (!roomExpanded) {
-          console.log(`⚠️ FALLBACK COMPLETE: Could not extend from rooms with least adjacent rooms. Final count: ${rooms.length}/${numRooms}`);
+          // console.log(`⚠️ FALLBACK COMPLETE: Could not extend from rooms with least adjacent rooms. Final count: ${rooms.length}/${numRooms}`);
           break;
         } else {
-          console.log(`✅ Fallback successfully expanded from least-adjacent room(s)`);
+          // console.log(`✅ Fallback successfully expanded from least-adjacent room(s)`);
         }
       }
-      console.log(`🌿 FALLBACK FINISHED: Generated ${rooms.length}/${numRooms} rooms using intelligent branching strategy`);
+      // console.log(`🌿 FALLBACK FINISHED: Generated ${rooms.length}/${numRooms} rooms using intelligent branching strategy`);
       
       
       // Update exit counts to reflect actual connections
@@ -724,12 +724,12 @@ const RoomGenerator = () => {
       
       const success = await generatePDF(generatedRooms, filename);
       if (success) {
-        console.log('PDF generated successfully');
+        // console.log('PDF generated successfully');
       } else {
         alert('Error generating PDF. Please try again.');
       }
     } catch (error) {
-      console.error('PDF generation error:', error);
+      // console.error('PDF generation error:', error);
       alert('Error generating PDF. Please try again.');
     }
   };
@@ -768,7 +768,7 @@ const RoomGenerator = () => {
         alert(`Successfully imported ${processedRooms.length} rooms from ${importData.metadata?.exportDate ? new Date(importData.metadata.exportDate).toLocaleDateString() : 'unknown date'}`);
       } catch (error) {
         alert(`Error importing file: ${error.message}`);
-        console.error('Import error:', error);
+        // console.error('Import error:', error);
       }
     };
     reader.readAsText(file);
@@ -794,12 +794,12 @@ const RoomGenerator = () => {
       // Prevent the click from doing anything else
       event.preventDefault();
       event.stopPropagation();
-      console.log('Shift+click detected, editing room:', room.id);
+      // console.log('Shift+click detected, editing room:', room.id);
       handleRoomEdit(room);
       return;
     }
 
-    console.log('Regular click on room:', room.id, 'Edit mode:', isEditMode);
+    // console.log('Regular click on room:', room.id, 'Edit mode:', isEditMode);
 
     if (!selectedRoom) {
       // First room selected
@@ -819,7 +819,7 @@ const RoomGenerator = () => {
     
     // Don't allow deletion of ingress room
     if (selectedRoom.isIngress) {
-      console.log('Cannot delete ingress room');
+      // console.log('Cannot delete ingress room');
       return;
     }
     
@@ -829,7 +829,7 @@ const RoomGenerator = () => {
     }, 0);
     
     if (totalConnections > 0) {
-      console.log('Cannot delete room with connections');
+      // console.log('Cannot delete room with connections');
       return;
     }
     
@@ -838,7 +838,7 @@ const RoomGenerator = () => {
     setGeneratedRooms(updatedRooms);
     setSelectedRoom(null);
     
-    console.log(`Deleted Room ${selectedRoom.id}`);
+    // console.log(`Deleted Room ${selectedRoom.id}`);
   };
 
   const isRoomDeletable = (room) => {
@@ -1025,7 +1025,7 @@ const RoomGenerator = () => {
   };
 
   const handleRoomEdit = (room) => {
-    console.log('handleRoomEdit called for room:', room.id, 'Edit mode:', isEditMode);
+    // console.log('handleRoomEdit called for room:', room.id, 'Edit mode:', isEditMode);
     if (!isEditMode) return;
     
     // Clear any room selection when editing
@@ -1041,7 +1041,7 @@ const RoomGenerator = () => {
       specificType = room.contents.details;
     }
     
-    console.log('Opening room edit menu for room:', room.id);
+    // console.log('Opening room edit menu for room:', room.id);
     setRoomEditMenu({
       isOpen: true,
       room: room,
@@ -1333,7 +1333,7 @@ const RoomGenerator = () => {
     );
     
     if (existingRoom) {
-      console.log('Cannot create room - position already occupied');
+      // console.log('Cannot create room - position already occupied');
       return;
     }
     
@@ -1364,7 +1364,7 @@ const RoomGenerator = () => {
     const updatedRooms = [...generatedRooms, newRoom];
     setGeneratedRooms(updatedRooms);
     
-    console.log(`Created new Room ${newRoomId} at coordinates (${coordinates.x}, ${coordinates.y})`);
+    // console.log(`Created new Room ${newRoomId} at coordinates (${coordinates.x}, ${coordinates.y})`);
   };
 
   const handleEmptyCellClick = (coordinates, event) => {
@@ -1374,7 +1374,7 @@ const RoomGenerator = () => {
     if (event && event.shiftKey) {
       event.preventDefault();
       event.stopPropagation();
-      console.log('Shift+click detected on empty cell, creating new room at:', coordinates);
+      // console.log('Shift+click detected on empty cell, creating new room at:', coordinates);
       createNewRoom(coordinates);
       return;
     }
@@ -1611,7 +1611,7 @@ const RoomGenerator = () => {
                               );
                               
                               // Debug log
-                              console.log(`Added ${isAdjacent ? 'adjacent' : 'distant'} connection line: ${connectionKey}, from (${centerFromX}, ${centerFromY}) to (${centerToX}, ${centerToY}), distance: ${distance}, angle: ${angle}`);
+                              // console.log(`Added ${isAdjacent ? 'adjacent' : 'distant'} connection line: ${connectionKey}, from (${centerFromX}, ${centerFromY}) to (${centerToX}, ${centerToY}), distance: ${distance}, angle: ${angle}`);
                             }
                           }
                         });
