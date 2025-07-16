@@ -499,9 +499,19 @@ const RoomDetails = ({ rooms }) => {
 };
 
 // Main PDF Document component
-const DungeonPDFDocument = ({ rooms, metadata = {} }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
+const DungeonPDFDocument = ({ rooms, metadata = {} }) => {
+  // Calculate how many rooms can fit per page (considering space for headers and grid)
+  const roomsPerPage = 9; // 3 rows of 3 rooms each
+  const totalPages = Math.ceil((rooms?.length || 0) / roomsPerPage);
+  
+  const pages = [];
+  
+  // First page with grid layout and first set of rooms
+  const firstPageRooms = rooms?.slice(0, roomsPerPage) || [];
+  const remainingRooms = rooms?.slice(roomsPerPage) || [];
+  
+  pages.push(
+    <Page key="page-1" size="A4" style={styles.page}>
       <Text style={styles.title}>DUNGEON LAYOUT REPORT</Text>
       
       <View style={styles.gridSection}>
@@ -511,20 +521,34 @@ const DungeonPDFDocument = ({ rooms, metadata = {} }) => (
 
       <Text style={styles.subtitle}>GENERATED SITE LAYOUT</Text>
       <View style={styles.roomsSection}>
-        <RoomDetails rooms={rooms} />
-      </View>
-
-      <View style={styles.metadata}>
-        <Text style={{ color: '#f1f5f9', fontWeight: 'bold', marginBottom: 5 }}>Generated with Without Number Generator</Text>
-        <Text>Generated on {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}</Text>
-        <Text>Total Rooms: {rooms?.length || 0}</Text>
-        {metadata.requestedRooms && (
-          <Text>Requested Rooms: {metadata.requestedRooms}</Text>
-        )}
+        <RoomDetails rooms={firstPageRooms} />
       </View>
     </Page>
-  </Document>
-);
+  );
+  
+  // Additional pages for remaining rooms
+  if (remainingRooms.length > 0) {
+    for (let pageIndex = 1; pageIndex < totalPages; pageIndex++) {
+      const startIndex = pageIndex * roomsPerPage;
+      const endIndex = Math.min(startIndex + roomsPerPage, rooms.length);
+      const pageRooms = rooms.slice(startIndex, endIndex);
+      
+      pages.push(
+        <Page key={`page-${pageIndex + 1}`} size="A4" style={styles.page}>
+          <View style={styles.roomsSection}>
+            <RoomDetails rooms={pageRooms} />
+          </View>
+        </Page>
+      );
+    }
+  }
+  
+  return (
+    <Document>
+      {pages}
+    </Document>
+  );
+};
 
 // Hook to generate and download PDF
 export const useDungeonPDFGenerator = () => {
