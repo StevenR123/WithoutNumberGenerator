@@ -91,6 +91,10 @@ const styles = StyleSheet.create({
     borderColor: '#dc2626',
     color: '#ffffff',
   },
+  treasureCell: {
+    borderColor: '#ffd700',
+    borderWidth: 3,
+  },
   gridWrapper: {
     position: 'relative',
     alignItems: 'center',
@@ -357,7 +361,8 @@ const GridLayout = ({ rooms }) => {
             key={`${x},${y}`} 
             style={[
               styles.gridCell, 
-              cellStyle
+              cellStyle,
+              room.contents.hasTreasure ? styles.treasureCell : null
             ]}
           >
             <Text style={{ fontSize: 7, fontWeight: 'bold' }}>R{room.id}</Text>
