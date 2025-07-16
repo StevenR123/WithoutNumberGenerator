@@ -39,6 +39,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     backgroundColor: '#1e293b',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   gridRow: {
     flexDirection: 'row',
@@ -91,6 +93,9 @@ const styles = StyleSheet.create({
   },
   gridWrapper: {
     position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   connectionLine: {
     position: 'absolute',
@@ -104,6 +109,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+  },
+  roomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 8,
   },
   roomCard: {
     border: '2px solid #475569',
@@ -381,83 +392,101 @@ const GridLayout = ({ rooms }) => {
   );
 };
 
-// Component to render room details
+// Component to render room details with row-based page breaks
 const RoomDetails = ({ rooms }) => {
   if (!rooms || rooms.length === 0) return null;
 
+  // Group rooms into rows of 3 (matching the 3-column layout)
+  const roomRows = [];
+  for (let i = 0; i < rooms.length; i += 3) {
+    roomRows.push(rooms.slice(i, i + 3));
+  }
+
   return (
     <View style={styles.roomsGrid}>
-      {rooms.map((room) => (
-        <View key={room.id} style={[
-          styles.roomCard,
-          room.isIngress ? { borderColor: '#ef4444', backgroundColor: '#1e293b' } : {}
-        ]}>
-          <View style={styles.roomHeader}>
-            <Text style={styles.roomTitle}>
-              {getRoomTypeText(room.contents.content)} Room {room.id}
-              {room.isIngress && (
-                <Text style={{ 
-                  backgroundColor: '#ef4444', 
-                  color: '#ffffff', 
-                  fontSize: 7,
-                  padding: 1,
-                  borderRadius: 2,
-                  marginLeft: 3
-                }}> [INGRESS]</Text>
-              )}
-            </Text>
-            <Text style={styles.roomCoordinates}>
-              Grid: ({room.coordinates.x}, {room.coordinates.y})
-            </Text>
-          </View>
-
-          <View style={styles.roomDetails}>
-            <View style={styles.exitsSection}>
-              <Text style={[styles.roomLabel, { color: '#60a5fa' }]}>
-                Exits: <Text style={[styles.roomContent, { color: '#dbeafe' }]}>{room.exits}</Text>
-              </Text>
-            </View>
-            
-            {room.directions && room.directions.length > 0 && (
-              <View style={[styles.connectionsList, { backgroundColor: '#334155', padding: 4, borderRadius: 3, marginTop: 3 }]}>
-                <Text style={[styles.roomLabel, { color: '#cbd5e1', fontSize: 8 }]}>Connections:</Text>
-                {room.directions.map((direction, index) => {
-                  const connectedRooms = room.connectedRooms.get(direction) || [];
-                  return (
-                    <Text key={index} style={[styles.connectionItem, { color: '#e2e8f0', fontSize: 7 }]}>
-                      • {direction}: Room(s) {connectedRooms.join(', ')}
-                    </Text>
-                  );
-                })}
+      {roomRows.map((rowRooms, rowIndex) => (
+        <View 
+          key={`room-row-${rowIndex}`} 
+          style={styles.roomRow}
+          wrap={false} // Prevent breaking within a row
+        >
+          {rowRooms.map((room) => (
+            <View key={room.id} style={[
+              styles.roomCard,
+              room.isIngress ? { borderColor: '#ef4444', backgroundColor: '#1e293b' } : {}
+            ]}>
+              <View style={styles.roomHeader}>
+                <Text style={styles.roomTitle}>
+                  {getRoomTypeText(room.contents.content)} Room {room.id}
+                  {room.isIngress && (
+                    <Text style={{ 
+                      backgroundColor: '#ef4444', 
+                      color: '#ffffff', 
+                      fontSize: 7,
+                      padding: 1,
+                      borderRadius: 2,
+                      marginLeft: 3
+                    }}> [INGRESS]</Text>
+                  )}
+                </Text>
+                <Text style={styles.roomCoordinates}>
+                  Grid: ({room.coordinates.x}, {room.coordinates.y})
+                </Text>
               </View>
-            )}
 
-            <View style={styles.contentsSection}>
-              <Text style={[styles.roomLabel, { color: '#4ade80', fontSize: 8 }]}>
-                Contents: <Text style={[styles.roomContent, { color: '#dcfce7', fontSize: 8 }]}>{room.contents.content}</Text>
-              </Text>
-              
-              <Text style={[styles.roomContent, { fontStyle: 'italic', marginTop: 3, color: '#bbf7d0', fontSize: 7 }]}>
-                {room.contents.details}
-              </Text>
-            </View>
-          </View>
+              <View style={styles.roomDetails}>
+                <View style={styles.exitsSection}>
+                  <Text style={[styles.roomLabel, { color: '#60a5fa' }]}>
+                    Exits: <Text style={[styles.roomContent, { color: '#dbeafe' }]}>{room.exits}</Text>
+                  </Text>
+                </View>
+                
+                {room.directions && room.directions.length > 0 && (
+                  <View style={[styles.connectionsList, { backgroundColor: '#334155', padding: 4, borderRadius: 3, marginTop: 3 }]}>
+                    <Text style={[styles.roomLabel, { color: '#cbd5e1', fontSize: 8 }]}>Connections:</Text>
+                    {room.directions.map((direction, index) => {
+                      const connectedRooms = room.connectedRooms.get(direction) || [];
+                      return (
+                        <Text key={index} style={[styles.connectionItem, { color: '#e2e8f0', fontSize: 7 }]}>
+                          • {direction}: Room(s) {connectedRooms.join(', ')}
+                        </Text>
+                      );
+                    })}
+                  </View>
+                )}
 
-          {room.contents.hasTreasure && (
-            <View style={styles.treasureSection}>
-              <Text style={[styles.roomLabel, { color: '#fbbf24', fontSize: 8 }]}>
-                [TREASURE]: <Text style={[styles.roomContent, { color: '#fef3c7', fontSize: 7 }]}>{room.contents.treasureLocation}</Text>
-              </Text>
-            </View>
-          )}
+                <View style={styles.contentsSection}>
+                  <Text style={[styles.roomLabel, { color: '#4ade80', fontSize: 8 }]}>
+                    Contents: <Text style={[styles.roomContent, { color: '#dcfce7', fontSize: 8 }]}>{room.contents.content}</Text>
+                  </Text>
+                  
+                  <Text style={[styles.roomContent, { fontStyle: 'italic', marginTop: 3, color: '#bbf7d0', fontSize: 7 }]}>
+                    {room.contents.details}
+                  </Text>
+                </View>
+              </View>
 
-          {room.notes && (
-            <View style={styles.notesSection}>
-              <Text style={[styles.roomLabel, { color: '#d1d5db', fontSize: 8 }]}>
-                [NOTES]: <Text style={[styles.roomContent, { color: '#f3f4f6', fontSize: 7 }]}>{room.notes}</Text>
-              </Text>
+              {room.contents.hasTreasure && (
+                <View style={styles.treasureSection}>
+                  <Text style={[styles.roomLabel, { color: '#fbbf24', fontSize: 8 }]}>
+                    [TREASURE]: <Text style={[styles.roomContent, { color: '#fef3c7', fontSize: 7 }]}>{room.contents.treasureLocation}</Text>
+                  </Text>
+                </View>
+              )}
+
+              {room.notes && (
+                <View style={styles.notesSection}>
+                  <Text style={[styles.roomLabel, { color: '#d1d5db', fontSize: 8 }]}>
+                    [NOTES]: <Text style={[styles.roomContent, { color: '#f3f4f6', fontSize: 7 }]}>{room.notes}</Text>
+                  </Text>
+                </View>
+              )}
             </View>
-          )}
+          ))}
+          {/* Fill empty slots in the last row to maintain layout */}
+          {rowRooms.length < 3 && Array.from({ length: 3 - rowRooms.length }).map((_, index) => (
+            <View key={`empty-${index}`} style={{ width: '31%' }} />
+          ))}
         </View>
       ))}
     </View>
