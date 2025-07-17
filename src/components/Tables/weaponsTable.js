@@ -39,6 +39,7 @@ export function rollSpecialWeaponAbilitiesCount(rarity = 'minor') {
   const roll = rollD12();
   const result = getTableResult(roll, specialWeaponAbilitiesTable);
   if (!result) return { minor: 'None', major: 'None', great: 'None' };
+//   console.log(`Special Weapon Abilities Count Roll: ${roll} -> ${result[rarity.toLowerCase()] || 'No result'}`);
   return result;
 }
 
@@ -63,15 +64,27 @@ export function generateMagicalWeapon(rarity = 'minor') {
   // Determine number of special abilities
   const abilitiesCount = rollSpecialWeaponAbilitiesCount(rarity);
   let count = 0;
+  
+  // Convert text numbers to actual numbers
+  const convertTextToNumber = (text) => {
+    switch (text) {
+      case 'None': return 0;
+      case 'One': return 1;
+      case 'Two': return 2;
+      case 'Three': return 3;
+      default: return 0;
+    }
+  };
+  
   switch (rarity.toLowerCase()) {
     case 'major':
-      count = abilitiesCount.major === 'None' ? 0 : parseInt(abilitiesCount.major) || 1;
+      count = convertTextToNumber(abilitiesCount.major);
       break;
     case 'great':
-      count = abilitiesCount.great === 'None' ? 0 : parseInt(abilitiesCount.great) || 1;
+      count = convertTextToNumber(abilitiesCount.great);
       break;
     default:
-      count = abilitiesCount.minor === 'None' ? 0 : parseInt(abilitiesCount.minor) || 1;
+      count = convertTextToNumber(abilitiesCount.minor);
       break;
   }
   // Add unique magical abilities
