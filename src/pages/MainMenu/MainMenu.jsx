@@ -5,7 +5,7 @@ const MainMenu = ({ onNavigate }) => {
   return (
     <div className="main-menu-container">
       <div className="main-menu">
-        <h1 className="menu-title">Without Number Generator</h1>
+        <h1 className="menu-title">Generators Without Number</h1>
         <div className="menu-options">
           <button 
             className="menu-option"

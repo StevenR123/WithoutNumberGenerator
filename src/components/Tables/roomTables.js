@@ -1,4 +1,4 @@
-// Room generation tables and data for the Without Number dungeon generator
+// Room generation tables and data for the Generators Without Number dungeon generator
 
 import { rollDie, rollD6, rollD8, rollD12, rollD20, getTableResult, getRandomArrayItem } from './tableUtils';
 

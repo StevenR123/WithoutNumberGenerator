@@ -1,4 +1,4 @@
-// Monster generation tables and data for the Without Number monster generator
+// Monster generation tables and data for the Generators Without Number monster generator
 
 import { rollDie, rollD6, rollD8, rollD10, rollD12, getTableResult, getRandomArrayItem } from './tableUtils';
 
