@@ -125,10 +125,30 @@ const ItemsPDFDocument = ({ items, filename }) => (
             <Text style={styles.itemRarity}>{item.rarity} {item.type}</Text>
           </View>
 
-          <View style={styles.detailSection}>
-            <Text style={styles.detailLabel}>Base Item:</Text>
-            <Text style={styles.detailText}>{item.baseItem?.type}</Text>
-          </View>
+          {item.type === 'weapon' ? (
+            <>
+              <View style={styles.detailSection}>
+                <Text style={styles.detailLabel}>User:</Text>
+                <Text style={styles.detailText}>{item.user?.user}</Text>
+                {item.user?.favored && (
+                  <View style={{ marginTop: 3 }}>
+                    <Text style={styles.detailLabel}>Favored:</Text>
+                    <Text style={styles.detailText}>{item.user.favored}</Text>
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.detailSection}>
+                <Text style={styles.detailLabel}>Weapon Type:</Text>
+                <Text style={styles.detailText}>{item.baseItem?.type}</Text>
+              </View>
+            </>
+          ) : (
+            <View style={styles.detailSection}>
+              <Text style={styles.detailLabel}>Base Item:</Text>
+              <Text style={styles.detailText}>{item.baseItem?.type}</Text>
+            </View>
+          )}
 
           {item.type !== 'shield' && item.enchantmentBonus && (
             <View style={styles.detailSection}>
