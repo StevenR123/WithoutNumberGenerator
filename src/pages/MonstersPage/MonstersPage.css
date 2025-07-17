@@ -676,6 +676,72 @@
   transform: translateY(-3px);
 }
 
+.category-option.mammalian {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.category-option.mammalian:hover {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.8);
+  transform: translateY(-3px);
+}
+
+.category-option.insectile {
+  background: rgba(254, 202, 87, 0.1);
+  border-color: rgba(254, 202, 87, 0.4);
+}
+
+.category-option.insectile:hover {
+  background: rgba(254, 202, 87, 0.2);
+  border-color: rgba(254, 202, 87, 0.8);
+  transform: translateY(-3px);
+}
+
+.category-option.reptilian {
+  background: rgba(72, 219, 251, 0.1);
+  border-color: rgba(72, 219, 251, 0.4);
+}
+
+.category-option.reptilian:hover {
+  background: rgba(72, 219, 251, 0.2);
+  border-color: rgba(72, 219, 251, 0.8);
+  transform: translateY(-3px);
+}
+
+.category-option.avian {
+  background: rgba(255, 159, 243, 0.1);
+  border-color: rgba(255, 159, 243, 0.4);
+}
+
+.category-option.avian:hover {
+  background: rgba(255, 159, 243, 0.2);
+  border-color: rgba(255, 159, 243, 0.8);
+  transform: translateY(-3px);
+}
+
+.category-option.piscene {
+  background: rgba(84, 160, 255, 0.1);
+  border-color: rgba(84, 160, 255, 0.4);
+}
+
+.category-option.piscene:hover {
+  background: rgba(84, 160, 255, 0.2);
+  border-color: rgba(84, 160, 255, 0.8);
+  transform: translateY(-3px);
+}
+
+.category-option.exotic {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.category-option.exotic:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.8);
+  transform: translateY(-3px);
+}
+
 .category-name {
   display: block;
   color: #feca57;
@@ -714,6 +780,72 @@
 .body-part-option:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.4);
+  transform: translateX(5px);
+}
+
+.body-part-option.mammalian {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.body-part-option.mammalian:hover {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: rgba(255, 107, 107, 0.6);
+  transform: translateX(5px);
+}
+
+.body-part-option.insectile {
+  background: rgba(254, 202, 87, 0.1);
+  border-color: rgba(254, 202, 87, 0.3);
+}
+
+.body-part-option.insectile:hover {
+  background: rgba(254, 202, 87, 0.2);
+  border-color: rgba(254, 202, 87, 0.6);
+  transform: translateX(5px);
+}
+
+.body-part-option.reptilian {
+  background: rgba(72, 219, 251, 0.1);
+  border-color: rgba(72, 219, 251, 0.3);
+}
+
+.body-part-option.reptilian:hover {
+  background: rgba(72, 219, 251, 0.2);
+  border-color: rgba(72, 219, 251, 0.6);
+  transform: translateX(5px);
+}
+
+.body-part-option.avian {
+  background: rgba(255, 159, 243, 0.1);
+  border-color: rgba(255, 159, 243, 0.3);
+}
+
+.body-part-option.avian:hover {
+  background: rgba(255, 159, 243, 0.2);
+  border-color: rgba(255, 159, 243, 0.6);
+  transform: translateX(5px);
+}
+
+.body-part-option.piscene {
+  background: rgba(84, 160, 255, 0.1);
+  border-color: rgba(84, 160, 255, 0.3);
+}
+
+.body-part-option.piscene:hover {
+  background: rgba(84, 160, 255, 0.2);
+  border-color: rgba(84, 160, 255, 0.6);
+  transform: translateX(5px);
+}
+
+.body-part-option.exotic {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.body-part-option.exotic:hover {
+  background: rgba(102, 126, 234, 0.2);
+  border-color: rgba(102, 126, 234, 0.6);
   transform: translateX(5px);
 }
 

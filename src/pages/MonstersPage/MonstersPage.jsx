@@ -966,7 +966,7 @@ const MonstersPage = ({ onBack }) => {
                   {showSelectionModal.options.map((category, index) => (
                     <div
                       key={index}
-                      className="category-option"
+                      className={`category-option ${category}`}
                       onClick={() => handleBodyPartSelection(category)}
                     >
                       <span className="category-name">{category}</span>
@@ -981,7 +981,7 @@ const MonstersPage = ({ onBack }) => {
                   {showSelectionModal.options.map((part, index) => (
                     <div
                       key={index}
-                      className="body-part-option"
+                      className={`body-part-option ${showSelectionModal.selectedCategory}`}
                       onClick={() => handleBodyPartSelection(part)}
                     >
                       <span className={`category-tag ${showSelectionModal.selectedCategory}`}>
