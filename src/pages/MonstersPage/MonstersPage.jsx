@@ -816,138 +816,104 @@ const MonstersPage = ({ onBack }) => {
                     onClick={() => openSelectionModal(monster.id, 'powerLevel', creaturePowerLevels)}
                   >
                     <strong>Creature Power Level: 🎲</strong>
-                    <div className="power-level-display">
-                      <span className="power-points">
-                        {calculateRemainingPowerPoints(monster)}/{monster.powerLevel.points} Points
-                      </span>
-                      <div className="detail-description">
-                        {monster.powerLevel.description}
-                      </div>
+                    <div className="detail-description">
+                      {calculateRemainingPowerPoints(monster)}/{monster.powerLevel.points} Points
                     </div>
-                  </div>resta
+                    <div className="detail-description">
+                      {monster.powerLevel.description}
+                    </div>
+                  </div>
 
-                  {/* Unified Powers Section */}
-                  <div className="powers-section">
-                    <div className="powers-header">
+                  <div className="body-parts-section">
+                    <div className="body-parts-header">
                       <strong>Powers:</strong>
                       <button 
-                        className="add-power-btn"
+                        className="add-body-part-btn"
                         onClick={() => setShowPowerTypeSelector({ monsterId: monster.id })}
                         title="Add power"
                       >
                         + Add Power
                       </button>
                     </div>
-                    <div className="all-powers-list">
+                    <div className="body-parts-list">
                       {/* Damage Powers */}
                       {monster.damagePowers && monster.damagePowers.length > 0 && (
                         monster.damagePowers.map((power) => (
-                          <div key={`damage-${power.id}`} className="power-item damage-power">
-                            <div className="power-type-badge">Damage</div>
-                            <div className="power-content">
-                              <span className="power-cost">{power.totalCost} pts</span>
-                              <span className="power-description">{power.description}</span>
-                            </div>
+                          <span key={`damage-${power.id}`} className="body-part damage-power">
+                            <span className="power-type-badge">Damage</span> {power.totalCost}pts - {power.description}
                             <button 
-                              className="remove-power"
+                              className="remove-body-part"
                               onClick={() => removeDamagePower(monster.id, power.id)}
                               title="Remove this power"
                             >
                               ×
                             </button>
-                          </div>
+                          </span>
                         ))
                       )}
 
                       {/* Movement Powers */}
                       {monster.movementPowers && monster.movementPowers.length > 0 && (
                         monster.movementPowers.map((power) => (
-                          <div key={`movement-${power.id}`} className="power-item movement-power">
-                            <div className="power-type-badge">Movement</div>
-                            <div className="power-content">
-                              <span className="power-cost">{power.points} pts</span>
-                              <span className="power-description">{power.description}</span>
-                            </div>
+                          <span key={`movement-${power.id}`} className="body-part movement-power">
+                            <span className="power-type-badge">Movement</span> {power.points}pts - {power.description}
                             <button 
-                              className="remove-power"
+                              className="remove-body-part"
                               onClick={() => removeMovementPower(monster.id, power.id)}
                               title="Remove this power"
                             >
                               ×
                             </button>
-                          </div>
+                          </span>
                         ))
                       )}
 
                       {/* Debilitating Powers */}
                       {monster.debilitatingPowers && monster.debilitatingPowers.length > 0 && (
                         monster.debilitatingPowers.map((power) => (
-                          <div key={`debilitating-${power.id}`} className="power-item debilitating-power">
-                            <div className="power-type-badge">Debilitating</div>
-                            <div className="power-content">
-                              <span className="power-cost">{power.totalCost} pts</span>
-                              <span className="power-description">{power.description}</span>
-                            </div>
+                          <span key={`debilitating-${power.id}`} className="body-part debilitating-power">
+                            <span className="power-type-badge">Debilitating</span> {power.totalCost}pts - {power.description}
                             <button 
-                              className="remove-power"
+                              className="remove-body-part"
                               onClick={() => removeDebilitatingPower(monster.id, power.id)}
                               title="Remove this power"
                             >
                               ×
                             </button>
-                          </div>
+                          </span>
                         ))
                       )}
 
                       {/* Augmenting Powers */}
                       {monster.augmentingPowers && monster.augmentingPowers.length > 0 && (
                         monster.augmentingPowers.map((power) => (
-                          <div key={`augmenting-${power.id}`} className="power-item augmenting-power">
-                            <div className="power-type-badge">Augmenting</div>
-                            <div className="power-content">
-                              <span className="power-cost">{power.totalCost} pts</span>
-                              <span className="power-description">{power.description}</span>
-                            </div>
+                          <span key={`augmenting-${power.id}`} className="body-part augmenting-power">
+                            <span className="power-type-badge">Augmenting</span> {power.totalCost}pts - {power.description}
                             <button 
-                              className="remove-power"
+                              className="remove-body-part"
                               onClick={() => removeAugmentingPower(monster.id, power.id)}
                               title="Remove this power"
                             >
                               ×
                             </button>
-                          </div>
+                          </span>
                         ))
                       )}
 
                       {/* Intrinsic Powers */}
                       {monster.intrinsicPowers && monster.intrinsicPowers.length > 0 && (
                         monster.intrinsicPowers.map((power) => (
-                          <div key={`intrinsic-${power.id}`} className="power-item intrinsic-power">
-                            <div className="power-type-badge">Intrinsic</div>
-                            <div className="power-content">
-                              <span className="power-cost">{power.points} pts</span>
-                              <span className="power-description">{power.description}</span>
-                            </div>
+                          <span key={`intrinsic-${power.id}`} className="body-part intrinsic-power">
+                            <span className="power-type-badge">Intrinsic</span> {power.points}pts - {power.description}
                             <button 
-                              className="remove-power"
+                              className="remove-body-part"
                               onClick={() => removeIntrinsicPower(monster.id, power.id)}
                               title="Remove this power"
                             >
                               ×
                             </button>
-                          </div>
+                          </span>
                         ))
-                      )}
-
-                      {/* Show message if no powers */}
-                      {(!monster.damagePowers || monster.damagePowers.length === 0) &&
-                       (!monster.movementPowers || monster.movementPowers.length === 0) &&
-                       (!monster.debilitatingPowers || monster.debilitatingPowers.length === 0) &&
-                       (!monster.augmentingPowers || monster.augmentingPowers.length === 0) &&
-                       (!monster.intrinsicPowers || monster.intrinsicPowers.length === 0) && (
-                        <div className="no-powers">
-                          No powers assigned
-                        </div>
                       )}
                     </div>
                   </div>
