@@ -60,9 +60,10 @@
   gap: 15px;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: center;
 }
 
-.generate-btn, .clear-btn {
+.generate-btn, .clear-btn, .export-btn, .import-btn, .print-btn {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
   color: white;
@@ -74,7 +75,7 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
-.generate-btn:hover:not(:disabled), .clear-btn:hover:not(:disabled) {
+.generate-btn:hover:not(:disabled), .clear-btn:hover:not(:disabled), .export-btn:hover:not(:disabled), .import-btn:hover:not(:disabled), .print-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
 }
@@ -92,6 +93,37 @@
 
 .clear-btn:hover:not(:disabled) {
   box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.export-btn {
+  background: linear-gradient(135deg, #10ac84 0%, #00d2d3 100%);
+  box-shadow: 0 4px 15px rgba(16, 172, 132, 0.4);
+}
+
+.export-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(16, 172, 132, 0.6);
+}
+
+.import-btn {
+  background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
+  box-shadow: 0 4px 15px rgba(95, 39, 205, 0.4);
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.import-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(95, 39, 205, 0.6);
+  transform: translateY(-2px);
+}
+
+.print-btn {
+  background: linear-gradient(135deg, #ff6348 0%, #e55039 100%);
+  box-shadow: 0 4px 15px rgba(255, 99, 72, 0.4);
+}
+
+.print-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(255, 99, 72, 0.6);
 }
 
 .monsters-container {

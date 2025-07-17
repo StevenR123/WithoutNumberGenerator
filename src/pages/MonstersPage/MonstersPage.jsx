@@ -679,6 +679,232 @@ const MonstersPage = ({ onBack }) => {
     setGeneratedMonsters([]);
   };
 
+  const exportMonstersToJSON = () => {
+    const dataStr = JSON.stringify(generatedMonsters, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `monsters_${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
+  const importMonstersFromJSON = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedMonsters = JSON.parse(e.target.result);
+        
+        // Validate that it's an array of monster objects
+        if (Array.isArray(importedMonsters)) {
+          // Assign new IDs to avoid conflicts
+          const monstersWithNewIds = importedMonsters.map((monster, index) => ({
+            ...monster,
+            id: generatedMonsters.length + index + 1,
+            generatedAt: new Date().toLocaleTimeString()
+          }));
+          
+          setGeneratedMonsters(prev => [...prev, ...monstersWithNewIds]);
+        } else {
+          alert('Invalid file format. Please select a valid monsters JSON file.');
+        }
+      } catch (error) {
+        alert('Error reading file. Please make sure it\'s a valid JSON file.');
+      }
+    };
+    
+    reader.readAsText(file);
+    // Reset the input so the same file can be selected again
+    event.target.value = '';
+  };
+
+  const printMonstersToPDF = () => {
+    const printWindow = window.open('', '_blank');
+    
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Monster Generator - Export</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+              background: white;
+              color: black;
+            }
+            
+            .header {
+              text-align: center;
+              margin-bottom: 30px;
+              border-bottom: 2px solid #333;
+              padding-bottom: 20px;
+            }
+            
+            .monster {
+              page-break-inside: avoid;
+              margin-bottom: 30px;
+              border: 2px solid #333;
+              border-radius: 10px;
+              padding: 20px;
+              background: #f8f9fa;
+            }
+            
+            .monster-header {
+              display: flex;
+              align-items: center;
+              margin-bottom: 15px;
+              font-size: 1.5em;
+              font-weight: bold;
+            }
+            
+            .monster-icon {
+              font-size: 2em;
+              margin-right: 15px;
+            }
+            
+            .detail-section {
+              margin-bottom: 12px;
+            }
+            
+            .detail-label {
+              font-weight: bold;
+              display: inline-block;
+              min-width: 150px;
+            }
+            
+            .body-parts {
+              margin-top: 10px;
+            }
+            
+            .body-part {
+              display: inline-block;
+              background: #e9ecef;
+              border: 1px solid #6c757d;
+              border-radius: 15px;
+              padding: 4px 12px;
+              margin: 2px;
+              font-size: 0.9em;
+            }
+            
+            .power {
+              display: block;
+              background: #e3f2fd;
+              border: 1px solid #2196f3;
+              border-radius: 8px;
+              padding: 8px;
+              margin: 4px 0;
+              font-size: 0.9em;
+            }
+            
+            .power-type {
+              font-weight: bold;
+              color: #1976d2;
+            }
+            
+            @media print {
+              body { margin: 0; }
+              .monster { page-break-inside: avoid; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>👹 Monster Generator Export</h1>
+            <p>Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+            <p>Total Monsters: ${generatedMonsters.length}</p>
+          </div>
+          
+          ${generatedMonsters.map(monster => `
+            <div class="monster">
+              <div class="monster-header">
+                <span class="monster-icon">${monster.icon}</span>
+                <span>${monster.name}</span>
+              </div>
+              
+              <div class="detail-section">
+                <span class="detail-label">Animal Type:</span>
+                ${monster.animalType.type} - ${monster.animalType.description}
+              </div>
+              
+              <div class="detail-section">
+                <span class="detail-label">Body Plan:</span>
+                ${monster.bodyPlan.plan}
+              </div>
+              
+              <div class="detail-section">
+                <span class="detail-label">Survival Method:</span>
+                ${monster.survivalMethod.method}
+              </div>
+              
+              <div class="detail-section">
+                <span class="detail-label">Hunting Method:</span>
+                ${monster.huntingMethod.method}
+              </div>
+              
+              <div class="detail-section">
+                <span class="detail-label">Monstrous Drive:</span>
+                ${monster.monstrousDrive}
+              </div>
+              
+              <div class="detail-section">
+                <span class="detail-label">Power Level:</span>
+                ${monster.powerLevel.points} points - ${monster.powerLevel.description}
+              </div>
+              
+              ${monster.bodyParts && monster.bodyParts.length > 0 ? `
+                <div class="detail-section">
+                  <span class="detail-label">Features:</span>
+                  <div class="body-parts">
+                    ${monster.bodyParts.map(part => `<span class="body-part">${part.feature}</span>`).join('')}
+                  </div>
+                </div>
+              ` : ''}
+              
+              ${(monster.damagePowers?.length || monster.movementPowers?.length || 
+                 monster.debilitatingPowers?.length || monster.augmentingPowers?.length || 
+                 monster.intrinsicPowers?.length) ? `
+                <div class="detail-section">
+                  <span class="detail-label">Powers:</span>
+                  <div class="powers">
+                    ${monster.damagePowers?.map(power => 
+                      `<div class="power"><span class="power-type">Damage (${power.totalCost}pts):</span> ${power.description}</div>`
+                    ).join('') || ''}
+                    ${monster.movementPowers?.map(power => 
+                      `<div class="power"><span class="power-type">Movement (${power.points}pts):</span> ${power.description}</div>`
+                    ).join('') || ''}
+                    ${monster.debilitatingPowers?.map(power => 
+                      `<div class="power"><span class="power-type">Debilitating (${power.totalCost}pts):</span> ${power.description}</div>`
+                    ).join('') || ''}
+                    ${monster.augmentingPowers?.map(power => 
+                      `<div class="power"><span class="power-type">Augmenting (${power.totalCost}pts):</span> ${power.description}</div>`
+                    ).join('') || ''}
+                    ${monster.intrinsicPowers?.map(power => 
+                      `<div class="power"><span class="power-type">Intrinsic (${power.points}pts):</span> ${power.description}</div>`
+                    ).join('') || ''}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </body>
+      </html>
+    `;
+    
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    
+    // Wait for content to load, then print
+    setTimeout(() => {
+      printWindow.print();
+    }, 500);
+  };
+
   return (
     <div className="monsters-page">
       <header className="monsters-header">
@@ -705,6 +931,34 @@ const MonstersPage = ({ onBack }) => {
             className="clear-btn"
           >
             🗑️ Clear All
+          </button>
+          
+          <button 
+            onClick={exportMonstersToJSON}
+            disabled={generatedMonsters.length === 0}
+            className="export-btn"
+            title="Export monsters to JSON file"
+          >
+            💾 Export JSON
+          </button>
+          
+          <label className="import-btn" title="Import monsters from JSON file">
+            📁 Import JSON
+            <input
+              type="file"
+              accept=".json"
+              onChange={importMonstersFromJSON}
+              style={{ display: 'none' }}
+            />
+          </label>
+          
+          <button 
+            onClick={printMonstersToPDF}
+            disabled={generatedMonsters.length === 0}
+            className="print-btn"
+            title="Print monsters to PDF"
+          >
+            🖨️ Print PDF
           </button>
         </div>
       </div>
