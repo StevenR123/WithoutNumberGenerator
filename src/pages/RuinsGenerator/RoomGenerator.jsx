@@ -1734,10 +1734,7 @@ const RoomGenerator = ({ onBack }) => {
                 
                 <div className="room-details">
                   <div className="exits-section">
-                    <strong>Exits:</strong> {room.exits} 
-                    {room.maxConnections && (
-                      <span className="max-connections">(Max: {room.maxConnections})</span>
-                    )}
+                    <strong>Exits:</strong> {room.exits}
                     {room.directions.length > 0 && (
                       <div className="directions">
                         <strong>Connections:</strong>
