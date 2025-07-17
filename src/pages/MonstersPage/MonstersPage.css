@@ -1166,3 +1166,145 @@
   background: rgba(241, 196, 15, 0.1);
   border-color: #f1c40f;
 }
+
+/* Unified Powers Section */
+.powers-section {
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid #3498db;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.powers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.all-powers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.power-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.power-type-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* Power type specific coloring */
+.damage-power .power-type-badge {
+  background: rgba(231, 76, 60, 0.8);
+  color: white;
+}
+
+.movement-power .power-type-badge {
+  background: rgba(155, 89, 182, 0.8);
+  color: white;
+}
+
+.debilitating-power .power-type-badge {
+  background: rgba(230, 126, 34, 0.8);
+  color: white;
+}
+
+.augmenting-power .power-type-badge {
+  background: rgba(46, 204, 113, 0.8);
+  color: white;
+}
+
+.intrinsic-power .power-type-badge {
+  background: rgba(241, 196, 15, 0.8);
+  color: white;
+}
+
+/* Power Type Selector Modal */
+.power-type-selector {
+  max-width: 500px;
+}
+
+.power-type-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.power-type-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.power-type-option:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.power-type-icon {
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+.power-type-info h4 {
+  margin: 0 0 5px 0;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.power-type-info p {
+  margin: 0;
+  color: #a0aec0;
+  font-size: 13px;
+}
+
+/* Power type specific hover colors */
+.damage-type:hover {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.movement-type:hover {
+  border-color: #9b59b6;
+  background: rgba(155, 89, 182, 0.1);
+}
+
+.debilitating-type:hover {
+  border-color: #e67e22;
+  background: rgba(230, 126, 34, 0.1);
+}
+
+.augmenting-type:hover {
+  border-color: #2ecc71;
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.intrinsic-type:hover {
+  border-color: #f1c40f;
+  background: rgba(241, 196, 15, 0.1);
+}

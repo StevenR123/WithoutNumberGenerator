@@ -6,6 +6,7 @@ const MonstersPage = ({ onBack }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [editingMonster, setEditingMonster] = useState(null);
   const [showSelectionModal, setShowSelectionModal] = useState(null);
+  const [showPowerTypeSelector, setShowPowerTypeSelector] = useState(null);
   const [showDamagePowerModal, setShowDamagePowerModal] = useState(null);
   const [showMovementPowerModal, setShowMovementPowerModal] = useState(null);
   const [showDebilitatingPowerModal, setShowDebilitatingPowerModal] = useState(null);
@@ -823,29 +824,32 @@ const MonstersPage = ({ onBack }) => {
                         {monster.powerLevel.description}
                       </div>
                     </div>
-                  </div>
+                  </div>resta
 
-                  <div className="damage-powers-section">
-                    <div className="damage-powers-header">
-                      <strong>Damage Infliction Powers:</strong>
+                  {/* Unified Powers Section */}
+                  <div className="powers-section">
+                    <div className="powers-header">
+                      <strong>Powers:</strong>
                       <button 
-                        className="add-damage-power-btn"
-                        onClick={() => openDamagePowerModal(monster.id)}
-                        title="Add damage power"
+                        className="add-power-btn"
+                        onClick={() => setShowPowerTypeSelector({ monsterId: monster.id })}
+                        title="Add power"
                       >
                         + Add Power
                       </button>
                     </div>
-                    <div className="damage-powers-list">
-                      {monster.damagePowers && monster.damagePowers.length > 0 ? (
+                    <div className="all-powers-list">
+                      {/* Damage Powers */}
+                      {monster.damagePowers && monster.damagePowers.length > 0 && (
                         monster.damagePowers.map((power) => (
-                          <div key={power.id} className="damage-power-item">
-                            <div className="damage-power-content">
-                              <span className="damage-power-cost">{power.totalCost} pts</span>
-                              <span className="damage-power-description">{power.description}</span>
+                          <div key={`damage-${power.id}`} className="power-item damage-power">
+                            <div className="power-type-badge">Damage</div>
+                            <div className="power-content">
+                              <span className="power-cost">{power.totalCost} pts</span>
+                              <span className="power-description">{power.description}</span>
                             </div>
                             <button 
-                              className="remove-damage-power"
+                              className="remove-power"
                               onClick={() => removeDamagePower(monster.id, power.id)}
                               title="Remove this power"
                             >
@@ -853,30 +857,13 @@ const MonstersPage = ({ onBack }) => {
                             </button>
                           </div>
                         ))
-                      ) : (
-                        <div className="no-damage-powers">
-                          No damage powers assigned
-                        </div>
                       )}
-                    </div>
-                  </div>
 
-                  {/* Movement Powers Section */}
-                  <div className="movement-powers-section">
-                    <div className="power-header">
-                      <strong>Movement Powers:</strong>
-                      <button 
-                        className="add-power-btn"
-                        onClick={() => openMovementPowerModal(monster.id)}
-                        title="Add movement power"
-                      >
-                        + Add Power
-                      </button>
-                    </div>
-                    <div className="powers-list">
-                      {monster.movementPowers && monster.movementPowers.length > 0 ? (
+                      {/* Movement Powers */}
+                      {monster.movementPowers && monster.movementPowers.length > 0 && (
                         monster.movementPowers.map((power) => (
-                          <div key={power.id} className="power-item">
+                          <div key={`movement-${power.id}`} className="power-item movement-power">
+                            <div className="power-type-badge">Movement</div>
                             <div className="power-content">
                               <span className="power-cost">{power.points} pts</span>
                               <span className="power-description">{power.description}</span>
@@ -890,30 +877,13 @@ const MonstersPage = ({ onBack }) => {
                             </button>
                           </div>
                         ))
-                      ) : (
-                        <div className="no-powers">
-                          No movement powers assigned
-                        </div>
                       )}
-                    </div>
-                  </div>
 
-                  {/* Debilitating Powers Section */}
-                  <div className="debilitating-powers-section">
-                    <div className="power-header">
-                      <strong>Debilitating Powers:</strong>
-                      <button 
-                        className="add-power-btn"
-                        onClick={() => openDebilitatingPowerModal(monster.id)}
-                        title="Add debilitating power"
-                      >
-                        + Add Power
-                      </button>
-                    </div>
-                    <div className="powers-list">
-                      {monster.debilitatingPowers && monster.debilitatingPowers.length > 0 ? (
+                      {/* Debilitating Powers */}
+                      {monster.debilitatingPowers && monster.debilitatingPowers.length > 0 && (
                         monster.debilitatingPowers.map((power) => (
-                          <div key={power.id} className="power-item">
+                          <div key={`debilitating-${power.id}`} className="power-item debilitating-power">
+                            <div className="power-type-badge">Debilitating</div>
                             <div className="power-content">
                               <span className="power-cost">{power.totalCost} pts</span>
                               <span className="power-description">{power.description}</span>
@@ -927,30 +897,13 @@ const MonstersPage = ({ onBack }) => {
                             </button>
                           </div>
                         ))
-                      ) : (
-                        <div className="no-powers">
-                          No debilitating powers assigned
-                        </div>
                       )}
-                    </div>
-                  </div>
 
-                  {/* Augmenting Powers Section */}
-                  <div className="augmenting-powers-section">
-                    <div className="power-header">
-                      <strong>Augmenting Powers:</strong>
-                      <button 
-                        className="add-power-btn"
-                        onClick={() => openAugmentingPowerModal(monster.id)}
-                        title="Add augmenting power"
-                      >
-                        + Add Power
-                      </button>
-                    </div>
-                    <div className="powers-list">
-                      {monster.augmentingPowers && monster.augmentingPowers.length > 0 ? (
+                      {/* Augmenting Powers */}
+                      {monster.augmentingPowers && monster.augmentingPowers.length > 0 && (
                         monster.augmentingPowers.map((power) => (
-                          <div key={power.id} className="power-item">
+                          <div key={`augmenting-${power.id}`} className="power-item augmenting-power">
+                            <div className="power-type-badge">Augmenting</div>
                             <div className="power-content">
                               <span className="power-cost">{power.totalCost} pts</span>
                               <span className="power-description">{power.description}</span>
@@ -964,30 +917,13 @@ const MonstersPage = ({ onBack }) => {
                             </button>
                           </div>
                         ))
-                      ) : (
-                        <div className="no-powers">
-                          No augmenting powers assigned
-                        </div>
                       )}
-                    </div>
-                  </div>
 
-                  {/* Intrinsic Powers Section */}
-                  <div className="intrinsic-powers-section">
-                    <div className="power-header">
-                      <strong>Intrinsic Powers:</strong>
-                      <button 
-                        className="add-power-btn"
-                        onClick={() => openIntrinsicPowerModal(monster.id)}
-                        title="Add intrinsic power"
-                      >
-                        + Add Power
-                      </button>
-                    </div>
-                    <div className="powers-list">
-                      {monster.intrinsicPowers && monster.intrinsicPowers.length > 0 ? (
+                      {/* Intrinsic Powers */}
+                      {monster.intrinsicPowers && monster.intrinsicPowers.length > 0 && (
                         monster.intrinsicPowers.map((power) => (
-                          <div key={power.id} className="power-item">
+                          <div key={`intrinsic-${power.id}`} className="power-item intrinsic-power">
+                            <div className="power-type-badge">Intrinsic</div>
                             <div className="power-content">
                               <span className="power-cost">{power.points} pts</span>
                               <span className="power-description">{power.description}</span>
@@ -1001,9 +937,16 @@ const MonstersPage = ({ onBack }) => {
                             </button>
                           </div>
                         ))
-                      ) : (
+                      )}
+
+                      {/* Show message if no powers */}
+                      {(!monster.damagePowers || monster.damagePowers.length === 0) &&
+                       (!monster.movementPowers || monster.movementPowers.length === 0) &&
+                       (!monster.debilitatingPowers || monster.debilitatingPowers.length === 0) &&
+                       (!monster.augmentingPowers || monster.augmentingPowers.length === 0) &&
+                       (!monster.intrinsicPowers || monster.intrinsicPowers.length === 0) && (
                         <div className="no-powers">
-                          No intrinsic powers assigned
+                          No powers assigned
                         </div>
                       )}
                     </div>
@@ -1135,6 +1078,96 @@ const MonstersPage = ({ onBack }) => {
                   })}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Power Type Selector Modal */}
+      {showPowerTypeSelector && (
+        <div className="modal-overlay" onClick={() => setShowPowerTypeSelector(null)}>
+          <div className="modal-content power-type-selector" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Choose Power Type</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowPowerTypeSelector(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="power-type-options">
+                <div 
+                  className="power-type-option damage-type"
+                  onClick={() => {
+                    openDamagePowerModal(showPowerTypeSelector.monsterId);
+                    setShowPowerTypeSelector(null);
+                  }}
+                >
+                  <div className="power-type-icon">⚔️</div>
+                  <div className="power-type-info">
+                    <h4>Damage Infliction</h4>
+                    <p>Abilities that directly harm enemies</p>
+                  </div>
+                </div>
+                
+                <div 
+                  className="power-type-option movement-type"
+                  onClick={() => {
+                    openMovementPowerModal(showPowerTypeSelector.monsterId);
+                    setShowPowerTypeSelector(null);
+                  }}
+                >
+                  <div className="power-type-icon">🏃</div>
+                  <div className="power-type-info">
+                    <h4>Movement</h4>
+                    <p>Special locomotion and positioning abilities</p>
+                  </div>
+                </div>
+                
+                <div 
+                  className="power-type-option debilitating-type"
+                  onClick={() => {
+                    openDebilitatingPowerModal(showPowerTypeSelector.monsterId);
+                    setShowPowerTypeSelector(null);
+                  }}
+                >
+                  <div className="power-type-icon">🛡️</div>
+                  <div className="power-type-info">
+                    <h4>Debilitating</h4>
+                    <p>Abilities that weaken or impair enemies</p>
+                  </div>
+                </div>
+                
+                <div 
+                  className="power-type-option augmenting-type"
+                  onClick={() => {
+                    openAugmentingPowerModal(showPowerTypeSelector.monsterId);
+                    setShowPowerTypeSelector(null);
+                  }}
+                >
+                  <div className="power-type-icon">💪</div>
+                  <div className="power-type-info">
+                    <h4>Augmenting</h4>
+                    <p>Self-enhancing and buffing abilities</p>
+                  </div>
+                </div>
+                
+                <div 
+                  className="power-type-option intrinsic-type"
+                  onClick={() => {
+                    openIntrinsicPowerModal(showPowerTypeSelector.monsterId);
+                    setShowPowerTypeSelector(null);
+                  }}
+                >
+                  <div className="power-type-icon">✨</div>
+                  <div className="power-type-info">
+                    <h4>Intrinsic</h4>
+                    <p>Inherent magical and special abilities</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
