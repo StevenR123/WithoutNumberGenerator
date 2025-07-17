@@ -108,7 +108,9 @@ export function rollArmorEnchantment(rarity = 'minor') {
       break;
   }
   
-  return getTableResult(table, roll);
+  const result = getTableResult(roll, table);
+  console.log(`Armor Enchantment Roll (${rarity}): ${roll} -> ${result?.bonus || 'No result'}`);
+  return result;
 }
 
 export function rollSpecialAbilitiesCount(rarity = 'minor') {
@@ -127,25 +129,35 @@ export function rollSpecialAbilitiesCount(rarity = 'minor') {
       break;
   }
   
-  return getTableResult(table, roll);
+  const result = getTableResult(roll, table);
+  console.log(`Special Abilities Count Roll (${rarity}): ${roll} -> ${result?.count || 'No result'} abilities`);
+  return result;
 }
 
 export function rollArmorType() {
   const roll = rollD20();
-  return getTableResult(armorTypeTable, roll);
+  const result = getTableResult(roll, armorTypeTable);
+  console.log(`Armor Type Roll: ${roll} -> ${result?.type || 'No result'}`);
+  return result;
 }
 
 export function rollShieldType() {
   const roll = rollD20();
-  return getTableResult(shieldTypeTable, roll);
+  const result = getTableResult(roll, shieldTypeTable);
+  console.log(`Shield Type Roll: ${roll} -> ${result?.type || 'No result'}`);
+  return result;
 }
 
 export function rollMagicalAbility() {
   const roll = rollD100();
-  return getTableResult(magicalAbilitiesTable, roll);
+  const result = getTableResult(roll, magicalAbilitiesTable);
+  console.log(`Magical Ability Roll: ${roll} -> ${result?.ability || 'No result'}`);
+  return result;
 }
 
 export function generateMagicalArmor(rarity = 'minor', itemType = 'armor') {
+  console.log(`\n=== Generating ${rarity} ${itemType} ===`);
+  
   let result = {
     type: itemType,
     rarity: rarity,
@@ -167,13 +179,22 @@ export function generateMagicalArmor(rarity = 'minor', itemType = 'armor') {
     
     for (let i = 0; i < abilitiesCount.count; i++) {
       let ability;
+      let attempts = 0;
       do {
         ability = rollMagicalAbility();
+        attempts++;
+        if (attempts > 10) {
+          console.warn('Too many attempts to find unique ability, breaking loop');
+          break;
+        }
       } while (result.specialAbilities.some(existing => existing.ability === ability.ability));
       
-      result.specialAbilities.push(ability);
+      if (ability) {
+        result.specialAbilities.push(ability);
+      }
     }
   }
   
+  console.log('=== Generation Complete ===\n');
   return result;
 }

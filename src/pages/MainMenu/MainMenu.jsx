@@ -19,6 +19,12 @@ const MainMenu = ({ onNavigate }) => {
           >
             👹 Monsters
           </button>
+          <button 
+            className="menu-option"
+            onClick={() => onNavigate('items')}
+          >
+            ⚔️ Items
+          </button>
         </div>
       </div>
     </div>
