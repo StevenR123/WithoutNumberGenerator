@@ -109,7 +109,7 @@ export function rollArmorEnchantment(rarity = 'minor') {
   }
   
   const result = getTableResult(roll, table);
-  console.log(`Armor Enchantment Roll (${rarity}): ${roll} -> ${result?.bonus || 'No result'}`);
+  // console.log(`Armor Enchantment Roll (${rarity}): ${roll} -> ${result?.bonus || 'No result'}`);
   return result;
 }
 
@@ -130,33 +130,33 @@ export function rollSpecialAbilitiesCount(rarity = 'minor') {
   }
   
   const result = getTableResult(roll, table);
-  console.log(`Special Abilities Count Roll (${rarity}): ${roll} -> ${result?.count || 'No result'} abilities`);
+  // console.log(`Special Abilities Count Roll (${rarity}): ${roll} -> ${result?.count || 'No result'} abilities`);
   return result;
 }
 
 export function rollArmorType() {
   const roll = rollD20();
   const result = getTableResult(roll, armorTypeTable);
-  console.log(`Armor Type Roll: ${roll} -> ${result?.type || 'No result'}`);
+  // console.log(`Armor Type Roll: ${roll} -> ${result?.type || 'No result'}`);
   return result;
 }
 
 export function rollShieldType() {
   const roll = rollD20();
   const result = getTableResult(roll, shieldTypeTable);
-  console.log(`Shield Type Roll: ${roll} -> ${result?.type || 'No result'}`);
+  // console.log(`Shield Type Roll: ${roll} -> ${result?.type || 'No result'}`);
   return result;
 }
 
 export function rollMagicalAbility() {
   const roll = rollD100();
   const result = getTableResult(roll, magicalAbilitiesTable);
-  console.log(`Magical Ability Roll: ${roll} -> ${result?.ability || 'No result'}`);
+  // console.log(`Magical Ability Roll: ${roll} -> ${result?.ability || 'No result'}`);
   return result;
 }
 
 export function generateMagicalArmor(rarity = 'minor', itemType = 'armor') {
-  console.log(`\n=== Generating ${rarity} ${itemType} ===`);
+  // console.log(`\n=== Generating ${rarity} ${itemType} ===`);
   
   let result = {
     type: itemType,
@@ -184,7 +184,7 @@ export function generateMagicalArmor(rarity = 'minor', itemType = 'armor') {
         ability = rollMagicalAbility();
         attempts++;
         if (attempts > 10) {
-          console.warn('Too many attempts to find unique ability, breaking loop');
+          // console.warn('Too many attempts to find unique ability, breaking loop');
           break;
         }
       } while (result.specialAbilities.some(existing => existing.ability === ability.ability));
@@ -195,6 +195,6 @@ export function generateMagicalArmor(rarity = 'minor', itemType = 'armor') {
     }
   }
   
-  console.log('=== Generation Complete ===\n');
+  // console.log('=== Generation Complete ===\n');
   return result;
 }
