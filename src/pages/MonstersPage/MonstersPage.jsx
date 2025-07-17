@@ -14,6 +14,7 @@ const MonstersPage = ({ onBack }) => {
   const [showAugmentingPowerModal, setShowAugmentingPowerModal] = useState(null);
   const [showIntrinsicPowerModal, setShowIntrinsicPowerModal] = useState(null);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(null);
+  const [showSpecialIntrinsicModal, setShowSpecialIntrinsicModal] = useState(null);
   const { generatePDF } = useMonsterPDFGenerator();
 
   const monsterIcons = ['👹', '🦍', '🕷️', '🦅', '🐞', '🐺', '🐴', '🐅', '🐟', '🦎', '🐍', '🐻', '🐝', '🐲', '🦇', '🐙', '🦈', '🐊', '🕸️', '🦂'];
@@ -129,7 +130,8 @@ const MonstersPage = ({ onBack }) => {
     { points: 6, description: 'Require a specific type of weapon or form of injury to harm it' },
     { points: 1, description: 'Be immune to an uncommon harm like poison, frost, or electricity' },
     { points: 2, description: 'Be immune to a fairly common harm like fire or mind-affecting magic' },
-    { points: 3, description: 'Be immune to an entire large class of material, such as metal, plant matter, or directly damaging spells' }
+    { points: 3, description: 'Be immune to an entire large class of material, such as metal, plant matter, or directly damaging spells' },
+    { points: 'special', description: 'Inflict a particular debuff or damage on someone who hits you with a save to avoid it; add the harmful power\'s cost to this', requiresSecondaryPower: true }
   ];
   const animalTypes = [
     { roll: 1, type: 'Apish', description: 'Distorted humanoid outlines' },
@@ -576,6 +578,19 @@ const MonstersPage = ({ onBack }) => {
   };
 
   const addIntrinsicPower = (power) => {
+    // Check if this is the special retribution power
+    if (power.requiresSecondaryPower) {
+      setShowSpecialIntrinsicModal({
+        monsterId: showIntrinsicPowerModal.monsterId,
+        basePower: power,
+        selectedSecondaryPower: null,
+        selectedPowerType: null,
+        totalCost: 1 // Base cost is 1
+      });
+      setShowIntrinsicPowerModal(null);
+      return;
+    }
+
     const monster = generatedMonsters.find(m => m.id === showIntrinsicPowerModal.monsterId);
     const intrinsicPower = {
       id: Date.now(),
@@ -592,6 +607,94 @@ const MonstersPage = ({ onBack }) => {
     const monster = generatedMonsters.find(m => m.id === monsterId);
     const updatedIntrinsicPowers = monster.intrinsicPowers.filter(power => power.id !== powerId);
     updateMonsterField(monsterId, 'intrinsicPowers', updatedIntrinsicPowers);
+  };
+
+  // Special Intrinsic Power Functions
+  const updateSpecialIntrinsicSelection = (field, value) => {
+    setShowSpecialIntrinsicModal(prev => {
+      const updated = { ...prev, [field]: value };
+      
+      // Calculate total cost when secondary power is selected
+      if (updated.selectedSecondaryPower) {
+        let secondaryCost = 0;
+        
+        if (updated.selectedPowerType === 'damage') {
+          secondaryCost = calculateDamagePowerCost(updated.selectedSecondaryPower, updated.selectedModifiers || {});
+        } else if (updated.selectedPowerType === 'debilitating') {
+          secondaryCost = calculateDebilitatingPowerCost(updated.selectedSecondaryPower, updated.selectedModifiers || {});
+        } else {
+          secondaryCost = updated.selectedSecondaryPower.points || 0;
+        }
+        
+        updated.totalCost = 1 + secondaryCost; // 1 base + modified secondary cost
+      } else {
+        updated.totalCost = 1;
+      }
+      
+      return updated;
+    });
+  };
+
+  const selectSecondaryPowerType = (powerType) => {
+    setShowSpecialIntrinsicModal(prev => ({
+      ...prev,
+      selectedPowerType: powerType,
+      selectedSecondaryPower: null,
+      selectedModifiers: {},
+      totalCost: 1
+    }));
+  };
+
+  const selectSecondaryPower = (power) => {
+    setShowSpecialIntrinsicModal(prev => {
+      const updated = {
+        ...prev,
+        selectedSecondaryPower: power,
+        selectedModifiers: {} // Reset modifiers when new power is selected
+      };
+      
+      // Recalculate cost
+      let secondaryCost = 0;
+      if (updated.selectedPowerType === 'damage') {
+        secondaryCost = calculateDamagePowerCost(power, {});
+      } else if (updated.selectedPowerType === 'debilitating') {
+        secondaryCost = calculateDebilitatingPowerCost(power, {});
+      } else {
+        secondaryCost = power.points || 0;
+      }
+      
+      updated.totalCost = 1 + secondaryCost;
+      return updated;
+    });
+  };
+
+  const addSpecialIntrinsicPower = () => {
+    if (!showSpecialIntrinsicModal.selectedSecondaryPower) return;
+
+    const monster = generatedMonsters.find(m => m.id === showSpecialIntrinsicModal.monsterId);
+    const secondaryPower = showSpecialIntrinsicModal.selectedSecondaryPower;
+    const modifiers = showSpecialIntrinsicModal.selectedModifiers || {};
+    
+    // Generate description based on power type and modifiers
+    let secondaryDescription = secondaryPower.description;
+    if (showSpecialIntrinsicModal.selectedPowerType === 'damage') {
+      secondaryDescription = generateDamagePowerDescription(secondaryPower, modifiers);
+    } else if (showSpecialIntrinsicModal.selectedPowerType === 'debilitating') {
+      secondaryDescription = generateDebilitatingPowerDescription(secondaryPower, modifiers);
+    }
+    
+    const specialIntrinsicPower = {
+      id: Date.now(),
+      points: showSpecialIntrinsicModal.totalCost,
+      description: `Inflict a particular debuff or damage on someone who hits you with a save to avoid it: ${secondaryDescription}`,
+      secondaryPower: secondaryPower,
+      selectedModifiers: modifiers,
+      powerType: showSpecialIntrinsicModal.selectedPowerType
+    };
+    
+    const updatedIntrinsicPowers = [...(monster.intrinsicPowers || []), specialIntrinsicPower];
+    updateMonsterField(showSpecialIntrinsicModal.monsterId, 'intrinsicPowers', updatedIntrinsicPowers);
+    setShowSpecialIntrinsicModal(null);
   };
 
   const removeMonster = (monsterId) => {
@@ -1589,6 +1692,203 @@ const MonstersPage = ({ onBack }) => {
                     <span className="power-description">{power.description}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Special Intrinsic Power Modal */}
+      {showSpecialIntrinsicModal && (
+        <div className="modal-overlay" onClick={() => setShowSpecialIntrinsicModal(null)}>
+          <div className="modal-content damage-power-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Add Retribution Power</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowSpecialIntrinsicModal(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="damage-power-builder">
+                <div className="power-section">
+                  <h4>Base Power</h4>
+                  <div className="base-power-display">
+                    <span className="power-cost">1 pt + secondary power cost</span>
+                    <span className="power-description">{showSpecialIntrinsicModal.basePower.description}</span>
+                  </div>
+                </div>
+
+                {!showSpecialIntrinsicModal.selectedPowerType && (
+                  <div className="power-section">
+                    <h4>Select Power Type</h4>
+                    <div className="power-type-options">
+                      <div 
+                        className="power-type-option damage-type"
+                        onClick={() => selectSecondaryPowerType('damage')}
+                      >
+                        <div className="power-type-icon">⚔️</div>
+                        <div className="power-type-info">
+                          <h5>Damage Power</h5>
+                          <p>Direct harm effects</p>
+                        </div>
+                      </div>
+                      
+                      <div 
+                        className="power-type-option debilitating-type"
+                        onClick={() => selectSecondaryPowerType('debilitating')}
+                      >
+                        <div className="power-type-icon">🛡️</div>
+                        <div className="power-type-info">
+                          <h5>Debilitating Power</h5>
+                          <p>Weakening and impairing effects</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {showSpecialIntrinsicModal.selectedPowerType === 'damage' && (
+                  <>
+                    <div className="power-section">
+                      <h4>Select Damage Power</h4>
+                      <div className="base-powers-list">
+                        {damageInflictionPowers.basePowers.map((power, index) => (
+                          <div
+                            key={index}
+                            className={`power-option ${showSpecialIntrinsicModal.selectedSecondaryPower && 
+                              showSpecialIntrinsicModal.selectedSecondaryPower.points === power.points && 
+                              showSpecialIntrinsicModal.selectedSecondaryPower.description === power.description ? 'selected' : ''}`}
+                            onClick={() => selectSecondaryPower(power)}
+                          >
+                            <span className="power-cost">{power.points} pts</span>
+                            <span className="power-description">{power.description}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="power-section">
+                      <h4>Modifiers</h4>
+                      <div className="modifiers-list">
+                        {damageInflictionPowers.modifiers.map((modifier) => (
+                          <label key={modifier.id} className="modifier-option">
+                            <input
+                              type="checkbox"
+                              checked={showSpecialIntrinsicModal.selectedModifiers?.[modifier.id] || false}
+                              disabled={!showSpecialIntrinsicModal.selectedSecondaryPower}
+                              onChange={(e) => {
+                                const newModifiers = {
+                                  ...showSpecialIntrinsicModal.selectedModifiers,
+                                  [modifier.id]: e.target.checked
+                                };
+                                updateSpecialIntrinsicSelection('selectedModifiers', newModifiers);
+                              }}
+                            />
+                            <span className="modifier-cost">
+                              {modifier.points !== undefined ? 
+                                (modifier.points >= 0 ? `+${modifier.points}` : modifier.points) + ' pts' :
+                                `×${modifier.multiplier}`
+                              }
+                            </span>
+                            <span className="modifier-description">{modifier.description}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {showSpecialIntrinsicModal.selectedPowerType === 'debilitating' && (
+                  <>
+                    <div className="power-section">
+                      <h4>Select Debilitating Power</h4>
+                      <div className="base-powers-list">
+                        {debilitatingPowers.basePowers.map((power, index) => (
+                          <div
+                            key={index}
+                            className={`power-option ${showSpecialIntrinsicModal.selectedSecondaryPower && 
+                              showSpecialIntrinsicModal.selectedSecondaryPower.points === power.points && 
+                              showSpecialIntrinsicModal.selectedSecondaryPower.description === power.description ? 'selected' : ''}`}
+                            onClick={() => selectSecondaryPower(power)}
+                          >
+                            <span className="power-cost">{power.points} pts</span>
+                            <span className="power-description">{power.description}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="power-section">
+                      <h4>Modifiers</h4>
+                      <div className="modifiers-list">
+                        {debilitatingPowers.modifiers.map((modifier) => (
+                          <label key={modifier.id} className="modifier-option">
+                            <input
+                              type="checkbox"
+                              checked={showSpecialIntrinsicModal.selectedModifiers?.[modifier.id] || false}
+                              disabled={!showSpecialIntrinsicModal.selectedSecondaryPower}
+                              onChange={(e) => {
+                                const newModifiers = {
+                                  ...showSpecialIntrinsicModal.selectedModifiers,
+                                  [modifier.id]: e.target.checked
+                                };
+                                updateSpecialIntrinsicSelection('selectedModifiers', newModifiers);
+                              }}
+                            />
+                            <span className="modifier-cost">
+                              {modifier.points !== undefined ? 
+                                (modifier.points >= 0 ? `+${modifier.points}` : modifier.points) + ' pts' :
+                                `×${modifier.multiplier}`
+                              }
+                            </span>
+                            <span className="modifier-description">{modifier.description}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {showSpecialIntrinsicModal.selectedSecondaryPower && (
+                  <div className="power-section">
+                    <div className="total-cost-display">
+                      <strong>Total Cost: {showSpecialIntrinsicModal.totalCost} points</strong>
+                      <div className="cost-breakdown">
+                        1 base intrinsic + {showSpecialIntrinsicModal.totalCost - 1} secondary power 
+                        {showSpecialIntrinsicModal.selectedModifiers && Object.keys(showSpecialIntrinsicModal.selectedModifiers).some(key => showSpecialIntrinsicModal.selectedModifiers[key]) && 
+                          " (including modifiers)"
+                        }
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="modal-actions">
+                  <button 
+                    className="cancel-btn"
+                    onClick={() => setShowSpecialIntrinsicModal(null)}
+                  >
+                    Cancel
+                  </button>
+                  {showSpecialIntrinsicModal.selectedPowerType && (
+                    <button 
+                      className="back-btn"
+                      onClick={() => selectSecondaryPowerType(null)}
+                    >
+                      ← Back to Power Types
+                    </button>
+                  )}
+                  <button 
+                    className="add-power-btn"
+                    onClick={addSpecialIntrinsicPower}
+                    disabled={!showSpecialIntrinsicModal.selectedSecondaryPower}
+                  >
+                    Add Retribution Power
+                  </button>
+                </div>
               </div>
             </div>
           </div>
