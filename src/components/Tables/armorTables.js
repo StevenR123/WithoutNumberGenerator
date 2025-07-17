@@ -2,8 +2,6 @@
 
 import { rollDie, rollD20, rollD100, getTableResult, getRandomArrayItem } from './tableUtils';
 
-export const armorIcons = ['🛡️', '⚔️', '🧙‍♂️', '✨', '🔮', '👑', '💎', '🏺', '📿', '🗡️'];
-
 // Armor Enchantment Bonus Tables
 export const minorArmorEnchantmentTable = [
   { roll: [1, 16], bonus: '+1', description: 'Minor enchantment +1' },
@@ -44,24 +42,24 @@ export const greatSpecialAbilitiesTable = [
 
 // Armor Type Table
 export const armorTypeTable = [
-  { roll: [1, 1], type: 'War Shirt', ac: 7, encumbrance: 1 },
-  { roll: [2, 4], type: 'Buff Coat', ac: 8, encumbrance: 1 },
-  { roll: [5, 6], type: 'Linothorax', ac: 9, encumbrance: 1 },
-  { roll: [7, 8], type: 'War Robe', ac: 9, encumbrance: 0 },
-  { roll: [9, 9], type: 'Pieced Armor', ac: 10, encumbrance: 1 },
-  { roll: [10, 11], type: 'Mail Shirt', ac: 11, encumbrance: 1 },
-  { roll: [12, 13], type: 'Cuirass and Greaves', ac: 12, encumbrance: 1 },
-  { roll: [14, 15], type: 'Scaled Armor', ac: 13, encumbrance: 2 },
-  { roll: [16, 17], type: 'Mail Hauberk', ac: 13, encumbrance: 2 },
-  { roll: [18, 18], type: 'Plate Armor', ac: 15, encumbrance: 2 },
-  { roll: [19, 19], type: 'Great Armor', ac: 16, encumbrance: 3 },
-  { roll: [20, 20], type: 'Grand Plate', ac: 17, encumbrance: 3 }
+  { roll: [1, 1], type: 'War Shirt' },
+  { roll: [2, 4], type: 'Buff Coat' },
+  { roll: [5, 6], type: 'Linothorax' },
+  { roll: [7, 8], type: 'War Robe' },
+  { roll: [9, 9], type: 'Pieced Armor' },
+  { roll: [10, 11], type: 'Mail Shirt' },
+  { roll: [12, 13], type: 'Cuirass and Greaves' },
+  { roll: [14, 15], type: 'Scaled Armor' },
+  { roll: [16, 17], type: 'Mail Hauberk' },
+  { roll: [18, 18], type: 'Plate Armor' },
+  { roll: [19, 19], type: 'Great Armor' },
+  { roll: [20, 20], type: 'Grand Plate' }
 ];
 
 // Shield Type Table
 export const shieldTypeTable = [
-  { roll: [1, 5], type: 'Small Shield', acBonus: 1, encumbrance: 1 },
-  { roll: [6, 20], type: 'Large Shield', acBonus: 2, encumbrance: 2 }
+  { roll: [1, 5], type: 'Small Shield' },
+  { roll: [6, 20], type: 'Large Shield' }
 ];
 
 // Magical Armor and Shield Abilities Table
@@ -151,7 +149,7 @@ export function generateMagicalArmor(rarity = 'minor', itemType = 'armor') {
   let result = {
     type: itemType,
     rarity: rarity,
-    icon: getRandomArrayItem(armorIcons)
+    icon: '🛡️'
   };
   
   if (itemType === 'shield') {
