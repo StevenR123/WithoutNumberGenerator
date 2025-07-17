@@ -144,7 +144,7 @@
   transform: none;
 }
 
-.export-btn, .import-btn {
+.export-btn, .import-btn, .print-btn {
   padding: 15px 30px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -173,6 +173,15 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+.print-btn {
+  background: linear-gradient(135deg, #ff6348 0%, #e55039 100%);
+  box-shadow: 0 4px 15px rgba(255, 99, 72, 0.4);
+}
+
+.print-btn:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(255, 99, 72, 0.6);
 }
 
 .import-btn {

@@ -1446,16 +1446,16 @@ const RoomGenerator = ({ onBack }) => {
             className="export-btn"
             title="Export current dungeon layout to JSON file"
           >
-            📄 Export JSON
+            💾 Export JSON
           </button>
           
           <button 
             onClick={exportToPDF}
             disabled={generatedRooms.length === 0}
-            className="export-btn"
+            className="print-btn"
             title="Export current dungeon layout to PDF file"
           >
-            📋 Export PDF
+            💾 Export PDF
           </button>
           
           <button 
