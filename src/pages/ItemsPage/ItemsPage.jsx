@@ -15,6 +15,18 @@ import {
   majorArmorEnchantmentTable,
   greatArmorEnchantmentTable
 } from '../../components/Tables';
+import {
+  generateMagicalWeapon,
+  rollWeaponEnchantment,
+  rollWeaponUser,
+  rollWeaponType,
+  rollSpecialWeaponAbilitiesCount,
+  rollMagicalWeaponAbility
+} from '../../components/Tables';
+import {
+  weaponTypeTable,
+  magicalWeaponAbilitiesTable
+} from '../../components/Tables/weaponsTable';
 
 const ItemsPage = ({ onBack }) => {
   const [generatedItems, setGeneratedItems] = useState([]);
@@ -88,20 +100,21 @@ const ItemsPage = ({ onBack }) => {
     setIsGenerating(true);
     setShowItemTypeSelector(false);
     setShowRaritySelector(null);
-    
     try {
       // Small delay for UX
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const newItem = generateMagicalArmor(rarity, itemType);
-      
+      let newItem;
+      if (itemType === 'weapon') {
+        newItem = generateMagicalWeapon(rarity);
+      } else {
+        newItem = generateMagicalArmor(rarity, itemType);
+      }
       const itemWithId = {
         ...newItem,
         id: Date.now() + Math.random(),
-        name: `${newItem.enchantmentBonus ? newItem.enchantmentBonus.bonus + ' ' : ''}${newItem.baseItem.type}${newItem.specialAbilities.length > 0 ? ' of ' + newItem.specialAbilities[0].ability : ''}`,
+        name: `${newItem.enchantmentBonus ? newItem.enchantmentBonus.bonus + ' ' : ''}${newItem.baseItem.type}${newItem.specialAbilities && newItem.specialAbilities.length > 0 ? ' of ' + newItem.specialAbilities[0].ability : ''}`,
         createdAt: new Date().toISOString()
       };
-
       setGeneratedItems(prev => [itemWithId, ...prev]);
     } catch (error) {
       console.error('Error generating item:', error);
@@ -200,6 +213,15 @@ const ItemsPage = ({ onBack }) => {
             >
               🛡️ Shield
             </button>
+            <button 
+              className="item-type-option"
+              onClick={() => {
+                setShowItemTypeSelector(false);
+                setShowRaritySelector('weapon');
+              }}
+            >
+              ⚔️ Weapon
+            </button>
           </div>
           <button 
             className="cancel-btn"
@@ -216,7 +238,7 @@ const ItemsPage = ({ onBack }) => {
     <div className="modal-overlay" onClick={() => setShowRaritySelector(null)}>
       <div className="modal-content rarity-selector" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>Select {itemType === 'armor' ? 'Armor' : 'Shield'} Rarity</h3>
+          <h3>Select {itemType === 'armor' ? 'Armor' : itemType === 'shield' ? 'Shield' : 'Weapon'} Rarity</h3>
           <button className="modal-close" onClick={() => setShowRaritySelector(null)}>×</button>
         </div>
         <div className="modal-body">
@@ -269,38 +291,46 @@ const ItemsPage = ({ onBack }) => {
     </div>
   );
 
-  const AbilitySelector = ({ itemId, existingAbilities = [] }) => (
-    <div className="modal-overlay" onClick={() => setShowAbilitySelector(null)}>
-      <div className="modal-content ability-selector" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>Add Special Ability</h3>
-          <button className="modal-close" onClick={() => setShowAbilitySelector(null)}>×</button>
-        </div>
-        <div className="modal-body">
-          <div className="ability-options">
-            {magicalAbilitiesTable
-              .filter(ability => !existingAbilities.some(existing => existing.ability === ability.ability))
-              .map((ability, index) => (
-                <button 
-                  key={index}
-                  className="ability-option"
-                  onClick={() => addSpecialAbility(itemId, ability)}
-                >
-                  <div className="ability-name">{ability.ability}</div>
-                  <div className="ability-desc">{ability.description}</div>
-                </button>
-              ))}
+  const AbilitySelector = ({ itemId, existingAbilities = [] }) => {
+    const item = generatedItems.find(i => i.id === itemId);
+    const isWeapon = item && item.type === 'weapon';
+    const abilityTable = isWeapon ? magicalWeaponAbilitiesTable : magicalAbilitiesTable;
+    return (
+      <div className="modal-overlay" onClick={() => setShowAbilitySelector(null)}>
+        <div className="modal-content ability-selector" onClick={e => e.stopPropagation()}>
+          <div className="modal-header">
+            <h3>Add Special Ability</h3>
+            <button className="modal-close" onClick={() => setShowAbilitySelector(null)}>×</button>
           </div>
-          <button 
-            className="cancel-btn"
-            onClick={() => setShowAbilitySelector(null)}
-          >
-            Cancel
-          </button>
+          <div className="modal-body">
+            <div className="ability-options">
+              {abilityTable
+                .filter(ability => !existingAbilities.some(existing => existing.ability === ability.ability))
+                .map((ability, index) => (
+                  <button 
+                    key={index}
+                    className="ability-option"
+                    onClick={() => addSpecialAbility(itemId, ability)}
+                  >
+                    <div className="ability-name">{ability.ability}</div>
+                    {/* Weapon abilities may not have descriptions, so only show if present */}
+                    {ability.description && (
+                      <div className="ability-desc">{ability.description}</div>
+                    )}
+                  </button>
+                ))}
+            </div>
+            <button 
+              className="cancel-btn"
+              onClick={() => setShowAbilitySelector(null)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const DeleteConfirmModal = ({ item }) => (
     <div className="modal-overlay" onClick={() => setShowDeleteConfirmModal(null)}>
@@ -466,61 +496,115 @@ const ItemsPage = ({ onBack }) => {
                 </div>
 
                 <div className="item-details">
-                  <div 
-                    className="item-section clickable-section"
-                    onClick={() => openSelectionModal(
-                      item.id, 
-                      'baseItem', 
-                      item.type === 'shield' ? shieldTypeTable : armorTypeTable
-                    )}
-                  >
-                    <strong>Base Item:</strong>
-                    <span className="detail-description">{item.baseItem.type}</span>
-                  </div>
-
-                  {item.type !== 'shield' && (
-                    <div 
-                      className="item-section clickable-section"
-                      onClick={() => openSelectionModal(
-                        item.id,
-                        'enchantmentBonus',
-                        ['+1', '+2', '+3']
-                      )}
-                    >
-                      <strong>Enchantment:</strong>
-                      <span className="detail-description">{item.enchantmentBonus?.bonus || '+1'}</span>
-                    </div>
-                  )}
-
-                  <div className="item-section">
-                    <div className="abilities-header">
-                      <strong>Special Abilities</strong>
-                      <button 
-                        className="add-ability-btn"
-                        onClick={() => setShowAbilitySelector(item.id)}
+                  {item.type === 'weapon' ? (
+                    <>
+                      <div className="item-section">
+                        <strong>User:</strong> <span className="detail-description">{item.user?.user}</span>
+                      </div>
+                      <div className="item-section clickable-section"
+                        onClick={() => openSelectionModal(
+                          item.id,
+                          'baseItem',
+                          weaponTypeTable
+                        )}
                       >
-                        + Add
-                      </button>
-                    </div>
-                    {item.specialAbilities && item.specialAbilities.length > 0 ? (
-                      item.specialAbilities.map((ability, index) => (
-                        <div key={index} className="ability-item">
-                          <div className="ability-content">
-                            <strong>{ability.ability}:</strong>
-                            <span>{ability.description}</span>
-                          </div>
+                        <strong>Weapon Type:</strong> <span className="detail-description">{item.baseItem?.type}</span>
+                      </div>
+                      <div className="item-section clickable-section"
+                        onClick={() => openSelectionModal(
+                          item.id,
+                          'enchantmentBonus',
+                          ['+1', '+2', '+3']
+                        )}
+                      >
+                        <strong>Enchantment:</strong> <span className="detail-description">{item.enchantmentBonus?.bonus || '+1'}</span>
+                      </div>
+                      <div className="item-section">
+                        <div className="abilities-header">
+                          <strong>Special Abilities</strong>
                           <button 
-                            className="remove-ability-btn"
-                            onClick={() => removeSpecialAbility(item.id, index)}
+                            className="add-ability-btn"
+                            onClick={() => setShowAbilitySelector(item.id)}
                           >
-                            ×
+                            + Add
                           </button>
                         </div>
-                      ))
-                    ) : (
-                      <p className="no-abilities">No special abilities</p>
-                    )}
-                  </div>
+                        {item.specialAbilities && item.specialAbilities.length > 0 ? (
+                          item.specialAbilities.map((ability, index) => (
+                            <div key={index} className="ability-item">
+                              <div className="ability-content">
+                                <strong>{ability.ability}</strong>
+                              </div>
+                              <button 
+                                className="remove-ability-btn"
+                                onClick={() => removeSpecialAbility(item.id, index)}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="no-abilities">No special abilities</p>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div 
+                        className="item-section clickable-section"
+                        onClick={() => openSelectionModal(
+                          item.id, 
+                          'baseItem', 
+                          item.type === 'shield' ? shieldTypeTable : armorTypeTable
+                        )}
+                      >
+                        <strong>Base Item:</strong>
+                        <span className="detail-description">{item.baseItem.type}</span>
+                      </div>
+                      {item.type !== 'shield' && (
+                        <div 
+                          className="item-section clickable-section"
+                          onClick={() => openSelectionModal(
+                            item.id,
+                            'enchantmentBonus',
+                            ['+1', '+2', '+3']
+                          )}
+                        >
+                          <strong>Enchantment:</strong>
+                          <span className="detail-description">{item.enchantmentBonus?.bonus || '+1'}</span>
+                        </div>
+                      )}
+                      <div className="item-section">
+                        <div className="abilities-header">
+                          <strong>Special Abilities</strong>
+                          <button 
+                            className="add-ability-btn"
+                            onClick={() => setShowAbilitySelector(item.id)}
+                          >
+                            + Add
+                          </button>
+                        </div>
+                        {item.specialAbilities && item.specialAbilities.length > 0 ? (
+                          item.specialAbilities.map((ability, index) => (
+                            <div key={index} className="ability-item">
+                              <div className="ability-content">
+                                <strong>{ability.ability}:</strong>
+                                <span>{ability.description}</span>
+                              </div>
+                              <button 
+                                className="remove-ability-btn"
+                                onClick={() => removeSpecialAbility(item.id, index)}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="no-abilities">No special abilities</p>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
