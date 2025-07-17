@@ -313,10 +313,7 @@ const ItemsPage = ({ onBack }) => {
                     onClick={() => addSpecialAbility(itemId, ability)}
                   >
                     <div className="ability-name">{ability.ability}</div>
-                    {/* Weapon abilities may not have descriptions, so only show if present */}
-                    {ability.description && (
-                      <div className="ability-desc">{ability.description}</div>
-                    )}
+                    <div className="ability-desc">{ability.description}</div>
                   </button>
                 ))}
             </div>
@@ -533,7 +530,8 @@ const ItemsPage = ({ onBack }) => {
                           item.specialAbilities.map((ability, index) => (
                             <div key={index} className="ability-item">
                               <div className="ability-content">
-                                <strong>{ability.ability}</strong>
+                                <strong>{ability.ability}:</strong>
+                                <span>{ability.description}</span>
                               </div>
                               <button 
                                 className="remove-ability-btn"
