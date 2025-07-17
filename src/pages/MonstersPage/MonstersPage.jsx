@@ -13,7 +13,7 @@ const MonstersPage = ({ onBack }) => {
   const [showAugmentingPowerModal, setShowAugmentingPowerModal] = useState(null);
   const [showIntrinsicPowerModal, setShowIntrinsicPowerModal] = useState(null);
 
-  const monsterIcons = ['👹', '🦍', '🕷️', '🦅', '🪲', '🐺', '🐴', '🐅', '🐟', '🦎', '🐍', '🐻', '🐝', '🐲', '🦇', '🐙', '🦈', '🐊', '🕸️', '🦂'];
+  const monsterIcons = ['👹', '🦍', '🕷️', '🦅', '🐞', '🐺', '🐴', '🐅', '🐟', '🦎', '🐍', '🐻', '🐝', '🐲', '🦇', '🐙', '🦈', '🐊', '🕸️', '🦂'];
 
   const monstrousDrives = [
     'Hunger for a specific type of food',
@@ -206,7 +206,7 @@ const MonstersPage = ({ onBack }) => {
       case 'Apish': return '🦍';
       case 'Arachnid': return '🕷️';
       case 'Avian': return '🦅';
-      case 'Beetle-like': return '🪲';
+      case 'Beetle-like': return '🐞';
       case 'Canine': return '🐺';
       case 'Equine': return '🐴';
       case 'Feline': return '🐅';
