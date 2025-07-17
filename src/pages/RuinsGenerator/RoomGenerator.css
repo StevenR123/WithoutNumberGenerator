@@ -216,6 +216,16 @@
   transform: translateY(-5px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.room-card:hover .room-header h3 {
+  color: #ff6b6b;
+}
+
+.room-card:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
 }
 
 .room-card.ingress {

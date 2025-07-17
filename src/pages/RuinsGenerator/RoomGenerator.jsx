@@ -1053,6 +1053,29 @@ const RoomGenerator = ({ onBack }) => {
     });
   };
 
+  // Separate handler for room card clicks in the Generated Site Layout
+  const handleRoomCardClick = (room) => {
+    // Get the specific type details based on content type
+    let specificType = '';
+    if (room.contents.content === 'Hazard' && hazardTypes.includes(room.contents.details)) {
+      specificType = room.contents.details;
+    } else if (room.contents.content === 'Enigma' && enigmaTypes.includes(room.contents.details)) {
+      specificType = room.contents.details;
+    } else if (room.contents.content === 'Distractor' && distractorTypes.includes(room.contents.details)) {
+      specificType = room.contents.details;
+    }
+    
+    setRoomEditMenu({
+      isOpen: true,
+      room: room,
+      contentType: room.contents.content,
+      specificType: specificType,
+      notes: room.notes || '',
+      hasTreasure: room.contents.hasTreasure || false,
+      treasureLocation: room.contents.treasureLocation || ''
+    });
+  };
+
   const closeRoomEditMenu = () => {
     setRoomEditMenu({ isOpen: false, room: null, contentType: '', specificType: '', notes: '', hasTreasure: false, treasureLocation: '' });
   };
@@ -1721,7 +1744,13 @@ const RoomGenerator = ({ onBack }) => {
           <h2>Generated Site Layout</h2>
           <div className="rooms-grid">
             {generatedRooms.map((room) => (
-              <div key={room.id} className={`room-card ${room.isIngress ? 'ingress' : ''}`}>
+              <div 
+                key={room.id} 
+                className={`room-card ${room.isIngress ? 'ingress' : ''}`}
+                onClick={() => handleRoomCardClick(room)}
+                style={{ cursor: 'pointer' }}
+                title="Click to edit room"
+              >
                 <div className="room-header">
                   <h3>
                     {getRoomTypeIcon(room.contents.content)} Room {room.id}
