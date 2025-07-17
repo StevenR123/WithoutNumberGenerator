@@ -1,5 +1,7 @@
 // Monster generation tables and data for the Without Number monster generator
 
+import { rollDie, rollD6, rollD8, rollD10, rollD12, getTableResult, getRandomArrayItem } from './tableUtils';
+
 export const monsterIcons = ['👹', '🦍', '🕷️', '🦅', '🐞', '🐺', '🐴', '🐅', '🐟', '🦎', '🐍', '🐻', '🐝', '🐲', '🦇', '🐙', '🦈', '🐊', '🕸️', '🦂'];
 
 export const monstrousDrives = [
@@ -168,26 +170,6 @@ export const bodyParts = {
   avian: ['Feathers', 'Beak', 'Talons', 'Light body', 'Songs', 'Bright colors', 'Sharp eyes', 'Eggs', 'Diving', 'Flocks', 'Regurgitation', 'Guano'],
   piscene: ['Scales', 'Bulging eyes', 'Fins', 'Suckers', 'Tentacles', 'Pincers', 'Rubbery hide', 'Huge maws', 'Water jets', 'Slime', 'Spines', 'Mineral deposit'],
   exotic: ['Tentacles', 'Sacs', 'Wheels', 'Balloons', 'Tendrils', 'Launchers', 'Treads', 'Jets', 'Secretions', 'Translucence', 'Alien smells', 'Unliving matter']
-};
-
-// Utility functions for rolling dice
-export const rollDie = (sides) => Math.floor(Math.random() * sides) + 1;
-export const rollD6 = () => rollDie(6);
-export const rollD8 = () => rollDie(8);
-export const rollD10 = () => rollDie(10);
-export const rollD12 = () => rollDie(12);
-
-export const getTableResult = (roll, table) => {
-  return table.find(entry => {
-    if (Array.isArray(entry.roll)) {
-      return entry.roll.includes(roll);
-    }
-    return entry.roll === roll;
-  });
-};
-
-export const getRandomArrayItem = (array) => {
-  return array[Math.floor(Math.random() * array.length)];
 };
 
 export const getMonsterIcon = (animalType) => {
