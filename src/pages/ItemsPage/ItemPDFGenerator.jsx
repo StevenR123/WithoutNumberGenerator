@@ -1,240 +1,193 @@
-import { useCallback } from 'react';
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet, pdf } from '@react-pdf/renderer';
 
+// Define styles for the PDF
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#0f1419',
+    padding: 20,
+    fontSize: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#f1f5f9',
+    padding: 15,
+    backgroundColor: '#1e293b',
+    borderRadius: 8,
+    border: '1px solid #475569',
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    marginTop: 20,
+    color: '#f1f5f9',
+    backgroundColor: '#334155',
+    padding: 10,
+    borderRadius: 6,
+    textAlign: 'center',
+  },
+  itemCard: {
+    border: '2px solid #475569',
+    borderRadius: 8,
+    padding: 15,
+    backgroundColor: '#1e293b',
+    marginBottom: 20,
+    breakInside: 'avoid',
+  },
+  itemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    backgroundColor: '#334155',
+    padding: 10,
+    borderRadius: 6,
+  },
+  itemName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#f1f5f9',
+  },
+  itemRarity: {
+    fontSize: 10,
+    color: '#94a3b8',
+    marginLeft: 10,
+  },
+  detailSection: {
+    marginBottom: 10,
+    backgroundColor: '#0f172a',
+    padding: 8,
+    borderRadius: 4,
+  },
+  detailLabel: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#94a3b8',
+    marginBottom: 3,
+  },
+  detailText: {
+    fontSize: 9,
+    color: '#e2e8f0',
+    lineHeight: 1.3,
+  },
+  abilitiesList: {
+    marginTop: 5,
+  },
+  ability: {
+    backgroundColor: '#1e40af',
+    color: '#f1f5f9',
+    padding: 6,
+    borderRadius: 4,
+    marginBottom: 3,
+  },
+  abilityName: {
+    fontSize: 8,
+    fontWeight: 'bold',
+    marginBottom: 2,
+  },
+  abilityDescription: {
+    fontSize: 8,
+    lineHeight: 1.2,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    textAlign: 'center',
+    color: '#64748b',
+    fontSize: 8,
+  },
+  pageNumber: {
+    position: 'absolute',
+    fontSize: 8,
+    bottom: 30,
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    color: '#64748b',
+  },
+});
+
+// PDF Document Component
+const ItemsPDFDocument = ({ items, filename }) => (
+  <Document>
+    {/* Individual Item Pages */}
+    {items.map((item, index) => (
+      <Page key={item.id} size="A4" style={styles.page}>
+        <View style={styles.itemCard}>
+          <View style={styles.itemHeader}>
+            <Text style={styles.itemName}>{item.name}</Text>
+            <Text style={styles.itemRarity}>{item.rarity} {item.type}</Text>
+          </View>
+
+          <View style={styles.detailSection}>
+            <Text style={styles.detailLabel}>Base Item:</Text>
+            <Text style={styles.detailText}>{item.baseItem?.type}</Text>
+          </View>
+
+          {item.type !== 'shield' && item.enchantmentBonus && (
+            <View style={styles.detailSection}>
+              <Text style={styles.detailLabel}>Enchantment:</Text>
+              <Text style={styles.detailText}>{item.enchantmentBonus.bonus}</Text>
+            </View>
+          )}
+
+          {item.specialAbilities && item.specialAbilities.length > 0 && (
+            <View style={styles.detailSection}>
+              <Text style={styles.detailLabel}>Special Abilities:</Text>
+              <View style={styles.abilitiesList}>
+                {item.specialAbilities.map((ability, abilityIndex) => (
+                  <View key={abilityIndex} style={styles.ability}>
+                    <Text style={styles.abilityName}>{ability.ability}:</Text>
+                    <Text style={styles.abilityDescription}>{ability.description}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+
+        <Text style={styles.pageNumber} render={({ pageNumber, totalPages }) => (
+          `${pageNumber} / ${totalPages}`
+        )} fixed />
+      </Page>
+    ))}
+  </Document>
+);
+
+// Custom hook for generating Item PDFs
 export const useItemPDFGenerator = () => {
-  const generatePDF = useCallback((items) => {
-    if (!items || items.length === 0) return;
-
-    // Create a new window for printing
-    const printWindow = window.open('', '_blank');
-    
-    if (!printWindow) {
-      console.error('Could not open print window');
-      return;
+  const generatePDF = async (items, filename = 'magical_items') => {
+    try {
+      // Create the PDF document
+      const doc = <ItemsPDFDocument items={items} filename={filename} />;
+      
+      // Generate PDF blob
+      const blob = await pdf(doc).toBlob();
+      
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${filename}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(url);
+      
+      return true;
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      return false;
     }
-
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Magical Items - Generators Without Number</title>
-        <style>
-          @page {
-            margin: 0.5in;
-            size: letter;
-          }
-          
-          body {
-            font-family: 'Georgia', serif;
-            line-height: 1.4;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-          }
-          
-          .header {
-            text-align: center;
-            border-bottom: 3px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-          }
-          
-          .header h1 {
-            font-size: 2.5em;
-            margin: 0;
-            color: #2c3e50;
-          }
-          
-          .header h2 {
-            font-size: 1.2em;
-            margin: 10px 0 0 0;
-            color: #7f8c8d;
-            font-weight: normal;
-          }
-          
-          .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-          }
-          
-          .item-card {
-            border: 2px solid #34495e;
-            border-radius: 8px;
-            padding: 15px;
-            break-inside: avoid;
-            page-break-inside: avoid;
-            background: #f8f9fa;
-          }
-          
-          .item-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #bdc3c7;
-          }
-          
-          .item-icon {
-            font-size: 1.5em;
-            background: #ecf0f1;
-            padding: 8px;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          
-          .item-title {
-            flex: 1;
-          }
-          
-          .item-title h3 {
-            margin: 0 0 5px 0;
-            font-size: 1.2em;
-            color: #2c3e50;
-          }
-          
-          .item-rarity {
-            font-size: 0.9em;
-            color: #7f8c8d;
-            text-transform: capitalize;
-            font-style: italic;
-          }
-          
-          .item-details {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-          }
-          
-          .item-section {
-            background: white;
-            padding: 10px;
-            border-radius: 4px;
-            border-left: 4px solid #3498db;
-          }
-          
-          .item-section h4 {
-            margin: 0 0 8px 0;
-            font-size: 0.95em;
-            color: #2980b9;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: bold;
-          }
-          
-          .item-section p {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 0.9em;
-          }
-          
-          .ability-item {
-            margin-bottom: 8px;
-          }
-          
-          .ability-item:last-child {
-            margin-bottom: 0;
-          }
-          
-          .ability-item strong {
-            color: #e74c3c;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 3px;
-          }
-          
-          .ability-item span {
-            color: #2c3e50;
-            font-size: 0.85em;
-            line-height: 1.3;
-            display: block;
-            margin-left: 10px;
-          }
-          
-          .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #bdc3c7;
-            color: #7f8c8d;
-            font-size: 0.9em;
-          }
-          
-          @media print {
-            body { print-color-adjust: exact; }
-            .item-card { break-inside: avoid; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>Magical Items</h1>
-          <h2>Generated with Generators Without Number</h2>
-        </div>
-        
-        <div class="items-grid">
-          ${items.map(item => `
-            <div class="item-card">
-              <div class="item-header">
-                <div class="item-icon">${item.icon}</div>
-                <div class="item-title">
-                  <h3>${item.name}</h3>
-                  <div class="item-rarity">${item.rarity} ${item.type}</div>
-                </div>
-              </div>
-              
-              <div class="item-details">
-                <div class="item-section">
-                  <h4>Base Item</h4>
-                  <p>${item.baseItem.type}</p>
-                </div>
-                
-                ${item.enchantmentBonus ? `
-                  <div class="item-section">
-                    <h4>Enchantment</h4>
-                    <p>${item.enchantmentBonus.bonus}</p>
-                  </div>
-                ` : ''}
-                
-                ${item.specialAbilities && item.specialAbilities.length > 0 ? `
-                  <div class="item-section">
-                    <h4>Special Abilities</h4>
-                    ${item.specialAbilities.map(ability => `
-                      <div class="ability-item">
-                        <strong>${ability.ability}:</strong>
-                        <span>${ability.description}</span>
-                      </div>
-                    `).join('')}
-                  </div>
-                ` : ''}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        
-        <div class="footer">
-          Generated on ${new Date().toLocaleDateString()} | ${items.length} item${items.length !== 1 ? 's' : ''}
-        </div>
-      </body>
-      </html>
-    `;
-
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    
-    // Wait for content to load, then print
-    printWindow.onload = () => {
-      setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-      }, 500);
-    };
-  }, []);
+  };
 
   return { generatePDF };
 };

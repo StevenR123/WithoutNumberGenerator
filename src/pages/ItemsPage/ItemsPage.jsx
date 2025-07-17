@@ -150,9 +150,27 @@ const ItemsPage = ({ onBack }) => {
     reader.readAsText(file);
   };
 
-  const printItems = () => {
-    if (generatedItems.length === 0) return;
-    generatePDF(generatedItems);
+  const exportItemsToPDF = async () => {
+    if (generatedItems.length === 0) {
+      alert('No items to export. Please generate items first.');
+      return;
+    }
+
+    try {
+      // Create filename with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `magical_items_${timestamp}`;
+      
+      const success = await generatePDF(generatedItems, filename);
+      if (success) {
+        // console.log('PDF generated successfully');
+      } else {
+        alert('Error generating PDF. Please try again.');
+      }
+    } catch (error) {
+      // console.error('PDF generation error:', error);
+      alert('Error generating PDF. Please try again.');
+    }
   };
 
   const ItemTypeSelector = () => (
@@ -399,10 +417,11 @@ const ItemsPage = ({ onBack }) => {
           </label>
           <button 
             className="print-btn"
-            onClick={printItems}
+            onClick={exportItemsToPDF}
             disabled={generatedItems.length === 0}
+            title="Export items to PDF"
           >
-            🖨️ Print PDF
+            � Export PDF
           </button>
         </div>
       </div>
