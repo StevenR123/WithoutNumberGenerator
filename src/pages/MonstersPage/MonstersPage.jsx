@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './MonstersPage.css';
+import { useMonsterPDFGenerator } from './MonsterPDFGenerator';
 
 const MonstersPage = ({ onBack }) => {
   const [generatedMonsters, setGeneratedMonsters] = useState([]);
@@ -12,6 +13,8 @@ const MonstersPage = ({ onBack }) => {
   const [showDebilitatingPowerModal, setShowDebilitatingPowerModal] = useState(null);
   const [showAugmentingPowerModal, setShowAugmentingPowerModal] = useState(null);
   const [showIntrinsicPowerModal, setShowIntrinsicPowerModal] = useState(null);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(null);
+  const { generatePDF } = useMonsterPDFGenerator();
 
   const monsterIcons = ['👹', '🦍', '🕷️', '🦅', '🐞', '🐺', '🐴', '🐅', '🐟', '🦎', '🐍', '🐻', '🐝', '🐲', '🦇', '🐙', '🦈', '🐊', '🕸️', '🦂'];
 
@@ -591,6 +594,19 @@ const MonstersPage = ({ onBack }) => {
     updateMonsterField(monsterId, 'intrinsicPowers', updatedIntrinsicPowers);
   };
 
+  const removeMonster = (monsterId) => {
+    const monster = generatedMonsters.find(m => m.id === monsterId);
+    setShowDeleteConfirmModal({ 
+      monsterId: monsterId, 
+      monsterName: monster.name 
+    });
+  };
+
+  const confirmRemoveMonster = () => {
+    setGeneratedMonsters(prev => prev.filter(monster => monster.id !== showDeleteConfirmModal.monsterId));
+    setShowDeleteConfirmModal(null);
+  };
+
   const generateMonster = () => {
     setIsGenerating(true);
     
@@ -723,186 +739,27 @@ const MonstersPage = ({ onBack }) => {
     event.target.value = '';
   };
 
-  const printMonstersToPDF = () => {
-    const printWindow = window.open('', '_blank');
-    
-    const htmlContent = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Monster Generator - Export</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 20px;
-              background: white;
-              color: black;
-            }
-            
-            .header {
-              text-align: center;
-              margin-bottom: 30px;
-              border-bottom: 2px solid #333;
-              padding-bottom: 20px;
-            }
-            
-            .monster {
-              page-break-inside: avoid;
-              margin-bottom: 30px;
-              border: 2px solid #333;
-              border-radius: 10px;
-              padding: 20px;
-              background: #f8f9fa;
-            }
-            
-            .monster-header {
-              display: flex;
-              align-items: center;
-              margin-bottom: 15px;
-              font-size: 1.5em;
-              font-weight: bold;
-            }
-            
-            .monster-icon {
-              font-size: 2em;
-              margin-right: 15px;
-            }
-            
-            .detail-section {
-              margin-bottom: 12px;
-            }
-            
-            .detail-label {
-              font-weight: bold;
-              display: inline-block;
-              min-width: 150px;
-            }
-            
-            .body-parts {
-              margin-top: 10px;
-            }
-            
-            .body-part {
-              display: inline-block;
-              background: #e9ecef;
-              border: 1px solid #6c757d;
-              border-radius: 15px;
-              padding: 4px 12px;
-              margin: 2px;
-              font-size: 0.9em;
-            }
-            
-            .power {
-              display: block;
-              background: #e3f2fd;
-              border: 1px solid #2196f3;
-              border-radius: 8px;
-              padding: 8px;
-              margin: 4px 0;
-              font-size: 0.9em;
-            }
-            
-            .power-type {
-              font-weight: bold;
-              color: #1976d2;
-            }
-            
-            @media print {
-              body { margin: 0; }
-              .monster { page-break-inside: avoid; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>👹 Monster Generator Export</h1>
-            <p>Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-            <p>Total Monsters: ${generatedMonsters.length}</p>
-          </div>
-          
-          ${generatedMonsters.map(monster => `
-            <div class="monster">
-              <div class="monster-header">
-                <span class="monster-icon">${monster.icon}</span>
-                <span>${monster.name}</span>
-              </div>
-              
-              <div class="detail-section">
-                <span class="detail-label">Animal Type:</span>
-                ${monster.animalType.type} - ${monster.animalType.description}
-              </div>
-              
-              <div class="detail-section">
-                <span class="detail-label">Body Plan:</span>
-                ${monster.bodyPlan.plan}
-              </div>
-              
-              <div class="detail-section">
-                <span class="detail-label">Survival Method:</span>
-                ${monster.survivalMethod.method}
-              </div>
-              
-              <div class="detail-section">
-                <span class="detail-label">Hunting Method:</span>
-                ${monster.huntingMethod.method}
-              </div>
-              
-              <div class="detail-section">
-                <span class="detail-label">Monstrous Drive:</span>
-                ${monster.monstrousDrive}
-              </div>
-              
-              <div class="detail-section">
-                <span class="detail-label">Power Level:</span>
-                ${monster.powerLevel.points} points - ${monster.powerLevel.description}
-              </div>
-              
-              ${monster.bodyParts && monster.bodyParts.length > 0 ? `
-                <div class="detail-section">
-                  <span class="detail-label">Features:</span>
-                  <div class="body-parts">
-                    ${monster.bodyParts.map(part => `<span class="body-part">${part.feature}</span>`).join('')}
-                  </div>
-                </div>
-              ` : ''}
-              
-              ${(monster.damagePowers?.length || monster.movementPowers?.length || 
-                 monster.debilitatingPowers?.length || monster.augmentingPowers?.length || 
-                 monster.intrinsicPowers?.length) ? `
-                <div class="detail-section">
-                  <span class="detail-label">Powers:</span>
-                  <div class="powers">
-                    ${monster.damagePowers?.map(power => 
-                      `<div class="power"><span class="power-type">Damage (${power.totalCost}pts):</span> ${power.description}</div>`
-                    ).join('') || ''}
-                    ${monster.movementPowers?.map(power => 
-                      `<div class="power"><span class="power-type">Movement (${power.points}pts):</span> ${power.description}</div>`
-                    ).join('') || ''}
-                    ${monster.debilitatingPowers?.map(power => 
-                      `<div class="power"><span class="power-type">Debilitating (${power.totalCost}pts):</span> ${power.description}</div>`
-                    ).join('') || ''}
-                    ${monster.augmentingPowers?.map(power => 
-                      `<div class="power"><span class="power-type">Augmenting (${power.totalCost}pts):</span> ${power.description}</div>`
-                    ).join('') || ''}
-                    ${monster.intrinsicPowers?.map(power => 
-                      `<div class="power"><span class="power-type">Intrinsic (${power.points}pts):</span> ${power.description}</div>`
-                    ).join('') || ''}
-                  </div>
-                </div>
-              ` : ''}
-            </div>
-          `).join('')}
-        </body>
-      </html>
-    `;
-    
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
-    
-    // Wait for content to load, then print
-    setTimeout(() => {
-      printWindow.print();
-    }, 500);
+  const exportMonstersToPDF = async () => {
+    if (generatedMonsters.length === 0) {
+      alert('No monsters to export. Please generate monsters first.');
+      return;
+    }
+
+    try {
+      // Create filename with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `monsters_${timestamp}`;
+      
+      const success = await generatePDF(generatedMonsters, filename);
+      if (success) {
+        // console.log('PDF generated successfully');
+      } else {
+        alert('Error generating PDF. Please try again.');
+      }
+    } catch (error) {
+      // console.error('PDF generation error:', error);
+      alert('Error generating PDF. Please try again.');
+    }
   };
 
   return (
@@ -953,12 +810,12 @@ const MonstersPage = ({ onBack }) => {
           </label>
           
           <button 
-            onClick={printMonstersToPDF}
+            onClick={exportMonstersToPDF}
             disabled={generatedMonsters.length === 0}
             className="print-btn"
-            title="Print monsters to PDF"
+            title="Export monsters to PDF"
           >
-            🖨️ Print PDF
+            💾 Export PDF
           </button>
         </div>
       </div>
@@ -987,6 +844,13 @@ const MonstersPage = ({ onBack }) => {
                       placeholder="Monster Name"
                     />
                   </div>
+                  <button 
+                    className="remove-monster-btn"
+                    onClick={() => removeMonster(monster.id)}
+                    title="Remove this monster"
+                  >
+                    🗑️
+                  </button>
                 </div>
                 
                 <div className="monster-details">
@@ -1726,6 +1590,48 @@ const MonstersPage = ({ onBack }) => {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirmModal && (
+        <div className="modal-overlay" onClick={() => setShowDeleteConfirmModal(null)}>
+          <div className="modal-content delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>🗑️ Delete Monster</h3>
+              <button 
+                className="modal-close"
+                onClick={() => setShowDeleteConfirmModal(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="delete-confirmation">
+                <div className="confirmation-message">
+                  <p>Are you sure you want to delete this monster?</p>
+                  <div className="monster-preview">
+                    <span className="monster-name">"{showDeleteConfirmModal.monsterName}"</span>
+                  </div>
+                  <p className="warning-text">⚠️ This action cannot be undone</p>
+                </div>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button 
+                className="cancel-btn"
+                onClick={() => setShowDeleteConfirmModal(null)}
+              >
+                Cancel
+              </button>
+              <button 
+                className="delete-btn danger-btn"
+                onClick={confirmRemoveMonster}
+              >
+                🗑️ Delete Monster
+              </button>
             </div>
           </div>
         </div>
