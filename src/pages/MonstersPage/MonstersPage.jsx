@@ -1124,8 +1124,28 @@ const MonstersPage = ({ onBack }) => {
                       {/* Intrinsic Powers */}
                       {monster.intrinsicPowers && monster.intrinsicPowers.length > 0 && (
                         monster.intrinsicPowers.map((power) => (
-                          <span key={`intrinsic-${power.id}`} className="body-part intrinsic-power">
-                            <span className="power-type-badge">Intrinsic</span> {power.points}pts - {power.description}
+                          <span 
+                            key={`intrinsic-${power.id}`} 
+                            className={`body-part intrinsic-power ${power.powerType ? `intrinsic-${power.powerType}-gradient` : ''}`}
+                            style={power.powerType ? {
+                              background: power.powerType === 'damage' 
+                                ? 'linear-gradient(90deg, rgba(241, 196, 15, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)' 
+                                : 'linear-gradient(90deg, rgba(241, 196, 15, 0.2) 0%, rgba(230, 126, 34, 0.2) 100%)',
+                              display: 'flex',
+                              alignItems: 'center'
+                            } : { display: 'flex', alignItems: 'center' }}
+                          >
+                            <div className="power-badges-stack">
+                              <span className="power-type-badge primary-badge">Intrinsic</span>
+                              {power.powerType && (
+                                <span className={`power-type-badge secondary-badge ${power.powerType}-badge`}>
+                                  {power.powerType === 'damage' ? 'Damage' : 'Debilitating'}
+                                </span>
+                              )}
+                            </div>
+                            <span className="power-info">
+                              {power.points}pts - {power.description}
+                            </span>
                             <button 
                               className="remove-body-part"
                               onClick={() => removeIntrinsicPower(monster.id, power.id)}
