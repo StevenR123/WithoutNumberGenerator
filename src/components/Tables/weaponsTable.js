@@ -55,7 +55,7 @@ export function generateMagicalWeapon(rarity = 'minor') {
     type: 'weapon',
     rarity,
     icon: '⚔️',
-    user: userResult && userResult.user ? { user: userResult.user } : { user: String(userResult) },
+    user: userResult && userResult.user ? { user: userResult.user, favored: userResult.favored } : { user: String(userResult) },
     baseItem: baseItemResult && baseItemResult.type ? { type: baseItemResult.type } : { type: String(baseItemResult) },
     enchantmentBonus: rollWeaponEnchantment(rarity),
     specialAbilities: []

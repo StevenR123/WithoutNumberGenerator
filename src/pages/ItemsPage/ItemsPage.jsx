@@ -25,6 +25,7 @@ import {
 } from '../../components/Tables';
 import {
   weaponTypeTable,
+  weaponUserTable,
   magicalWeaponAbilitiesTable
 } from '../../components/Tables/weaponsTable';
 
@@ -66,6 +67,8 @@ const ItemsPage = ({ onBack }) => {
         updateItemField(itemId, 'baseItem', { type: option.type });
       } else if (field === 'enchantmentBonus') {
         updateItemField(itemId, 'enchantmentBonus', { bonus: option });
+      } else if (field === 'user') {
+        updateItemField(itemId, 'user', { user: option.user, favored: option.favored });
       }
       
       setShowSelectionModal(null);
@@ -385,6 +388,11 @@ const ItemsPage = ({ onBack }) => {
                     <div className="option-content">
                       <div className="option-title">{option}</div>
                     </div>
+                  ) : field === 'user' ? (
+                    <div className="option-content">
+                      <div className="option-title">{option.user}</div>
+                      <div className="option-subtitle">{option.favored}</div>
+                    </div>
                   ) : (
                     <div className="option-content">
                       <div className="option-title">{option.name || option}</div>
@@ -495,8 +503,17 @@ const ItemsPage = ({ onBack }) => {
                 <div className="item-details">
                   {item.type === 'weapon' ? (
                     <>
-                      <div className="item-section">
+                      <div className="item-section clickable-section"
+                        onClick={() => openSelectionModal(
+                          item.id,
+                          'user',
+                          weaponUserTable
+                        )}
+                      >
                         <strong>User:</strong> <span className="detail-description">{item.user?.user}</span>
+                        <div className="user-favored">
+                          <em>Favored: {item.user?.favored}</em>
+                        </div>
                       </div>
                       <div className="item-section clickable-section"
                         onClick={() => openSelectionModal(
