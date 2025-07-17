@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './RoomGenerator.css';
 import { useDungeonPDFGenerator } from './DungeonPDFGenerator';
 
-const RoomGenerator = () => {
+const RoomGenerator = ({ onBack }) => {
   const [numRooms, setNumRooms] = useState(5);
   const [dungeonName, setDungeonName] = useState('');
   const [generatedRooms, setGeneratedRooms] = useState([]);
@@ -1377,6 +1377,11 @@ const RoomGenerator = () => {
   return (
     <div className="room-generator">
       <header className="generator-header">
+        {onBack && (
+          <button className="back-button" onClick={onBack}>
+            ← Back to Menu
+          </button>
+        )}
         <h1>🏰 Room Generator</h1>
         <p>Generate randomized rooms based on the "Without Number" exploration rules</p>
       </header>

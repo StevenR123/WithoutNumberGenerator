@@ -15,6 +15,31 @@
   border-radius: 12px;
   border: 1px solid #475569;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+  transform: translateY(-1px);
 }
 
 .generator-header h1 {
@@ -524,6 +549,11 @@
   
   .generator-header h1 {
     font-size: 2rem;
+  }
+  
+  .back-button {
+    position: static;
+    margin-bottom: 1rem;
   }
 }
 
