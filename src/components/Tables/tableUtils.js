@@ -8,11 +8,12 @@ export const rollD8 = () => rollDie(8);
 export const rollD10 = () => rollDie(10);
 export const rollD12 = () => rollDie(12);
 export const rollD20 = () => rollDie(20);
+export const rollD100 = () => rollDie(100);
 
 export const getTableResult = (roll, table) => {
   return table.find(entry => {
     if (Array.isArray(entry.roll)) {
-      return entry.roll.includes(roll);
+      return roll >= entry.roll[0] && roll <= entry.roll[1];
     }
     return entry.roll === roll;
   });
