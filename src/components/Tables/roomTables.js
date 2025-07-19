@@ -120,6 +120,106 @@ export const treasureLocations = [
   'Resting atop a desk or table'
 ];
 
+// Basic Site Types tables
+export const basicSiteTypesTable = [
+  { roll: [1], type: 'Residential Site' },
+  { roll: [2], type: 'Military Site' },
+  { roll: [3], type: 'Production Site' },
+  { roll: [4], type: 'Religious Site' },
+  { roll: [5], type: 'Cultural Site' },
+  { roll: [6], type: 'Infrastructure Site' }
+];
+
+export const residentialSiteExamples = [
+  { roll: [1], site: 'Isolated rural estate of nobility' },
+  { roll: [2], site: 'Massive tenement or slum tower' },
+  { roll: [3], site: 'Compact fortified village' },
+  { roll: [4], site: 'Mazey urban residential block' },
+  { roll: [5], site: 'Ancient arcology or fragment of it' },
+  { roll: [6], site: 'Sprawling slum of shanties and huts' },
+  { roll: [7], site: 'Townhouse of minor gentry' },
+  { roll: [8], site: 'Rural grange with outbuildings' },
+  { roll: [9], site: 'Hidden shelter against calamity' },
+  { roll: [10], site: 'Rubble-wrought makeshift village' },
+  { roll: [11], site: 'Outpost of refugees or recluses' },
+  { roll: [12], site: 'Inhabited natural feature or cave' }
+];
+
+export const militarySiteExamples = [
+  { roll: [1], site: 'Grand fortress of major significance' },
+  { roll: [2], site: 'Remote frontier keep' },
+  { roll: [3], site: 'Isolated watchtower' },
+  { roll: [4], site: 'Military training camp' },
+  { roll: [5], site: 'Half-subterranean entrenchments' },
+  { roll: [6], site: 'Battlefield littered with fortifications' },
+  { roll: [7], site: 'Hidden bunker or strongpoint' },
+  { roll: [8], site: 'Secret operations base' },
+  { roll: [9], site: 'Battered front-line fortress' },
+  { roll: [10], site: 'Gatehouse controlling a vital pass' },
+  { roll: [11], site: 'Military cache or storehouse' },
+  { roll: [12], site: 'Fortified waystation' }
+];
+
+export const productionSiteExamples = [
+  { roll: [1], site: 'Illicit manufactory for illegal goods' },
+  { roll: [2], site: 'Sacred shrine for holy product' },
+  { roll: [3], site: 'Destroyed camp or extraction site' },
+  { roll: [4], site: 'Inexplicable ancient manufactory' },
+  { roll: [5], site: 'Outsider goods production site' },
+  { roll: [6], site: 'Magical production facility' },
+  { roll: [7], site: 'Mine or open pit for excavation' },
+  { roll: [8], site: 'Overgrown ancient plantation' },
+  { roll: [9], site: 'Managed woodland gone feral' },
+  { roll: [10], site: 'Farm for now-feral valuable beasts' },
+  { roll: [11], site: 'Repurposed ancient manufactory' },
+  { roll: [12], site: 'Fishery or salt extraction site' }
+];
+
+export const religiousSiteExamples = [
+  { roll: [1], site: 'Lost pilgrimage destination' },
+  { roll: [2], site: 'Tomb of some mighty ancient' },
+  { roll: [3], site: 'Shrine repurposed for a newer god' },
+  { roll: [4], site: 'Inexplicable sacred structure' },
+  { roll: [5], site: 'Outsider fane to an alien god' },
+  { roll: [6], site: 'Pilgrim hospital or waystation' },
+  { roll: [7], site: 'Fortified frontier monastery' },
+  { roll: [8], site: 'Prison-monastery for heretics' },
+  { roll: [9], site: 'Fragment of megastructure temple' },
+  { roll: [10], site: 'Place of some holy trial or test' },
+  { roll: [11], site: 'Prison for a sealed demonic force' },
+  { roll: [12], site: 'Holy archive or relic-fortress' }
+];
+
+export const culturalSiteExamples = [
+  { roll: [1], site: 'Inscrutable Outsider art structure' },
+  { roll: [2], site: 'Ancient culture\'s gathering site' },
+  { roll: [3], site: 'Monument complex to lost glories' },
+  { roll: [4], site: 'Abandoned school or study center' },
+  { roll: [5], site: 'Indoctrination camp or prison' },
+  { roll: [6], site: 'Museum of a lost nation' },
+  { roll: [7], site: 'Library or ancient archive' },
+  { roll: [8], site: 'Resort for nobles at ease' },
+  { roll: [9], site: 'Enormous musical structure' },
+  { roll: [10], site: 'Massive ceremonial structure' },
+  { roll: [11], site: 'Preserved "heritage" village-resort' },
+  { roll: [12], site: 'Taboo site of dark magic' }
+];
+
+export const infrastructureSiteExamples = [
+  { roll: [1], site: 'Psychic or tech communications site' },
+  { roll: [2], site: 'Canal or aqueduct control center' },
+  { roll: [3], site: 'Reality-stabilizing Working ruin' },
+  { roll: [4], site: 'Massive bridge or tunnel' },
+  { roll: [5], site: 'Ancient power production center' },
+  { roll: [6], site: 'Semi-ruined teleportation node' },
+  { roll: [7], site: 'Subterranean transit tunnels' },
+  { roll: [8], site: 'Weather-control Working ruin' },
+  { roll: [9], site: 'Ancient road through an obstacle' },
+  { roll: [10], site: 'Huge ancient dam' },
+  { roll: [11], site: 'Outsider xenoforming engine' },
+  { roll: [12], site: 'Now-incomprehensible wreckage' }
+];
+
 // Rooms of Interest tables
 export const roomFunctionTable = [
   { roll: [1], function: 'Residential Room' },
@@ -324,6 +424,47 @@ export const generateRoomOfInterest = () => {
     function: roomFunction,
     example: exampleResult.example,
     functionRoll,
+    exampleRoll
+  };
+};
+
+export const generateBasicSiteType = () => {
+  // First roll for the basic site type (d6)
+  const typeRoll = rollD6();
+  const typeResult = getTableResult(typeRoll, basicSiteTypesTable);
+  const siteType = typeResult.type;
+  
+  // Then roll for the specific example (d12)
+  const exampleRoll = rollD12();
+  let exampleResult;
+  
+  switch (siteType) {
+    case 'Residential Site':
+      exampleResult = getTableResult(exampleRoll, residentialSiteExamples);
+      break;
+    case 'Military Site':
+      exampleResult = getTableResult(exampleRoll, militarySiteExamples);
+      break;
+    case 'Production Site':
+      exampleResult = getTableResult(exampleRoll, productionSiteExamples);
+      break;
+    case 'Religious Site':
+      exampleResult = getTableResult(exampleRoll, religiousSiteExamples);
+      break;
+    case 'Cultural Site':
+      exampleResult = getTableResult(exampleRoll, culturalSiteExamples);
+      break;
+    case 'Infrastructure Site':
+      exampleResult = getTableResult(exampleRoll, infrastructureSiteExamples);
+      break;
+    default:
+      exampleResult = { site: 'Unknown site type' };
+  }
+  
+  return {
+    type: siteType,
+    site: exampleResult.site,
+    typeRoll,
     exampleRoll
   };
 };

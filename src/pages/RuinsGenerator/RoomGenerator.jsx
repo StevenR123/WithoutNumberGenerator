@@ -20,13 +20,15 @@ import {
   generateExits,
   generateDirections,
   generateRoomContents,
-  generateRoomOfInterest
+  generateRoomOfInterest,
+  generateBasicSiteType
 } from '../../components/Tables';
 
 const RoomGenerator = ({ onBack }) => {
   const [numRooms, setNumRooms] = useState(5);
   const [dungeonName, setDungeonName] = useState('');
   const [generatedRooms, setGeneratedRooms] = useState([]);
+  const [ruinInfo, setRuinInfo] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fileInputRef, setFileInputRef] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -51,6 +53,10 @@ const RoomGenerator = ({ onBack }) => {
 
   const generateRooms = () => {
     setIsGenerating(true);
+    
+    // Generate ruin information
+    const ruinInformation = generateBasicSiteType();
+    setRuinInfo(ruinInformation);
     
     // Simulate a small delay for better UX
     setTimeout(() => {
@@ -1315,8 +1321,22 @@ const RoomGenerator = ({ onBack }) => {
         </div>
       </div>
 
+      {ruinInfo && (
+            <div className="ruin-information">
+              <h3>🏛️ Ruin Information</h3>
+              <div className="ruin-details">
+                <div className="ruin-detail-item">
+                  <strong>Site Type:</strong> {ruinInfo.type}
+                </div>
+                <div className="ruin-detail-item">
+                  <strong>Specific Example:</strong> {ruinInfo.site}
+                </div>
+              </div>
+            </div>
+          )}
+
           {generatedRooms.length > 0 && (
-        <div className="connection-map">
+        <div className="connection-map">          
           <h3>🗺️ Dungeon Grid Layout</h3>
             {isEditMode && (
               <div className="edit-instructions">
