@@ -1,3 +1,122 @@
+# Types of Ruin Sites
+
+The table below offers suggestions as to what kind of structure the exploration site might be. An initial d6 roll gives a general type of structure that you can use as grist for your inspiration, while an additional d12 can be rolled to get a specific example.
+
+Some of the listed sites might not make sense in a particular context. While you can always just re-roll or pick something, it can sometimes be interesting to read the result metaphorically, and then put a structure in that matches the essential significance of the rolled result.
+
+## Basic Site Types
+
+| d6 | Basic Type |
+|----|------------|
+| 1  | Residential Site |
+| 2  | Military Site |
+| 3  | Production Site |
+| 4  | Religious Site |
+| 5  | Cultural Site |
+| 6  | Infrastructure Site |
+
+## 1. Residential Sites
+
+| d12 | Site |
+|-----|------|
+| 1   | Isolated rural estate of nobility |
+| 2   | Massive tenement or slum tower |
+| 3   | Compact fortified village |
+| 4   | Mazey urban residential block |
+| 5   | Ancient arcology or fragment of it |
+| 6   | Sprawling slum of shanties and huts |
+| 7   | Townhouse of minor gentry |
+| 8   | Rural grange with outbuildings |
+| 9   | Hidden shelter against calamity |
+| 10  | Rubble-wrought makeshift village |
+| 11  | Outpost of refugees or recluses |
+| 12  | Inhabited natural feature or cave |
+
+## 2. Military Sites
+
+| d12 | Site |
+|-----|------|
+| 1   | Grand fortress of major significance |
+| 2   | Remote frontier keep |
+| 3   | Isolated watchtower |
+| 4   | Military training camp |
+| 5   | Half-subterranean entrenchments |
+| 6   | Battlefield littered with fortifications |
+| 7   | Hidden bunker or strongpoint |
+| 8   | Secret operations base |
+| 9   | Battered front-line fortress |
+| 10  | Gatehouse controlling a vital pass |
+| 11  | Military cache or storehouse |
+| 12  | Fortified waystation |
+
+## 3. Production Sites
+
+| d12 | Site |
+|-----|------|
+| 1   | Illicit manufactory for illegal goods |
+| 2   | Sacred shrine for holy product |
+| 3   | Destroyed camp or extraction site |
+| 4   | Inexplicable ancient manufactory |
+| 5   | Outsider goods production site |
+| 6   | Magical production facility |
+| 7   | Mine or open pit for excavation |
+| 8   | Overgrown ancient plantation |
+| 9   | Managed woodland gone feral |
+| 10  | Farm for now-feral valuable beasts |
+| 11  | Repurposed ancient manufactory |
+| 12  | Fishery or salt extraction site |
+
+## 4. Religious Sites
+
+| d12 | Site |
+|-----|------|
+| 1   | Lost pilgrimage destination |
+| 2   | Tomb of some mighty ancient |
+| 3   | Shrine repurposed for a newer god |
+| 4   | Inexplicable sacred structure |
+| 5   | Outsider fane to an alien god |
+| 6   | Pilgrim hospital or waystation |
+| 7   | Fortified frontier monastery |
+| 8   | Prison-monastery for heretics |
+| 9   | Fragment of megastructure temple |
+| 10  | Place of some holy trial or test |
+| 11  | Prison for a sealed demonic force |
+| 12  | Holy archive or relic-fortress |
+
+## 5. Cultural Sites
+
+| d12 | Site |
+|-----|------|
+| 1   | Inscrutable Outsider art structure |
+| 2   | Ancient culture's gathering site |
+| 3   | Monument complex to lost glories |
+| 4   | Abandoned school or study center |
+| 5   | Indoctrination camp or prison |
+| 6   | Museum of a lost nation |
+| 7   | Library or ancient archive |
+| 8   | Resort for nobles at ease |
+| 9   | Enormous musical structure |
+| 10  | Massive ceremonial structure |
+| 11  | Preserved "heritage" village-resort |
+| 12  | Taboo site of dark magic |
+
+## 6. Infrastructure Sites
+
+| d12 | Site |
+|-----|------|
+| 1   | Psychic or tech communications site |
+| 2   | Canal or aqueduct control center |
+| 3   | Reality-stabilizing Working ruin |
+| 4   | Massive bridge or tunnel |
+| 5   | Ancient power production center |
+| 6   | Semi-ruined teleportation node |
+| 7   | Subterranean transit tunnels |
+| 8   | Weather-control Working ruin |
+| 9   | Ancient road through an obstacle |
+| 10  | Huge ancient dam |
+| 11  | Outsider xenoforming engine |
+| 12  | Now-incomprehensible wreckage |
+
 # Room Layout and Map Features
 
 ## Setting up the Initial Room
