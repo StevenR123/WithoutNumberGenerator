@@ -120,6 +120,106 @@ export const treasureLocations = [
   'Resting atop a desk or table'
 ];
 
+// Rooms of Interest tables
+export const roomFunctionTable = [
+  { roll: [1], function: 'Residential Room' },
+  { roll: [2], function: 'Work Room' },
+  { roll: [3], function: 'Cultural Room' },
+  { roll: [4], function: 'Martial Room' },
+  { roll: [5], function: 'Religious Room' },
+  { roll: [6], function: 'Utility Room' }
+];
+
+export const residentialRoomExamples = [
+  { roll: [1], example: 'Dormitory barracks for servants' },
+  { roll: [2], example: 'The owner or ruler\'s bedchamber' },
+  { roll: [3], example: 'High-ranking resident bedroom' },
+  { roll: [4], example: 'Latrine or privy' },
+  { roll: [5], example: 'Kennel or beast pen' },
+  { roll: [6], example: 'Prison or slave cages' },
+  { roll: [7], example: 'Meager room for minor servant' },
+  { roll: [8], example: 'Sickroom for patients' },
+  { roll: [9], example: 'Guest chambers for visitors' },
+  { roll: [10], example: 'Kitchen or dining hall' },
+  { roll: [11], example: 'Bathing chamber or washroom' },
+  { roll: [12], example: 'Study or private library' }
+];
+
+export const workRoomExamples = [
+  { roll: [1], example: 'Smithy or forge' },
+  { roll: [2], example: 'Smokehouse or food preparation' },
+  { roll: [3], example: 'Sewing or weaving room' },
+  { roll: [4], example: 'Torture chamber' },
+  { roll: [5], example: 'Healer\'s work room' },
+  { roll: [6], example: 'Arcane laboratory' },
+  { roll: [7], example: 'Alchemist\'s workshop' },
+  { roll: [8], example: 'Artisan\'s work area' },
+  { roll: [9], example: 'Artist\'s workroom' },
+  { roll: [10], example: 'Washroom or scullery' },
+  { roll: [11], example: 'Brewery room' },
+  { roll: [12], example: 'Processing room for a raw good' }
+];
+
+export const culturalRoomExamples = [
+  { roll: [1], example: 'Plaza or meeting area' },
+  { roll: [2], example: 'Amphitheater or recital room' },
+  { roll: [3], example: 'Art gallery' },
+  { roll: [4], example: 'Cultural monument' },
+  { roll: [5], example: 'Grave, cemetery, or ossuary' },
+  { roll: [6], example: 'Library or archive' },
+  { roll: [7], example: 'Garden or flowing water feature' },
+  { roll: [8], example: 'Ornately iconographic chamber' },
+  { roll: [9], example: 'Room for a particular cultural rite' },
+  { roll: [10], example: 'Drinking hall' },
+  { roll: [11], example: 'Performance stage or area' },
+  { roll: [12], example: 'Drug den or place of debauchery' }
+];
+
+export const martialRoomExamples = [
+  { roll: [1], example: 'Armory or martial storage' },
+  { roll: [2], example: 'Training area' },
+  { roll: [3], example: 'Barracks for soldiers' },
+  { roll: [4], example: 'Guard post' },
+  { roll: [5], example: 'Parade ground' },
+  { roll: [6], example: 'Commemorative hall' },
+  { roll: [7], example: 'Map or planning room' },
+  { roll: [8], example: 'War machine fabrication or storage' },
+  { roll: [9], example: 'Dueling area' },
+  { roll: [10], example: 'Beast-fighting arena' },
+  { roll: [11], example: 'Strong point or fortification' },
+  { roll: [12], example: 'Gate or fortified entrance' }
+];
+
+export const religiousRoomExamples = [
+  { roll: [1], example: 'Private shrine' },
+  { roll: [2], example: 'Altar room' },
+  { roll: [3], example: 'Monastic prayer cell' },
+  { roll: [4], example: 'Ritual chamber' },
+  { roll: [5], example: 'Monument to a deity' },
+  { roll: [6], example: 'Ceremonial bath' },
+  { roll: [7], example: 'Room for a labor holy to the god' },
+  { roll: [8], example: 'Storage for religious equipage' },
+  { roll: [9], example: 'Secured chamber for holy relics' },
+  { roll: [10], example: 'Secret or unofficial chapel' },
+  { roll: [11], example: 'Priest\'s private chambers' },
+  { roll: [12], example: 'Public area adorned with icons' }
+];
+
+export const utilityRoomExamples = [
+  { roll: [1], example: 'Work materials storage' },
+  { roll: [2], example: 'Pantry or food storage' },
+  { roll: [3], example: 'Storeroom for random detritus' },
+  { roll: [4], example: 'Furnace or boiler room' },
+  { roll: [5], example: 'Exotic ancient power or light room' },
+  { roll: [6], example: 'Pool or water source room' },
+  { roll: [7], example: 'Concealed servant\'s passage' },
+  { roll: [8], example: 'Domestic staff head office' },
+  { roll: [9], example: 'Vault for valuables' },
+  { roll: [10], example: 'Secret or unobtrusive entrance' },
+  { roll: [11], example: 'Grand passage or ornate corridor' },
+  { roll: [12], example: 'Barn or fodder storage' }
+];
+
 export const getRoomTypeIcon = (content) => {
   switch (content) {
     case 'Creature': return '👹';
@@ -184,5 +284,46 @@ export const generateRoomContents = () => {
     details,
     hasTreasure,
     treasureLocation: hasTreasure ? getRandomArrayItem(treasureLocations) : null
+  };
+};
+
+export const generateRoomOfInterest = () => {
+  // First roll for the basic room function (d6)
+  const functionRoll = rollD6();
+  const functionResult = getTableResult(functionRoll, roomFunctionTable);
+  const roomFunction = functionResult.function;
+  
+  // Then roll for the specific example (d12)
+  const exampleRoll = rollD12();
+  let exampleResult;
+  
+  switch (roomFunction) {
+    case 'Residential Room':
+      exampleResult = getTableResult(exampleRoll, residentialRoomExamples);
+      break;
+    case 'Work Room':
+      exampleResult = getTableResult(exampleRoll, workRoomExamples);
+      break;
+    case 'Cultural Room':
+      exampleResult = getTableResult(exampleRoll, culturalRoomExamples);
+      break;
+    case 'Martial Room':
+      exampleResult = getTableResult(exampleRoll, martialRoomExamples);
+      break;
+    case 'Religious Room':
+      exampleResult = getTableResult(exampleRoll, religiousRoomExamples);
+      break;
+    case 'Utility Room':
+      exampleResult = getTableResult(exampleRoll, utilityRoomExamples);
+      break;
+    default:
+      exampleResult = { example: 'Unknown room type' };
+  }
+  
+  return {
+    function: roomFunction,
+    example: exampleResult.example,
+    functionRoll,
+    exampleRoll
   };
 };

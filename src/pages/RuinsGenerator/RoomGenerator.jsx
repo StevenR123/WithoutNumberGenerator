@@ -19,7 +19,8 @@ import {
   getRoomTypeIcon,
   generateExits,
   generateDirections,
-  generateRoomContents
+  generateRoomContents,
+  generateRoomOfInterest
 } from '../../components/Tables';
 
 const RoomGenerator = ({ onBack }) => {
@@ -64,7 +65,10 @@ const RoomGenerator = ({ onBack }) => {
         exits: generateExits(),
         directions: [],
         contents: generateRoomContents(),
-        notes: '',
+        notes: (() => {
+          const roomOfInterest = generateRoomOfInterest();
+          return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+        })(),
         connectedRooms: new Map(), // direction -> [roomId1, roomId2, ...]
         coordinates: { x: 0, y: 0 },
         maxConnections: 0 // Will be set based on exits roll
@@ -117,20 +121,21 @@ const RoomGenerator = ({ onBack }) => {
               const newRoomExits = generateExits();
               const newRoomMaxConnections = getMaxConnectionsFromExits(newRoomExits);
               
-              // Create a new room for this direction
-              const newRoom = {
-                id: roomIdCounter++,
-                isIngress: false,
-                exits: newRoomExits,
-                directions: [],
-                contents: generateRoomContents(),
-                notes: '',
-                connectedRooms: new Map(),
-                coordinates: newCoordinates,
-                maxConnections: newRoomMaxConnections
-              };
-              
-              // Generate directions for the new room (but we'll reserve one connection for the back-connection)
+            // Create a new room for this direction
+            const newRoom = {
+              id: roomIdCounter++,
+              isIngress: false,
+              exits: newRoomExits,
+              directions: [],
+              contents: generateRoomContents(),
+              notes: (() => {
+                const roomOfInterest = generateRoomOfInterest();
+                return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+              })(),
+              connectedRooms: new Map(),
+              coordinates: newCoordinates,
+              maxConnections: newRoomMaxConnections
+            };              // Generate directions for the new room (but we'll reserve one connection for the back-connection)
               newRoom.directions = generateDirections(newRoom.exits);
               
               // Create bidirectional connection (single connection during generation)
@@ -346,7 +351,10 @@ const RoomGenerator = ({ onBack }) => {
               exits: generateExits(),
               directions: [],
               contents: generateRoomContents(),
-              notes: '',
+              notes: (() => {
+                const roomOfInterest = generateRoomOfInterest();
+                return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+              })(),
               connectedRooms: new Map(),
               coordinates: newCoordinates,
               maxConnections: getMaxConnectionsFromExits(generateExits())
@@ -1190,7 +1198,10 @@ const RoomGenerator = ({ onBack }) => {
       exits: 'None',
       directions: [],
       contents: generateRoomContents(),
-      notes: '',
+      notes: (() => {
+        const roomOfInterest = generateRoomOfInterest();
+        return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+      })(),
       connectedRooms: new Map(),
       coordinates: coordinates,
       maxConnections: null
