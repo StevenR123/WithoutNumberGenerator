@@ -1806,25 +1806,6 @@ const RoomGenerator = ({ onBack }) => {
                     <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 1, width: '100%', height: '100%' }}>
                       {connectionElements}
                     </div>
-                    {/* Drag preview element */}
-                    {dragState.isDragging && dragState.draggedRoom && dragState.currentPos && (
-                      <div
-                        style={{
-                          position: 'fixed',
-                          left: dragState.currentPos.x,
-                          top: dragState.currentPos.y,
-                          zIndex: 1000,
-                          transform: 'translate(-50%, -50%)',
-                          opacity: 0.8,
-                          pointerEvents: 'none'
-                        }}
-                        className={`grid-cell room-cell dragging ${dragState.draggedRoom.isIngress ? 'ingress' : ''} ${dragState.draggedRoom.contents.hasTreasure ? 'treasure' : ''}`}
-                      >
-                        <div className="grid-room-id">R{dragState.draggedRoom.id}</div>
-                        <div className="grid-coordinates">({dragState.draggedRoom.coordinates.x},{dragState.draggedRoom.coordinates.y})</div>
-                        <div className="grid-room-type">{getRoomTypeIcon(dragState.draggedRoom.contents.content)}</div>
-                      </div>
-                    )}
                   </div>
                 );
               })()}
@@ -2082,6 +2063,26 @@ const RoomGenerator = ({ onBack }) => {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Drag preview element - positioned at root level to avoid transform issues */}
+      {dragState.isDragging && dragState.draggedRoom && dragState.currentPos && (
+        <div
+          style={{
+            position: 'fixed',
+            left: dragState.currentPos.x,
+            top: dragState.currentPos.y,
+            zIndex: 1000,
+            transform: 'translate(-50%, -50%)',
+            opacity: 0.8,
+            pointerEvents: 'none'
+          }}
+          className={`grid-cell room-cell dragging ${dragState.draggedRoom.isIngress ? 'ingress' : ''} ${dragState.draggedRoom.contents.hasTreasure ? 'treasure' : ''}`}
+        >
+          <div className="grid-room-id">R{dragState.draggedRoom.id}</div>
+          <div className="grid-coordinates">({dragState.draggedRoom.coordinates.x},{dragState.draggedRoom.coordinates.y})</div>
+          <div className="grid-room-type">{getRoomTypeIcon(dragState.draggedRoom.contents.content)}</div>
         </div>
       )}
     </div>
