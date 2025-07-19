@@ -584,8 +584,9 @@ const RoomGenerator = ({ onBack }) => {
       const filename = dungeonName 
         ? `${dungeonName.replace(/[^a-z0-9]/gi, '_')}_${timestamp}`
         : `dungeon_${timestamp}`;
-      
-      const success = await generatePDF(generatedRooms, filename);
+
+      // Pass ruinInfo as third argument
+      const success = await generatePDF(generatedRooms, filename, ruinInfo);
       if (success) {
         // console.log('PDF generated successfully');
       } else {

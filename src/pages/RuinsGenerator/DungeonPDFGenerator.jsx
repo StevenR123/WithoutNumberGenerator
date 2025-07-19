@@ -553,50 +553,78 @@ const RoomDetails = ({ rooms }) => {
 };
 
 // Main PDF Document component
-const DungeonPDFDocument = ({ rooms, metadata = {} }) => {
+const DungeonPDFDocument = ({ rooms, ruinInfo = null, metadata = {} }) => {
   // Calculate how many rooms can fit per page (considering space for headers and grid)
   const roomsPerPage = 9; // 3 rows of 3 rooms each
   const totalPages = Math.ceil((rooms?.length || 0) / roomsPerPage);
-  
+
   const pages = [];
-  
-  // First page with grid layout and first set of rooms
-  const firstPageRooms = rooms?.slice(0, roomsPerPage) || [];
-  const remainingRooms = rooms?.slice(roomsPerPage) || [];
-  
+
+  // First page: ruin info (if present) and grid only
   pages.push(
     <Page key="page-1" size="A4" style={styles.page}>
       <Text style={styles.title}>DUNGEON LAYOUT REPORT</Text>
-      
+      {ruinInfo && (
+        <View style={{ marginBottom: 16, padding: 10, backgroundColor: '#1e293b', borderRadius: 8, border: '1px solid #475569' }}>
+          {/* Site Details Section */}
+          <Text style={{ fontSize: 13, fontWeight: 'bold', color: '#fbbf24', marginBottom: 4 }}>Ruin Information</Text>
+          <Text style={{ color: '#f1f5f9', fontSize: 10, marginBottom: 2 }}>
+            <Text style={{ fontWeight: 'bold' }}>Site Type:</Text> {ruinInfo.type || ''}
+          </Text>
+          {ruinInfo.site && (
+            <Text style={{ color: '#f1f5f9', fontSize: 10, marginBottom: 6 }}>
+              <Text style={{ fontWeight: 'bold' }}>Example:</Text> {ruinInfo.site}
+            </Text>
+          )}
+
+          {/* Social Dynamics Section */}
+          {ruinInfo.inhabitation && (
+            <>
+              <Text style={{ fontWeight: 'bold', color: '#fbbf24', fontSize: 11, marginTop: 6, marginBottom: 2 }}>Social Dynamics</Text>
+              <Text style={{ color: '#f1f5f9', fontSize: 10 }}>
+                <Text style={{ fontWeight: 'bold' }}>Important Inhabitants:</Text> {ruinInfo.inhabitation.importantInhabitants?.description || ''}
+              </Text>
+              <Text style={{ color: '#f1f5f9', fontSize: 10 }}>
+                <Text style={{ fontWeight: 'bold' }}>Hostility Reason:</Text> {ruinInfo.inhabitation.hostilityReason?.reason || ''}
+              </Text>
+              <Text style={{ color: '#f1f5f9', fontSize: 10, marginBottom: 6 }}>
+                <Text style={{ fontWeight: 'bold' }}>Alliance Cause:</Text> {ruinInfo.inhabitation.allianceCause?.cause || ''}
+              </Text>
+
+              {/* Origins & Motivations Section */}
+              <Text style={{ fontWeight: 'bold', color: '#fbbf24', fontSize: 11, marginTop: 6, marginBottom: 2 }}>Origins & Motivations</Text>
+              <Text style={{ color: '#f1f5f9', fontSize: 10 }}>
+                <Text style={{ fontWeight: 'bold' }}>Why They Came:</Text> {ruinInfo.inhabitation.whyTheyCame?.reason || ''}
+              </Text>
+              <Text style={{ color: '#f1f5f9', fontSize: 10 }}>
+                <Text style={{ fontWeight: 'bold' }}>Why They're Staying:</Text> {ruinInfo.inhabitation.whyStaying?.reason || ''}
+              </Text>
+            </>
+          )}
+        </View>
+      )}
       <View style={styles.gridSection}>
         <Text style={styles.subtitle}>DUNGEON GRID LAYOUT</Text>
         <GridLayout rooms={rooms} />
       </View>
-
-      <Text style={styles.subtitle}>GENERATED SITE LAYOUT</Text>
-      <View style={styles.roomsSection}>
-        <RoomDetails rooms={firstPageRooms} />
-      </View>
     </Page>
   );
-  
-  // Additional pages for remaining rooms
-  if (remainingRooms.length > 0) {
-    for (let pageIndex = 1; pageIndex < totalPages; pageIndex++) {
-      const startIndex = pageIndex * roomsPerPage;
-      const endIndex = Math.min(startIndex + roomsPerPage, rooms.length);
-      const pageRooms = rooms.slice(startIndex, endIndex);
-      
-      pages.push(
-        <Page key={`page-${pageIndex + 1}`} size="A4" style={styles.page}>
-          <View style={styles.roomsSection}>
-            <RoomDetails rooms={pageRooms} />
-          </View>
-        </Page>
-      );
-    }
+
+  // Second and subsequent pages: room details (GENERATED SITE LAYOUT)
+  for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
+    const startIndex = pageIndex * roomsPerPage;
+    const endIndex = Math.min(startIndex + roomsPerPage, rooms.length);
+    const pageRooms = rooms.slice(startIndex, endIndex);
+    pages.push(
+      <Page key={`site-layout-page-${pageIndex + 1}`} size="A4" style={styles.page}>
+        {pageIndex === 0 && <Text style={styles.subtitle}>GENERATED SITE LAYOUT</Text>}
+        <View style={styles.roomsSection}>
+          <RoomDetails rooms={pageRooms} />
+        </View>
+      </Page>
+    );
   }
-  
+
   return (
     <Document>
       {pages}
@@ -606,12 +634,11 @@ const DungeonPDFDocument = ({ rooms, metadata = {} }) => {
 
 // Hook to generate and download PDF
 export const useDungeonPDFGenerator = () => {
-  const generatePDF = async (rooms, filename = 'dungeon-layout') => {
+  const generatePDF = async (rooms, filename = 'dungeon-layout', ruinInfo = null) => {
     try {
-      const doc = <DungeonPDFDocument rooms={rooms} />;
+      const doc = <DungeonPDFDocument rooms={rooms} ruinInfo={ruinInfo} />;
       const asPdf = pdf(doc);
       const blob = await asPdf.toBlob();
-      
       // Create download link
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -621,14 +648,12 @@ export const useDungeonPDFGenerator = () => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
       return true;
     } catch (error) {
       console.error('Error generating PDF:', error);
       return false;
     }
   };
-
   return { generatePDF };
 };
 
