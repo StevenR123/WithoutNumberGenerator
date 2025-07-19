@@ -1515,15 +1515,6 @@ const RoomGenerator = ({ onBack }) => {
             📁 Import JSON
           </button>
           
-          <button 
-            onClick={toggleEditMode}
-            disabled={generatedRooms.length === 0}
-            className={`edit-btn ${isEditMode ? 'active' : ''}`}
-            title="Toggle edit mode to add/remove connections between rooms"
-          >
-            ✏️ {isEditMode ? 'Exit Edit' : 'Edit Mode'}
-          </button>
-          
           <input
             type="file"
             accept=".json"
@@ -1608,7 +1599,18 @@ const RoomGenerator = ({ onBack }) => {
 
           {generatedRooms.length > 0 && (
         <div className="connection-map">          
-          <h3>🗺️ Dungeon Grid Layout</h3>
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0 }}>🗺️ Dungeon Grid Layout</h3>
+            <button 
+              onClick={toggleEditMode}
+              disabled={generatedRooms.length === 0}
+              className={`edit-btn ${isEditMode ? 'active' : ''}`}
+              title="Toggle edit mode to add/remove connections between rooms"
+              style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}
+            >
+              ✏️ {isEditMode ? 'Exit Edit' : 'Edit Mode'}
+            </button>
+          </div>
             {isEditMode && (
               <div className="edit-instructions">
                 <h4>✏️ Edit Mode Active</h4>
