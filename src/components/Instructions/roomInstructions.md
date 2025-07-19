@@ -302,6 +302,120 @@ If you need additional monsters, virtually any old-school monster handbook shoul
 | 11  | Spirit or elemental related to the wilderness |
 | 12  | Sorcerers, cultists, or other solitude-lovers |
 
+
+## Rooms of Interest
+
+The table below gives different functions and specific examples of rooms that might be found in a site. You can use them verbatim when that would make sense, but you can also use the results as general metaphors, converting them into something similar that fits the site’s nature.
+
+One technique: take your structure’s general type and think of at least three rooms or locations that would be characteristic of it. Include those rooms and round out the rest of your needs from the table below, rolling or picking whatever results suit the job.
+
+### Basic Room Function Table
+
+| d6 | Basic Function      |
+|----|--------------------|
+| 1  | Residential Room   |
+| 2  | Work Room          |
+| 3  | Cultural Room      |
+| 4  | Martial Room       |
+| 5  | Religious Room     |
+| 6  | Utility Room       |
+
+### Residential Room Examples
+| d12 | Example                        |
+|------|-------------------------------|
+| 1    | Dormitory barracks for servants|
+| 2    | The owner or ruler’s bedchamber|
+| 3    | High-ranking resident bedroom  |
+| 4    | Latrine or privy               |
+| 5    | Kennel or beast pen            |
+| 6    | Prison or slave cages          |
+| 7    | Meager room for minor servant  |
+| 8    | Sickroom for patients          |
+| 9    | Guest chambers for visitors    |
+| 10   | Kitchen or dining hall         |
+| 11   | Bathing chamber or washroom    |
+| 12   | Study or private library       |
+
+### Work Room Examples
+| d12 | Example                        |
+|------|-------------------------------|
+| 1    | Smithy or forge                |
+| 2    | Smokehouse or food preparation |
+| 3    | Sewing or weaving room         |
+| 4    | Torture chamber                |
+| 5    | Healer’s work room             |
+| 6    | Arcane laboratory              |
+| 7    | Alchemist’s workshop           |
+| 8    | Artisan’s work area            |
+| 9    | Artist’s workroom              |
+| 10   | Washroom or scullery           |
+| 11   | Brewery room                   |
+| 12   | Processing room for a raw good |
+
+### Cultural Room Examples
+| d12 | Example                              |
+|------|-------------------------------------|
+| 1    | Plaza or meeting area               |
+| 2    | Amphitheater or recital room        |
+| 3    | Art gallery                         |
+| 4    | Cultural monument                   |
+| 5    | Grave, cemetery, or ossuary         |
+| 6    | Library or archive                  |
+| 7    | Garden or flowing water feature     |
+| 8    | Ornately iconographic chamber       |
+| 9    | Room for a particular cultural rite |
+| 10   | Drinking hall                       |
+| 11   | Performance stage or area           |
+| 12   | Drug den or place of debauchery     |
+
+### Martial Room Examples
+| d12 | Example                                 |
+|------|----------------------------------------|
+| 1    | Armory or martial storage              |
+| 2    | Training area                          |
+| 3    | Barracks for soldiers                  |
+| 4    | Guard post                             |
+| 5    | Parade ground                          |
+| 6    | Commemorative hall                     |
+| 7    | Map or planning room                   |
+| 8    | War machine fabrication or storage     |
+| 9    | Dueling area                           |
+| 10   | Beast-fighting arena                   |
+| 11   | Strong point or fortification          |
+| 12   | Gate or fortified entrance             |
+
+### Religious Room Examples
+| d12 | Example                                 |
+|------|----------------------------------------|
+| 1    | Private shrine                         |
+| 2    | Altar room                             |
+| 3    | Monastic prayer cell                   |
+| 4    | Ritual chamber                         |
+| 5    | Monument to a deity                    |
+| 6    | Ceremonial bath                        |
+| 7    | Room for a labor holy to the god       |
+| 8    | Storage for religious equipage         |
+| 9    | Secured chamber for holy relics        |
+| 10   | Secret or unofficial chapel            |
+| 11   | Priest’s private chambers              |
+| 12   | Public area adorned with icons         |
+
+### Utility Room Examples
+| d12 | Example                                 |
+|------|----------------------------------------|
+| 1    | Work materials storage                 |
+| 2    | Pantry or food storage                 |
+| 3    | Storeroom for random detritus          |
+| 4    | Furnace or boiler room                 |
+| 5    | Exotic ancient power or light room     |
+| 6    | Pool or water source room              |
+| 7    | Concealed servant’s passage            |
+| 8    | Domestic staff head office             |
+| 9    | Vault for valuables                    |
+| 10   | Secret or unobtrusive entrance         |
+| 11   | Grand passage or ornate corridor       |
+| 12   | Barn or fodder storage                 |
+
 # Room Layout and Map Features
 
 ## Setting up the Initial Room
