@@ -10,12 +10,42 @@ export const rollD12 = () => rollDie(12);
 export const rollD20 = () => rollDie(20);
 export const rollD100 = () => rollDie(100);
 
+// export const getTableResult = (roll, table) => {
+//   return table.find(entry => {
+//     if (Array.isArray(entry.roll)) {
+//       return roll >= entry.roll[0] && roll <= entry.roll[1];
+//     }
+//     return entry.roll === roll;
+//   });
+// };
+
+// export const getTableResult = (roll, table) => {
+//   return table.find(entry => {
+//     if (Array.isArray(entry.roll)) {
+//       // Handle single-element arrays
+//       if (entry.roll.length === 1) {
+//         return roll === entry.roll[0];
+//       }
+//       // Handle range arrays
+//       return roll >= entry.roll[0] && roll <= entry.roll[1];
+//     }
+//     // Handle single number entries
+//     return roll === entry.roll;
+//   });
+// };
+
 export const getTableResult = (roll, table) => {
   return table.find(entry => {
     if (Array.isArray(entry.roll)) {
-      return roll >= entry.roll[0] && roll <= entry.roll[1];
+      // Handle single-element arrays
+      if (entry.roll.length === 1) {
+        return roll === entry.roll[0];
+      }
+      // Handle range arrays (two or more elements)
+      return roll >= entry.roll[0] && roll <= entry.roll[entry.roll.length - 1];
     }
-    return entry.roll === roll;
+    // Handle single number entries
+    return roll === entry.roll;
   });
 };
 
