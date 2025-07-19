@@ -117,6 +117,191 @@ Some of the listed sites might not make sense in a particular context. While you
 | 11  | Outsider xenoforming engine |
 | 12  | Now-incomprehensible wreckage |
 
+
+## The Framework of Inhabitation
+
+Some sites will have no significant inhabitants: no monsters, no skulking raiders, no wild beasts or abominable flora worth mentioning. Most, however, will have something dwelling in the place.
+
+The adjacent table offers suggestions on how to structure the inhabitants. While any result might also include a scattering of randomly-chosen monsters or inhabitants, these major dwellers will be the main potential foes or subjects for parley within the ruin or wilderness.
+
+If your structure is particularly small, such as under ten rooms, these numbers may be shrunk somewhat. Very large sites or wilderness points of interest might double the numbers to provide adequate populations.
+
+The tables below offer optional prompts for relationships between groups and motivations for intelligent dwellers in the ruin. The following page offers tables to help determine who exactly these beings are.
+
+### Important Inhabitants
+
+| d6 | Result |
+|----|--------|
+| 1  | One major monstrous beast, with the other inhabitants avoiding it or supplicating it |
+| 2  | One major intelligent leader with their followers, slaves, or associates |
+| 3  | 1d3+1 major inhabitants, at least two of which are hostile to each other |
+| 4  | A major inhabitant and the remnants of another group or pack they deposed |
+| 5  | A relatively harmonious group of 1d3+1 significant figures |
+| 6  | No discernible major figures, only a disorganized congery of beasts and beings |
+
+### Potential Reasons for Hostility
+
+| d12 | Reason |
+|-----|--------|
+| 1   | They raided us and stole our resources |
+| 2   | They’re from a rival religion |
+| 3   | Our kinds naturally hate each other |
+| 4   | They took advantage of us in the past |
+| 5   | They’re weak and ripe for plunder |
+| 6   | They broke an alliance in a treacherous way |
+| 7   | They caused a local disaster or problem |
+| 8   | Our leader has a personal hatred for them |
+| 9   | Local resources are insufficient for us both |
+| 10  | They’re crowding into our territory |
+| 11  | They tricked us and led us into a disaster |
+| 12  | They stole a treasure or an important slave |
+
+### Why Did They Come Here?
+
+| d12 | Reason |
+|-----|--------|
+| 1   | Driven here by a terrible monster |
+| 2   | No one remembers when they first came |
+| 3   | Forced out of their old home by enemies |
+| 4   | Sent out as a colony from their parent group |
+| 5   | Gathered from scattered exiles and outcasts |
+| 6   | Enlisted to come by a powerful leader |
+| 7   | Drawn by the prospect of resources or loot |
+| 8   | Making a cultural or religious pilgrimage |
+| 9   | Came to fight an enemy that lairs here |
+| 10  | Sent by visions, prophecy, or oracles |
+| 11  | It’s a refuge from some pursuing foe |
+| 12  | To guard something precious here |
+
+### Possible Causes for Alliances
+
+| d12 | Cause |
+|-----|-------|
+| 1   | We have a shared enemy |
+| 2   | Our leaders are personal friends |
+| 3   | We intermarry or have a blood relation |
+| 4   | We each have goods the other needs |
+| 5   | Each has skills the other lacks |
+| 6   | We give protection for a tolerable price |
+| 7   | We share the defense of the territory |
+| 8   | We share the same religion |
+| 9   | We overcame a great peril together |
+| 10  | We used to be under the same leader |
+| 11  | We recognize them as our rightful masters |
+| 12  | We gain a great profit by mutual cooperation |
+
+### Why Are They Staying Here?
+
+| d12 | Reason |
+|-----|--------|
+| 1   | It’s rich in resources useful to them |
+| 2   | A foe outside threatens them if they leave |
+| 3   | They’re trying to find something specific here |
+| 4   | It’s simply always been their home |
+| 5   | An important member is immobile somehow |
+| 6   | Some drug or pleasure here has caught them |
+| 7   | They’ve been enslaved by a power here |
+| 8   | They’re being paid to do so by someone |
+| 9   | They haven’t anywhere better to go |
+| 10  | They’re waiting for someone else to arrive |
+| 11  | They’re trapped here by something |
+| 12  | Their leader has a personal reason to stay |
+
+school monster handbook should provide you with
+
+## Types of Inhabitants
+
+These tables offer general suggestions as to what kind of inhabitants might occupy particular types of sites. Specific details of species or monstrous kind will depend on your own campaign setting, with Anak serving as hostile humanoids in the Latter Earth, while goblins or kobolds might fill the role in a more conventional setting.
+
+The types of inhabitants rolled or chosen here reflect the major figures in a site, but they shouldn’t be taken as the only creatures to inhabit the area. Some portion of a ruin or wilderness site’s inhabitants should be taken from exotic beasts, unaffiliated sentients, or other figures of happenstance. Such variety helps keep foes fresh.
+
+If you need additional monsters, virtually any old-school monster handbook should provide you with beasts you can import largely unchanged for your Worlds Without Number campaign. If you’d like to brew your own, you can reference the bestiary chapter in this book.
+
+### Ancient Sorcerer-King Ruin
+
+| d12 | Inhabitant Type |
+|-----|-----------------|
+| 1   | Altered human servitors of the former owner |
+| 2   | Magic-forged monstrous beast |
+| 3   | Adventurers searching for loot |
+| 4   | Heirs of the last human inhabitants |
+| 5   | Cult dedicated to a now-dead faith |
+| 6   | Summoned creature that broke its fetters |
+| 7   | Magical automaton servitors of the ruler |
+| 8   | Decorative magic animals gone feral |
+| 9   | Necromancer and their undead servitors |
+| 10  | Outsider prisoners gone native here |
+| 11  | Restless dead of the inhabitants |
+| 12  | Zealots in service to a long-dead mage |
+
+### Alien Arratu
+
+| d12 | Inhabitant Type |
+|-----|-----------------|
+| 1   | Animate and lethal plant life |
+| 2   | Remnants of the Outsiders who made it |
+| 3   | Adventurers daring the perilous terrain |
+| 4   | Human natives trapped here for generations |
+| 5   | Humanoids adapted to life there |
+| 6   | Blighted raiders semi-native to the place |
+| 7   | Automatons built to serve or fight the arratu |
+| 8   | Outsider ruler still controlling a site within |
+| 9   | Undead shades of swallowed cities or lands |
+| 10  | Vicious alien fauna |
+| 11  | Human cultist-servitors of the Outsiders |
+| 12  | Explorers searching for a route through |
+
+### Subterranean Deep
+
+| d12 | Inhabitant Type |
+|-----|-----------------|
+| 1   | Cruelly Outsider-warped original humans |
+| 2   | Outsider monster that once ruled here |
+| 3   | Swarm or pack of scavenger-beasts |
+| 4   | Blighted intruders that sacked the Deep |
+| 5   | Outsiders descended from the local lords |
+| 6   | Degenerate or crazed native humans |
+| 7   | Outcast surfacers lairing in the Deep |
+| 8   | Non-human sentients who now live here |
+| 9   | Undead relics of former inhabitants |
+| 10  | Still-sane human heirs of the original folk |
+| 11  | Surfacer colonists forgotten by their kin |
+| 12  | Automaton servitors now lacking their lord |
+
+### Modern Ruin Site
+
+| d12 | Inhabitant Type |
+|-----|-----------------|
+| 1   | Local bandits or highwaymen |
+| 2   | Cult of some unacceptable god |
+| 3   | Deposed noble and their retinue |
+| 4   | Adventurers trying to plunder the place |
+| 5   | Troops garrisoned there by the local ruler |
+| 6   | Remnants of the original inhabitants |
+| 7   | Sorcerer of detestable inclinations |
+| 8   | Refugees or runaway peasants |
+| 9   | Vicious local monster lairing here |
+| 10  | Foreign raiders using it as a base |
+| 11  | Whatever ruined the place is still here |
+| 12  | Interlopers with some tie to the original place |
+
+### Trackless Wilderness
+
+| d12 | Inhabitant Type |
+|-----|-----------------|
+| 1   | Alpha predator of the area |
+| 2   | Intelligent monstrous beings |
+| 3   | Swarms or packs of dangerous beasts |
+| 4   | Violently reclusive local natives |
+| 5   | Remnant of a destroyed state |
+| 6   | Survivors of a displaced ethnic group |
+| 7   | Demihumans who prefer isolation |
+| 8   | Bestially savage tribals, perhaps inhuman |
+| 9   | Expedition from a surrounding nation |
+| 10  | Prospectors or resource-hunters |
+| 11  | Spirit or elemental related to the wilderness |
+| 12  | Sorcerers, cultists, or other solitude-lovers |
+
 # Room Layout and Map Features
 
 ## Setting up the Initial Room
