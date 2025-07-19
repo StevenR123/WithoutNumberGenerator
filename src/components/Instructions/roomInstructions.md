@@ -207,8 +207,6 @@ The tables below offer optional prompts for relationships between groups and mot
 | 11  | They’re trapped here by something |
 | 12  | Their leader has a personal reason to stay |
 
-school monster handbook should provide you with
-
 ## Types of Inhabitants
 
 These tables offer general suggestions as to what kind of inhabitants might occupy particular types of sites. Specific details of species or monstrous kind will depend on your own campaign setting, with Anak serving as hostile humanoids in the Latter Earth, while goblins or kobolds might fill the role in a more conventional setting.

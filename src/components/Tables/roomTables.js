@@ -220,6 +220,76 @@ export const infrastructureSiteExamples = [
   { roll: [12], site: 'Now-incomprehensible wreckage' }
 ];
 
+// The Framework of Inhabitation tables
+export const importantInhabitantsTable = [
+  { roll: [1], result: 'One major monstrous beast, with the other inhabitants avoiding it or supplicating it' },
+  { roll: [2], result: 'One major intelligent leader with their followers, slaves, or associates' },
+  { roll: [3], result: '1d3+1 major inhabitants, at least two of which are hostile to each other' },
+  { roll: [4], result: 'A major inhabitant and the remnants of another group or pack they deposed' },
+  { roll: [5], result: 'A relatively harmonious group of 1d3+1 significant figures' },
+  { roll: [6], result: 'No discernible major figures, only a disorganized congery of beasts and beings' }
+];
+
+export const hostilityReasonsTable = [
+  { roll: [1], reason: 'They raided us and stole our resources' },
+  { roll: [2], reason: 'They\'re from a rival religion' },
+  { roll: [3], reason: 'Our kinds naturally hate each other' },
+  { roll: [4], reason: 'They took advantage of us in the past' },
+  { roll: [5], reason: 'They\'re weak and ripe for plunder' },
+  { roll: [6], reason: 'They broke an alliance in a treacherous way' },
+  { roll: [7], reason: 'They caused a local disaster or problem' },
+  { roll: [8], reason: 'Our leader has a personal hatred for them' },
+  { roll: [9], reason: 'Local resources are insufficient for us both' },
+  { roll: [10], reason: 'They\'re crowding into our territory' },
+  { roll: [11], reason: 'They tricked us and led us into a disaster' },
+  { roll: [12], reason: 'They stole a treasure or an important slave' }
+];
+
+export const whyDidTheyComeTable = [
+  { roll: [1], reason: 'Driven here by a terrible monster' },
+  { roll: [2], reason: 'No one remembers when they first came' },
+  { roll: [3], reason: 'Forced out of their old home by enemies' },
+  { roll: [4], reason: 'Sent out as a colony from their parent group' },
+  { roll: [5], reason: 'Gathered from scattered exiles and outcasts' },
+  { roll: [6], reason: 'Enlisted to come by a powerful leader' },
+  { roll: [7], reason: 'Drawn by the prospect of resources or loot' },
+  { roll: [8], reason: 'Making a cultural or religious pilgrimage' },
+  { roll: [9], reason: 'Came to fight an enemy that lairs here' },
+  { roll: [10], reason: 'Sent by visions, prophecy, or oracles' },
+  { roll: [11], reason: 'It\'s a refuge from some pursuing foe' },
+  { roll: [12], reason: 'To guard something precious here' }
+];
+
+export const allianceCausesTable = [
+  { roll: [1], cause: 'We have a shared enemy' },
+  { roll: [2], cause: 'Our leaders are personal friends' },
+  { roll: [3], cause: 'We intermarry or have a blood relation' },
+  { roll: [4], cause: 'We each have goods the other needs' },
+  { roll: [5], cause: 'Each has skills the other lacks' },
+  { roll: [6], cause: 'We give protection for a tolerable price' },
+  { roll: [7], cause: 'We share the defense of the territory' },
+  { roll: [8], cause: 'We share the same religion' },
+  { roll: [9], cause: 'We overcame a great peril together' },
+  { roll: [10], cause: 'We used to be under the same leader' },
+  { roll: [11], cause: 'We recognize them as our rightful masters' },
+  { roll: [12], cause: 'We gain a great profit by mutual cooperation' }
+];
+
+export const whyStayingTable = [
+  { roll: [1], reason: 'It\'s rich in resources useful to them' },
+  { roll: [2], reason: 'A foe outside threatens them if they leave' },
+  { roll: [3], reason: 'They\'re trying to find something specific here' },
+  { roll: [4], reason: 'It\'s simply always been their home' },
+  { roll: [5], reason: 'An important member is immobile somehow' },
+  { roll: [6], reason: 'Some drug or pleasure here has caught them' },
+  { roll: [7], reason: 'They\'ve been enslaved by a power here' },
+  { roll: [8], reason: 'They\'re being paid to do so by someone' },
+  { roll: [9], reason: 'They haven\'t anywhere better to go' },
+  { roll: [10], reason: 'They\'re waiting for someone else to arrive' },
+  { roll: [11], reason: 'They\'re trapped here by something' },
+  { roll: [12], reason: 'Their leader has a personal reason to stay' }
+];
+
 // Rooms of Interest tables
 export const roomFunctionTable = [
   { roll: [1], function: 'Residential Room' },
@@ -466,5 +536,50 @@ export const generateBasicSiteType = () => {
     site: exampleResult.site,
     typeRoll,
     exampleRoll
+  };
+};
+
+export const generateInhabitationFramework = () => {
+  // Roll for important inhabitants (d6)
+  const inhabitantsRoll = rollD6();
+  const inhabitantsResult = getTableResult(inhabitantsRoll, importantInhabitantsTable);
+  
+  // Roll for hostility reasons (d12)
+  const hostilityRoll = rollD12();
+  const hostilityResult = getTableResult(hostilityRoll, hostilityReasonsTable);
+  
+  // Roll for why they came here (d12)
+  const whyCameRoll = rollD12();
+  const whyCameResult = getTableResult(whyCameRoll, whyDidTheyComeTable);
+  
+  // Roll for alliance causes (d12)
+  const allianceRoll = rollD12();
+  const allianceResult = getTableResult(allianceRoll, allianceCausesTable);
+  
+  // Roll for why they're staying (d12)
+  const whyStayingRoll = rollD12();
+  const whyStayingResult = getTableResult(whyStayingRoll, whyStayingTable);
+  
+  return {
+    importantInhabitants: {
+      description: inhabitantsResult.result,
+      roll: inhabitantsRoll
+    },
+    hostilityReason: {
+      reason: hostilityResult.reason,
+      roll: hostilityRoll
+    },
+    whyTheyCame: {
+      reason: whyCameResult.reason,
+      roll: whyCameRoll
+    },
+    allianceCause: {
+      cause: allianceResult.cause,
+      roll: allianceRoll
+    },
+    whyStaying: {
+      reason: whyStayingResult.reason,
+      roll: whyStayingRoll
+    }
   };
 };

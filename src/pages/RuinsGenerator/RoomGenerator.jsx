@@ -21,7 +21,8 @@ import {
   generateDirections,
   generateRoomContents,
   generateRoomOfInterest,
-  generateBasicSiteType
+  generateBasicSiteType,
+  generateInhabitationFramework
 } from '../../components/Tables';
 
 const RoomGenerator = ({ onBack }) => {
@@ -56,7 +57,15 @@ const RoomGenerator = ({ onBack }) => {
     
     // Generate ruin information
     const ruinInformation = generateBasicSiteType();
-    setRuinInfo(ruinInformation);
+    const inhabitationInfo = generateInhabitationFramework();
+    
+    // Combine all ruin information
+    const combinedRuinInfo = {
+      ...ruinInformation,
+      inhabitation: inhabitationInfo
+    };
+    
+    setRuinInfo(combinedRuinInfo);
     
     // Simulate a small delay for better UX
     setTimeout(() => {
@@ -1325,12 +1334,47 @@ const RoomGenerator = ({ onBack }) => {
             <div className="ruin-information">
               <h3>🏛️ Ruin Information</h3>
               <div className="ruin-details">
-                <div className="ruin-detail-item">
-                  <strong>Site Type:</strong> {ruinInfo.type}
+                {/* Column 1: Site Information */}
+                <div className="ruin-column">
+                  <h4>📍 Site Details</h4>
+                  <div className="ruin-detail-item">
+                    <strong>Site Type:</strong> {ruinInfo.type}
+                  </div>
+                  <div className="ruin-detail-item">
+                    <strong>Example:</strong> {ruinInfo.site}
+                  </div>
+                  {ruinInfo.inhabitation && (
+                    <div className="ruin-detail-item">
+                      <strong>Important Inhabitants:</strong> {ruinInfo.inhabitation.importantInhabitants.description}
+                    </div>
+                  )}
                 </div>
-                <div className="ruin-detail-item">
-                  <strong>Specific Example:</strong> {ruinInfo.site}
-                </div>
+
+                {/* Column 2: Social Dynamics */}
+                {ruinInfo.inhabitation && (
+                  <div className="ruin-column">
+                    <h4>⚔️ Social Dynamics</h4>
+                    <div className="ruin-detail-item">
+                      <strong>Hostility Reason:</strong> {ruinInfo.inhabitation.hostilityReason.reason}
+                    </div>
+                    <div className="ruin-detail-item">
+                      <strong>Alliance Cause:</strong> {ruinInfo.inhabitation.allianceCause.cause}
+                    </div>
+                  </div>
+                )}
+
+                {/* Column 3: Origins & Motivations */}
+                {ruinInfo.inhabitation && (
+                  <div className="ruin-column">
+                    <h4>🎯 Origins & Motivations</h4>
+                    <div className="ruin-detail-item">
+                      <strong>Why They Came:</strong> {ruinInfo.inhabitation.whyTheyCame.reason}
+                    </div>
+                    <div className="ruin-detail-item">
+                      <strong>Why They're Staying:</strong> {ruinInfo.inhabitation.whyStaying.reason}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
