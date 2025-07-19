@@ -437,14 +437,55 @@
 
 .ruin-detail-item {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.ruin-detail-item.clickable {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ruin-detail-item.clickable:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(254, 202, 87, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .ruin-detail-item strong {
   color: #feca57;
-  min-width: 140px;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.reroll-icon {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ruin-detail-item.clickable:hover .reroll-icon {
+  opacity: 1;
+}
+
+.current-value-display {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-style: italic;
+  color: #e2e8f0;
+  line-height: 1.4;
 }
 
 .ruin-rolls {

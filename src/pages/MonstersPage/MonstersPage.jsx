@@ -572,18 +572,9 @@ const MonstersPage = ({ onBack }) => {
       const monstrousDriveRoll = rollD12();
       const monstrousDrive = monstrousDrives[monstrousDriveRoll - 1];
       
-      // Roll for creature power level (weighted towards lower levels)
-      const powerLevelRoll = rollDie(100);
-      let powerLevel;
-      if (powerLevelRoll <= 30) powerLevel = creaturePowerLevels[0]; // 0 points - 30%
-      else if (powerLevelRoll <= 50) powerLevel = creaturePowerLevels[1]; // 2 points - 20%
-      else if (powerLevelRoll <= 65) powerLevel = creaturePowerLevels[2]; // 3 points - 15%
-      else if (powerLevelRoll <= 78) powerLevel = creaturePowerLevels[3]; // 4 points - 13%
-      else if (powerLevelRoll <= 88) powerLevel = creaturePowerLevels[4]; // 5 points - 10%
-      else if (powerLevelRoll <= 94) powerLevel = creaturePowerLevels[5]; // 6 points - 6%
-      else if (powerLevelRoll <= 97) powerLevel = creaturePowerLevels[6]; // 8 points - 3%
-      else if (powerLevelRoll <= 99) powerLevel = creaturePowerLevels[7]; // 10 points - 2%
-      else powerLevel = creaturePowerLevels[8]; // 15 points - 1%
+      // Roll for creature power level (even distribution)
+      const powerLevelRoll = rollDie(9);
+      const powerLevel = creaturePowerLevels[powerLevelRoll - 1]; // Each level has equal ~11.11% chance
       
       // Create monster object
       const monster = {
