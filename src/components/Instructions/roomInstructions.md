@@ -6,116 +6,116 @@ Some of the listed sites might not make sense in a particular context. While you
 
 ## Basic Site Types
 
-| d6 | Basic Type |
-|----|------------|
-| 1  | Residential Site |
-| 2  | Military Site |
-| 3  | Production Site |
-| 4  | Religious Site |
-| 5  | Cultural Site |
-| 6  | Infrastructure Site |
+| d6  | Basic Type           |
+|-----|---------------------|
+| 1   | Residential Site    |
+| 2   | Military Site       |
+| 3   | Production Site     |
+| 4   | Religious Site      |
+| 5   | Cultural Site       |
+| 6   | Infrastructure Site |
 
 ## 1. Residential Sites
 
-| d12 | Site |
-|-----|------|
+| d12 | Site                              |
+|-----|-----------------------------------|
 | 1   | Isolated rural estate of nobility |
-| 2   | Massive tenement or slum tower |
-| 3   | Compact fortified village |
-| 4   | Mazey urban residential block |
-| 5   | Ancient arcology or fragment of it |
-| 6   | Sprawling slum of shanties and huts |
-| 7   | Townhouse of minor gentry |
-| 8   | Rural grange with outbuildings |
-| 9   | Hidden shelter against calamity |
-| 10  | Rubble-wrought makeshift village |
-| 11  | Outpost of refugees or recluses |
+| 2   | Massive tenement or slum tower    |
+| 3   | Compact fortified village         |
+| 4   | Mazey urban residential block     |
+| 5   | Ancient arcology or fragment of it|
+| 6   | Sprawling slum of shanties and huts|
+| 7   | Townhouse of minor gentry         |
+| 8   | Rural grange with outbuildings    |
+| 9   | Hidden shelter against calamity   |
+| 10  | Rubble-wrought makeshift village  |
+| 11  | Outpost of refugees or recluses   |
 | 12  | Inhabited natural feature or cave |
 
 ## 2. Military Sites
 
-| d12 | Site |
-|-----|------|
-| 1   | Grand fortress of major significance |
-| 2   | Remote frontier keep |
-| 3   | Isolated watchtower |
-| 4   | Military training camp |
-| 5   | Half-subterranean entrenchments |
-| 6   | Battlefield littered with fortifications |
-| 7   | Hidden bunker or strongpoint |
-| 8   | Secret operations base |
-| 9   | Battered front-line fortress |
-| 10  | Gatehouse controlling a vital pass |
-| 11  | Military cache or storehouse |
-| 12  | Fortified waystation |
+| d12 | Site                                   |
+|-----|----------------------------------------|
+| 1   | Grand fortress of major significance   |
+| 2   | Remote frontier keep                   |
+| 3   | Isolated watchtower                   |
+| 4   | Military training camp                 |
+| 5   | Half-subterranean entrenchments        |
+| 6   | Battlefield littered with fortifications|
+| 7   | Hidden bunker or strongpoint           |
+| 8   | Secret operations base                 |
+| 9   | Battered front-line fortress           |
+| 10  | Gatehouse controlling a vital pass     |
+| 11  | Military cache or storehouse           |
+| 12  | Fortified waystation                   |
 
 ## 3. Production Sites
 
-| d12 | Site |
-|-----|------|
-| 1   | Illicit manufactory for illegal goods |
-| 2   | Sacred shrine for holy product |
-| 3   | Destroyed camp or extraction site |
-| 4   | Inexplicable ancient manufactory |
-| 5   | Outsider goods production site |
-| 6   | Magical production facility |
-| 7   | Mine or open pit for excavation |
-| 8   | Overgrown ancient plantation |
-| 9   | Managed woodland gone feral |
-| 10  | Farm for now-feral valuable beasts |
-| 11  | Repurposed ancient manufactory |
-| 12  | Fishery or salt extraction site |
+| d12 | Site                                   |
+|-----|----------------------------------------|
+| 1   | Illicit manufactory for illegal goods  |
+| 2   | Sacred shrine for holy product         |
+| 3   | Destroyed camp or extraction site      |
+| 4   | Inexplicable ancient manufactory       |
+| 5   | Outsider goods production site         |
+| 6   | Magical production facility            |
+| 7   | Mine or open pit for excavation        |
+| 8   | Overgrown ancient plantation           |
+| 9   | Managed woodland gone feral            |
+| 10  | Farm for now-feral valuable beasts     |
+| 11  | Repurposed ancient manufactory         |
+| 12  | Fishery or salt extraction site        |
 
 ## 4. Religious Sites
 
-| d12 | Site |
-|-----|------|
-| 1   | Lost pilgrimage destination |
-| 2   | Tomb of some mighty ancient |
-| 3   | Shrine repurposed for a newer god |
-| 4   | Inexplicable sacred structure |
-| 5   | Outsider fane to an alien god |
-| 6   | Pilgrim hospital or waystation |
-| 7   | Fortified frontier monastery |
-| 8   | Prison-monastery for heretics |
-| 9   | Fragment of megastructure temple |
-| 10  | Place of some holy trial or test |
-| 11  | Prison for a sealed demonic force |
-| 12  | Holy archive or relic-fortress |
+| d12 | Site                                   |
+|-----|----------------------------------------|
+| 1   | Lost pilgrimage destination            |
+| 2   | Tomb of some mighty ancient            |
+| 3   | Shrine repurposed for a newer god      |
+| 4   | Inexplicable sacred structure          |
+| 5   | Outsider fane to an alien god          |
+| 6   | Pilgrim hospital or waystation         |
+| 7   | Fortified frontier monastery           |
+| 8   | Prison-monastery for heretics          |
+| 9   | Fragment of megastructure temple       |
+| 10  | Place of some holy trial or test       |
+| 11  | Prison for a sealed demonic force      |
+| 12  | Holy archive or relic-fortress         |
 
 ## 5. Cultural Sites
 
-| d12 | Site |
-|-----|------|
-| 1   | Inscrutable Outsider art structure |
-| 2   | Ancient culture's gathering site |
-| 3   | Monument complex to lost glories |
-| 4   | Abandoned school or study center |
-| 5   | Indoctrination camp or prison |
-| 6   | Museum of a lost nation |
-| 7   | Library or ancient archive |
-| 8   | Resort for nobles at ease |
-| 9   | Enormous musical structure |
-| 10  | Massive ceremonial structure |
-| 11  | Preserved "heritage" village-resort |
-| 12  | Taboo site of dark magic |
+| d12 | Site                                   |
+|-----|----------------------------------------|
+| 1   | Inscrutable Outsider art structure     |
+| 2   | Ancient culture's gathering site       |
+| 3   | Monument complex to lost glories       |
+| 4   | Abandoned school or study center       |
+| 5   | Indoctrination camp or prison          |
+| 6   | Museum of a lost nation                |
+| 7   | Library or ancient archive             |
+| 8   | Resort for nobles at ease              |
+| 9   | Enormous musical structure             |
+| 10  | Massive ceremonial structure           |
+| 11  | Preserved "heritage" village-resort   |
+| 12  | Taboo site of dark magic               |
 
 ## 6. Infrastructure Sites
 
-| d12 | Site |
-|-----|------|
-| 1   | Psychic or tech communications site |
-| 2   | Canal or aqueduct control center |
-| 3   | Reality-stabilizing Working ruin |
-| 4   | Massive bridge or tunnel |
-| 5   | Ancient power production center |
-| 6   | Semi-ruined teleportation node |
-| 7   | Subterranean transit tunnels |
-| 8   | Weather-control Working ruin |
-| 9   | Ancient road through an obstacle |
-| 10  | Huge ancient dam |
-| 11  | Outsider xenoforming engine |
-| 12  | Now-incomprehensible wreckage |
+| d12 | Site                                   |
+|-----|----------------------------------------|
+| 1   | Psychic or tech communications site    |
+| 2   | Canal or aqueduct control center       |
+| 3   | Reality-stabilizing Working ruin       |
+| 4   | Massive bridge or tunnel               |
+| 5   | Ancient power production center        |
+| 6   | Semi-ruined teleportation node         |
+| 7   | Subterranean transit tunnels           |
+| 8   | Weather-control Working ruin           |
+| 9   | Ancient road through an obstacle       |
+| 10  | Huge ancient dam                      |
+| 11  | Outsider xenoforming engine           |
+| 12  | Now-incomprehensible wreckage         |
 
 
 ## The Framework of Inhabitation
@@ -130,82 +130,82 @@ The tables below offer optional prompts for relationships between groups and mot
 
 ### Important Inhabitants
 
-| d6 | Result |
-|----|--------|
-| 1  | One major monstrous beast, with the other inhabitants avoiding it or supplicating it |
-| 2  | One major intelligent leader with their followers, slaves, or associates |
-| 3  | 1d3+1 major inhabitants, at least two of which are hostile to each other |
-| 4  | A major inhabitant and the remnants of another group or pack they deposed |
-| 5  | A relatively harmonious group of 1d3+1 significant figures |
-| 6  | No discernible major figures, only a disorganized congery of beasts and beings |
+| d6  | Result                                                                                 |
+|-----|----------------------------------------------------------------------------------------|
+| 1   | One major monstrous beast, with the other inhabitants avoiding it or supplicating it    |
+| 2   | One major intelligent leader with their followers, slaves, or associates                |
+| 3   | 1d3+1 major inhabitants, at least two of which are hostile to each other                |
+| 4   | A major inhabitant and the remnants of another group or pack they deposed               |
+| 5   | A relatively harmonious group of 1d3+1 significant figures                             |
+| 6   | No discernible major figures, only a disorganized congery of beasts and beings          |
 
 ### Potential Reasons for Hostility
 
-| d12 | Reason |
-|-----|--------|
-| 1   | They raided us and stole our resources |
-| 2   | They’re from a rival religion |
-| 3   | Our kinds naturally hate each other |
-| 4   | They took advantage of us in the past |
-| 5   | They’re weak and ripe for plunder |
-| 6   | They broke an alliance in a treacherous way |
-| 7   | They caused a local disaster or problem |
-| 8   | Our leader has a personal hatred for them |
-| 9   | Local resources are insufficient for us both |
-| 10  | They’re crowding into our territory |
-| 11  | They tricked us and led us into a disaster |
-| 12  | They stole a treasure or an important slave |
+| d12 | Reason                                         |
+|-----|------------------------------------------------|
+| 1   | They raided us and stole our resources         |
+| 2   | They’re from a rival religion                  |
+| 3   | Our kinds naturally hate each other            |
+| 4   | They took advantage of us in the past          |
+| 5   | They’re weak and ripe for plunder              |
+| 6   | They broke an alliance in a treacherous way    |
+| 7   | They caused a local disaster or problem        |
+| 8   | Our leader has a personal hatred for them      |
+| 9   | Local resources are insufficient for us both   |
+| 10  | They’re crowding into our territory            |
+| 11  | They tricked us and led us into a disaster     |
+| 12  | They stole a treasure or an important slave    |
 
 ### Why Did They Come Here?
 
-| d12 | Reason |
-|-----|--------|
-| 1   | Driven here by a terrible monster |
-| 2   | No one remembers when they first came |
-| 3   | Forced out of their old home by enemies |
+| d12 | Reason                                   |
+|-----|------------------------------------------|
+| 1   | Driven here by a terrible monster        |
+| 2   | No one remembers when they first came    |
+| 3   | Forced out of their old home by enemies  |
 | 4   | Sent out as a colony from their parent group |
 | 5   | Gathered from scattered exiles and outcasts |
-| 6   | Enlisted to come by a powerful leader |
+| 6   | Enlisted to come by a powerful leader    |
 | 7   | Drawn by the prospect of resources or loot |
 | 8   | Making a cultural or religious pilgrimage |
-| 9   | Came to fight an enemy that lairs here |
-| 10  | Sent by visions, prophecy, or oracles |
-| 11  | It’s a refuge from some pursuing foe |
-| 12  | To guard something precious here |
+| 9   | Came to fight an enemy that lairs here   |
+| 10  | Sent by visions, prophecy, or oracles    |
+| 11  | It’s a refuge from some pursuing foe     |
+| 12  | To guard something precious here         |
 
 ### Possible Causes for Alliances
 
-| d12 | Cause |
-|-----|-------|
-| 1   | We have a shared enemy |
-| 2   | Our leaders are personal friends |
-| 3   | We intermarry or have a blood relation |
-| 4   | We each have goods the other needs |
-| 5   | Each has skills the other lacks |
-| 6   | We give protection for a tolerable price |
-| 7   | We share the defense of the territory |
-| 8   | We share the same religion |
-| 9   | We overcame a great peril together |
-| 10  | We used to be under the same leader |
-| 11  | We recognize them as our rightful masters |
+| d12 | Cause                                      |
+|-----|--------------------------------------------|
+| 1   | We have a shared enemy                     |
+| 2   | Our leaders are personal friends           |
+| 3   | We intermarry or have a blood relation     |
+| 4   | We each have goods the other needs         |
+| 5   | Each has skills the other lacks            |
+| 6   | We give protection for a tolerable price   |
+| 7   | We share the defense of the territory      |
+| 8   | We share the same religion                 |
+| 9   | We overcame a great peril together         |
+| 10  | We used to be under the same leader        |
+| 11  | We recognize them as our rightful masters  |
 | 12  | We gain a great profit by mutual cooperation |
 
 ### Why Are They Staying Here?
 
-| d12 | Reason |
-|-----|--------|
-| 1   | It’s rich in resources useful to them |
-| 2   | A foe outside threatens them if they leave |
-| 3   | They’re trying to find something specific here |
-| 4   | It’s simply always been their home |
-| 5   | An important member is immobile somehow |
-| 6   | Some drug or pleasure here has caught them |
-| 7   | They’ve been enslaved by a power here |
-| 8   | They’re being paid to do so by someone |
-| 9   | They haven’t anywhere better to go |
-| 10  | They’re waiting for someone else to arrive |
-| 11  | They’re trapped here by something |
-| 12  | Their leader has a personal reason to stay |
+| d12 | Reason                                         |
+|-----|------------------------------------------------|
+| 1   | It’s rich in resources useful to them           |
+| 2   | A foe outside threatens them if they leave      |
+| 3   | They’re trying to find something specific here  |
+| 4   | It’s simply always been their home              |
+| 5   | An important member is immobile somehow         |
+| 6   | Some drug or pleasure here has caught them      |
+| 7   | They’ve been enslaved by a power here           |
+| 8   | They’re being paid to do so by someone          |
+| 9   | They haven’t anywhere better to go              |
+| 10  | They’re waiting for someone else to arrive      |
+| 11  | They’re trapped here by something               |
+| 12  | Their leader has a personal reason to stay      |
 
 ## Types of Inhabitants
 
@@ -217,88 +217,88 @@ If you need additional monsters, virtually any old-school monster handbook shoul
 
 ### Ancient Sorcerer-King Ruin
 
-| d12 | Inhabitant Type |
-|-----|-----------------|
-| 1   | Altered human servitors of the former owner |
-| 2   | Magic-forged monstrous beast |
-| 3   | Adventurers searching for loot |
-| 4   | Heirs of the last human inhabitants |
-| 5   | Cult dedicated to a now-dead faith |
-| 6   | Summoned creature that broke its fetters |
-| 7   | Magical automaton servitors of the ruler |
-| 8   | Decorative magic animals gone feral |
-| 9   | Necromancer and their undead servitors |
-| 10  | Outsider prisoners gone native here |
-| 11  | Restless dead of the inhabitants |
-| 12  | Zealots in service to a long-dead mage |
+| d12 | Inhabitant Type                                 |
+|-----|-------------------------------------------------|
+| 1   | Altered human servitors of the former owner      |
+| 2   | Magic-forged monstrous beast                    |
+| 3   | Adventurers searching for loot                  |
+| 4   | Heirs of the last human inhabitants             |
+| 5   | Cult dedicated to a now-dead faith              |
+| 6   | Summoned creature that broke its fetters        |
+| 7   | Magical automaton servitors of the ruler        |
+| 8   | Decorative magic animals gone feral             |
+| 9   | Necromancer and their undead servitors          |
+| 10  | Outsider prisoners gone native here             |
+| 11  | Restless dead of the inhabitants                |
+| 12  | Zealots in service to a long-dead mage          |
 
 ### Alien Arratu
 
-| d12 | Inhabitant Type |
-|-----|-----------------|
-| 1   | Animate and lethal plant life |
-| 2   | Remnants of the Outsiders who made it |
-| 3   | Adventurers daring the perilous terrain |
-| 4   | Human natives trapped here for generations |
-| 5   | Humanoids adapted to life there |
-| 6   | Blighted raiders semi-native to the place |
-| 7   | Automatons built to serve or fight the arratu |
-| 8   | Outsider ruler still controlling a site within |
-| 9   | Undead shades of swallowed cities or lands |
-| 10  | Vicious alien fauna |
-| 11  | Human cultist-servitors of the Outsiders |
-| 12  | Explorers searching for a route through |
+| d12 | Inhabitant Type                                 |
+|-----|-------------------------------------------------|
+| 1   | Animate and lethal plant life                   |
+| 2   | Remnants of the Outsiders who made it           |
+| 3   | Adventurers daring the perilous terrain         |
+| 4   | Human natives trapped here for generations      |
+| 5   | Humanoids adapted to life there                 |
+| 6   | Blighted raiders semi-native to the place       |
+| 7   | Automatons built to serve or fight the arratu   |
+| 8   | Outsider ruler still controlling a site within  |
+| 9   | Undead shades of swallowed cities or lands      |
+| 10  | Vicious alien fauna                             |
+| 11  | Human cultist-servitors of the Outsiders        |
+| 12  | Explorers searching for a route through         |
 
 ### Subterranean Deep
 
-| d12 | Inhabitant Type |
-|-----|-----------------|
-| 1   | Cruelly Outsider-warped original humans |
-| 2   | Outsider monster that once ruled here |
-| 3   | Swarm or pack of scavenger-beasts |
-| 4   | Blighted intruders that sacked the Deep |
-| 5   | Outsiders descended from the local lords |
-| 6   | Degenerate or crazed native humans |
-| 7   | Outcast surfacers lairing in the Deep |
-| 8   | Non-human sentients who now live here |
-| 9   | Undead relics of former inhabitants |
-| 10  | Still-sane human heirs of the original folk |
-| 11  | Surfacer colonists forgotten by their kin |
-| 12  | Automaton servitors now lacking their lord |
+| d12 | Inhabitant Type                                 |
+|-----|-------------------------------------------------|
+| 1   | Cruelly Outsider-warped original humans         |
+| 2   | Outsider monster that once ruled here           |
+| 3   | Swarm or pack of scavenger-beasts               |
+| 4   | Blighted intruders that sacked the Deep         |
+| 5   | Outsiders descended from the local lords        |
+| 6   | Degenerate or crazed native humans              |
+| 7   | Outcast surfacers lairing in the Deep           |
+| 8   | Non-human sentients who now live here           |
+| 9   | Undead relics of former inhabitants             |
+| 10  | Still-sane human heirs of the original folk     |
+| 11  | Surfacer colonists forgotten by their kin       |
+| 12  | Automaton servitors now lacking their lord      |
 
 ### Modern Ruin Site
 
-| d12 | Inhabitant Type |
-|-----|-----------------|
-| 1   | Local bandits or highwaymen |
-| 2   | Cult of some unacceptable god |
-| 3   | Deposed noble and their retinue |
-| 4   | Adventurers trying to plunder the place |
-| 5   | Troops garrisoned there by the local ruler |
-| 6   | Remnants of the original inhabitants |
-| 7   | Sorcerer of detestable inclinations |
-| 8   | Refugees or runaway peasants |
-| 9   | Vicious local monster lairing here |
-| 10  | Foreign raiders using it as a base |
-| 11  | Whatever ruined the place is still here |
+| d12 | Inhabitant Type                                 |
+|-----|-------------------------------------------------|
+| 1   | Local bandits or highwaymen                     |
+| 2   | Cult of some unacceptable god                   |
+| 3   | Deposed noble and their retinue                 |
+| 4   | Adventurers trying to plunder the place         |
+| 5   | Troops garrisoned there by the local ruler      |
+| 6   | Remnants of the original inhabitants            |
+| 7   | Sorcerer of detestable inclinations             |
+| 8   | Refugees or runaway peasants                    |
+| 9   | Vicious local monster lairing here              |
+| 10  | Foreign raiders using it as a base              |
+| 11  | Whatever ruined the place is still here         |
 | 12  | Interlopers with some tie to the original place |
 
 ### Trackless Wilderness
 
-| d12 | Inhabitant Type |
-|-----|-----------------|
-| 1   | Alpha predator of the area |
-| 2   | Intelligent monstrous beings |
-| 3   | Swarms or packs of dangerous beasts |
-| 4   | Violently reclusive local natives |
-| 5   | Remnant of a destroyed state |
-| 6   | Survivors of a displaced ethnic group |
-| 7   | Demihumans who prefer isolation |
-| 8   | Bestially savage tribals, perhaps inhuman |
-| 9   | Expedition from a surrounding nation |
-| 10  | Prospectors or resource-hunters |
-| 11  | Spirit or elemental related to the wilderness |
-| 12  | Sorcerers, cultists, or other solitude-lovers |
+| d12 | Inhabitant Type                                 |
+|-----|-------------------------------------------------|
+| 1   | Alpha predator of the area                      |
+| 2   | Intelligent monstrous beings                    |
+| 3   | Swarms or packs of dangerous beasts             |
+| 4   | Violently reclusive local natives               |
+| 5   | Remnant of a destroyed state                    |
+| 6   | Survivors of a displaced ethnic group           |
+| 7   | Demihumans who prefer isolation                 |
+| 8   | Bestially savage tribals, perhaps inhuman       |
+| 9   | Expedition from a surrounding nation            |
+| 10  | Prospectors or resource-hunters                |
+| 11  | Spirit or elemental related to the wilderness   |
+| 12  | Sorcerers, cultists, or other solitude-lovers   |
 
 
 ## Rooms of Interest
@@ -569,100 +569,100 @@ Once you know how many rooms in the site have treasure in them, take the total s
 
 ### Example Types of Hazards (d20)
 
-| Roll | Hazard Type |
-|------|-------------|
-| 1    | Tripwire alarm or other alerts |
-| 2    | Unstable floor that crumbles under weight |
-| 3    | Dangerous fumes or miasma |
-| 4    | Trapped containers or portals |
-| 5    | Explosive dust or gases |
-| 6    | An object makes a loud noise if disturbed |
-| 7    | Damaged supports that give way in combat |
-| 8    | Dangerously high or deep water |
-| 9    | Trap set on a path of travel |
-| 10   | Device here is dangerously broken in use |
-| 11   | Trap that seals intruders into an area |
-| 12   | Treacherous footing over dangerous terrain |
-| 13   | Uncontrolled flames or dangerous heat |
-| 14   | Torch-extinguishing winds or vapors |
-| 15   | Ordinary-seeming object harms handlers |
-| 16   | Crushingly heavy object is going to tip over |
-| 17   | A savage foe can be attracted by accident |
-| 18   | Something here is cursed by dark powers |
-| 19   | Seeming treasure is used as bait for a trap |
-| 20   | A contagious disease is on something here |
+| Roll | Hazard Type                                   |
+|------|-----------------------------------------------|
+| 1    | Tripwire alarm or other alerts                |
+| 2    | Unstable floor that crumbles under weight     |
+| 3    | Dangerous fumes or miasma                     |
+| 4    | Trapped containers or portals                 |
+| 5    | Explosive dust or gases                       |
+| 6    | An object makes a loud noise if disturbed     |
+| 7    | Damaged supports that give way in combat      |
+| 8    | Dangerously high or deep water                |
+| 9    | Trap set on a path of travel                  |
+| 10   | Device here is dangerously broken in use      |
+| 11   | Trap that seals intruders into an area        |
+| 12   | Treacherous footing over dangerous terrain    |
+| 13   | Uncontrolled flames or dangerous heat         |
+| 14   | Torch-extinguishing winds or vapors           |
+| 15   | Ordinary-seeming object harms handlers        |
+| 16   | Crushingly heavy object is going to tip over  |
+| 17   | A savage foe can be attracted by accident     |
+| 18   | Something here is cursed by dark powers       |
+| 19   | Seeming treasure is used as bait for a trap   |
+| 20   | A contagious disease is on something here     |
 
 ### Example Distractors (d20)
 
-| Roll | Distractor Type |
-|------|-----------------|
-| 1    | Books or records from the site's owners |
-| 2    | Unique furniture related to the site's past |
-| 3    | Trophies or prizes taken by the owners |
+| Roll | Distractor Type                                 |
+|------|-------------------------------------------------|
+| 1    | Books or records from the site's owners          |
+| 2    | Unique furniture related to the site's past      |
+| 3    | Trophies or prizes taken by the owners           |
 | 4    | Portraits or tapestries related to the site's past |
-| 5    | Ornate, imposing, but harmless doors |
-| 6    | Daily life debris from the inhabitants |
-| 7    | Worthless ancient personal effects |
-| 8    | Odd-looking but normal household goods |
-| 9    | Shrines or hedge ritual remains of inhabitants |
-| 10   | Corpses of fallen intruders |
-| 11   | Bones and other food remnants |
-| 12   | Statuary or carvings related to the site |
-| 13   | Signs of recent bloodshed and battle |
-| 14   | Empty cabinets or containers |
-| 15   | A discharged or broken trap |
-| 16   | Remnants of an inhabitant social event |
-| 17   | Mouldering or ruined goods or supplies |
-| 18   | Half-completed work done by inhabitants |
-| 19   | Once-valuable but now-ruined object |
-| 20   | Broken or expended once-magical object |
+| 5    | Ornate, imposing, but harmless doors             |
+| 6    | Daily life debris from the inhabitants           |
+| 7    | Worthless ancient personal effects               |
+| 8    | Odd-looking but normal household goods           |
+| 9    | Shrines or hedge ritual remains of inhabitants   |
+| 10   | Corpses of fallen intruders                      |
+| 11   | Bones and other food remnants                    |
+| 12   | Statuary or carvings related to the site         |
+| 13   | Signs of recent bloodshed and battle             |
+| 14   | Empty cabinets or containers                     |
+| 15   | A discharged or broken trap                      |
+| 16   | Remnants of an inhabitant social event           |
+| 17   | Mouldering or ruined goods or supplies           |
+| 18   | Half-completed work done by inhabitants          |
+| 19   | Once-valuable but now-ruined object              |
+| 20   | Broken or expended once-magical object           |
 
 ### Example Enigmas (d20)
 
-| Roll | Enigma Type |
-|------|-------------|
-| 1    | Magical fountain or pool |
-| 2    | Control that opens paths elsewhere |
-| 3    | Spatial warp between locations |
-| 4    | Enchanted statue or art object |
-| 5    | Magically-animated room components |
-| 6    | Substance with physically impossible traits |
-| 7    | Altered or augmented gravity |
-| 8    | Zone that empowers foes or magic types |
-| 9    | Magical ward or seal on a summoned thing |
-| 10   | Oracular object or far-scrying device |
-| 11   | Standing magical effect in the area |
+| Roll | Enigma Type                                   |
+|------|-----------------------------------------------|
+| 1    | Magical fountain or pool                      |
+| 2    | Control that opens paths elsewhere            |
+| 3    | Spatial warp between locations                |
+| 4    | Enchanted statue or art object                |
+| 5    | Magically-animated room components            |
+| 6    | Substance with physically impossible traits   |
+| 7    | Altered or augmented gravity                  |
+| 8    | Zone that empowers foes or magic types        |
+| 9    | Magical ward or seal on a summoned thing      |
+| 10   | Oracular object or far-scrying device         |
+| 11   | Standing magical effect in the area           |
 | 12   | Temporal distortion or visions of other times |
-| 13   | Sounds being shifted over long distances |
-| 14   | Zones of darkness or blinding light |
-| 15   | Enchanted seals visibly locking up loot |
-| 16   | Magical or elemental force emitting unit |
+| 13   | Sounds being shifted over long distances      |
+| 14   | Zones of darkness or blinding light           |
+| 15   | Enchanted seals visibly locking up loot       |
+| 16   | Magical or elemental force emitting unit      |
 | 17   | Enchantment tailored to the site's original use |
-| 18   | Unnatural heat or chill in an area |
-| 19   | Magically-altered plant life here |
-| 20   | Restorative magical device |
+| 18   | Unnatural heat or chill in an area            |
+| 19   | Magically-altered plant life here             |
+| 20   | Restorative magical device                    |
 
 ### Possible Treasure Locations (d20)
 
-| Roll | Location |
-|------|----------|
-| 1    | Stored in a visible chest or coffer |
-| 2    | Hidden in a pool of liquid |
-| 3    | Behind a stone in the wall |
-| 4    | Underneath a floor tile |
-| 5    | Hidden inside a creature's body |
-| 6    | Inside an ordinary furniture drawer |
-| 7    | Slid beneath a bed or other furnishing |
-| 8    | Placed openly on a shelf for display |
-| 9    | Hidden in a pile of other junk |
-| 10   | Tucked into a secret furniture space |
-| 11   | Slid behind a tapestry or painting |
-| 12   | Heavy, protective locked chest or safe |
-| 13   | Buried under heavy or dangerous debris |
-| 14   | In the pockets of clothes stored here |
-| 15   | The treasure's a creature's precious body part |
-| 16   | Scattered carelessly on the floor |
-| 17   | Tucked into a pillow or cushion |
-| 18   | Hung on a statue or display frame |
-| 19   | Hidden atop a ceiling beam |
-| 20   | Resting atop a desk or table |
+| Roll | Location                                         |
+|------|--------------------------------------------------|
+| 1    | Stored in a visible chest or coffer              |
+| 2    | Hidden in a pool of liquid                       |
+| 3    | Behind a stone in the wall                       |
+| 4    | Underneath a floor tile                          |
+| 5    | Hidden inside a creature's body                  |
+| 6    | Inside an ordinary furniture drawer              |
+| 7    | Slid beneath a bed or other furnishing           |
+| 8    | Placed openly on a shelf for display             |
+| 9    | Hidden in a pile of other junk                   |
+| 10   | Tucked into a secret furniture space             |
+| 11   | Slid behind a tapestry or painting               |
+| 12   | Heavy, protective locked chest or safe           |
+| 13   | Buried under heavy or dangerous debris           |
+| 14   | In the pockets of clothes stored here            |
+| 15   | The treasure's a creature's precious body part   |
+| 16   | Scattered carelessly on the floor                |
+| 17   | Tucked into a pillow or cushion                  |
+| 18   | Hung on a statue or display frame                |
+| 19   | Hidden atop a ceiling beam                       |
+| 20   | Resting atop a desk or table                     |
