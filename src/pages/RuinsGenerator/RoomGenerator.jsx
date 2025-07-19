@@ -19,13 +19,29 @@ import {
   getRoomTypeIcon,
   generateExits,
   generateDirections,
-  generateRoomContents
+  generateRoomContents,
+  generateRoomOfInterest,
+  generateBasicSiteType,
+  generateInhabitationFramework,
+  basicSiteTypesTable,
+  residentialSiteExamples,
+  militarySiteExamples,
+  productionSiteExamples,
+  religiousSiteExamples,
+  culturalSiteExamples,
+  infrastructureSiteExamples,
+  importantInhabitantsTable,
+  hostilityReasonsTable,
+  whyDidTheyComeTable,
+  allianceCausesTable,
+  whyStayingTable
 } from '../../components/Tables';
 
 const RoomGenerator = ({ onBack }) => {
   const [numRooms, setNumRooms] = useState(5);
   const [dungeonName, setDungeonName] = useState('');
   const [generatedRooms, setGeneratedRooms] = useState([]);
+  const [ruinInfo, setRuinInfo] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [fileInputRef, setFileInputRef] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -47,9 +63,30 @@ const RoomGenerator = ({ onBack }) => {
     hasTreasure: false,
     treasureLocation: ''
   });
+  const [ruinEditMenu, setRuinEditMenu] = useState({
+    isOpen: false,
+    editType: '', // 'siteType', 'importantInhabitants', 'hostilityReason', 'whyTheyCame', 'allianceCause', 'whyStaying'
+    currentValue: '',
+    options: [],
+    title: '',
+    step: 1, // For multi-step selections like site type (1 = type selection, 2 = example selection)
+    selectedType: null // For storing intermediate selections
+  });
 
   const generateRooms = () => {
     setIsGenerating(true);
+    
+    // Generate ruin information
+    const ruinInformation = generateBasicSiteType();
+    const inhabitationInfo = generateInhabitationFramework();
+    
+    // Combine all ruin information
+    const combinedRuinInfo = {
+      ...ruinInformation,
+      inhabitation: inhabitationInfo
+    };
+    
+    setRuinInfo(combinedRuinInfo);
     
     // Simulate a small delay for better UX
     setTimeout(() => {
@@ -64,7 +101,10 @@ const RoomGenerator = ({ onBack }) => {
         exits: generateExits(),
         directions: [],
         contents: generateRoomContents(),
-        notes: '',
+        notes: (() => {
+          const roomOfInterest = generateRoomOfInterest();
+          return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+        })(),
         connectedRooms: new Map(), // direction -> [roomId1, roomId2, ...]
         coordinates: { x: 0, y: 0 },
         maxConnections: 0 // Will be set based on exits roll
@@ -117,20 +157,21 @@ const RoomGenerator = ({ onBack }) => {
               const newRoomExits = generateExits();
               const newRoomMaxConnections = getMaxConnectionsFromExits(newRoomExits);
               
-              // Create a new room for this direction
-              const newRoom = {
-                id: roomIdCounter++,
-                isIngress: false,
-                exits: newRoomExits,
-                directions: [],
-                contents: generateRoomContents(),
-                notes: '',
-                connectedRooms: new Map(),
-                coordinates: newCoordinates,
-                maxConnections: newRoomMaxConnections
-              };
-              
-              // Generate directions for the new room (but we'll reserve one connection for the back-connection)
+            // Create a new room for this direction
+            const newRoom = {
+              id: roomIdCounter++,
+              isIngress: false,
+              exits: newRoomExits,
+              directions: [],
+              contents: generateRoomContents(),
+              notes: (() => {
+                const roomOfInterest = generateRoomOfInterest();
+                return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+              })(),
+              connectedRooms: new Map(),
+              coordinates: newCoordinates,
+              maxConnections: newRoomMaxConnections
+            };              // Generate directions for the new room (but we'll reserve one connection for the back-connection)
               newRoom.directions = generateDirections(newRoom.exits);
               
               // Create bidirectional connection (single connection during generation)
@@ -346,7 +387,10 @@ const RoomGenerator = ({ onBack }) => {
               exits: generateExits(),
               directions: [],
               contents: generateRoomContents(),
-              notes: '',
+              notes: (() => {
+                const roomOfInterest = generateRoomOfInterest();
+                return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+              })(),
               connectedRooms: new Map(),
               coordinates: newCoordinates,
               maxConnections: getMaxConnectionsFromExits(generateExits())
@@ -960,6 +1004,189 @@ const RoomGenerator = ({ onBack }) => {
     }
   };
 
+  // Ruin Edit Functions
+  const handleRuinItemClick = (editType, currentValue) => {
+    let options = [];
+    let title = '';
+
+    switch (editType) {
+      case 'siteType':
+        options = basicSiteTypesTable.map(entry => ({
+          type: entry.type,
+          display: entry.type
+        }));
+        title = 'Choose Site Type';
+        break;
+      case 'importantInhabitants':
+        options = importantInhabitantsTable.map(entry => ({
+          description: entry.result,
+          display: entry.result
+        }));
+        title = 'Choose Important Inhabitants';
+        break;
+      case 'hostilityReason':
+        options = hostilityReasonsTable.map(entry => ({
+          reason: entry.reason,
+          display: entry.reason
+        }));
+        title = 'Choose Hostility Reason';
+        break;
+      case 'whyTheyCame':
+        options = whyDidTheyComeTable.map(entry => ({
+          reason: entry.reason,
+          display: entry.reason
+        }));
+        title = 'Choose Why They Came';
+        break;
+      case 'allianceCause':
+        options = allianceCausesTable.map(entry => ({
+          cause: entry.cause,
+          display: entry.cause
+        }));
+        title = 'Choose Alliance Cause';
+        break;
+      case 'whyStaying':
+        options = whyStayingTable.map(entry => ({
+          reason: entry.reason,
+          display: entry.reason
+        }));
+        title = 'Choose Why They\'re Staying';
+        break;
+      default:
+        break;
+    }
+
+    setRuinEditMenu({
+      isOpen: true,
+      editType: editType,
+      currentValue: currentValue,
+      options: options,
+      title: title,
+      step: 1,
+      selectedType: null
+    });
+  };
+
+  const closeRuinEditMenu = () => {
+    setRuinEditMenu({
+      isOpen: false,
+      editType: '',
+      currentValue: '',
+      options: [],
+      title: '',
+      step: 1,
+      selectedType: null
+    });
+  };
+
+  const selectRuinOption = (option) => {
+    if (!ruinEditMenu.editType || !ruinInfo) return;
+
+    // Handle site type two-step selection
+    if (ruinEditMenu.editType === 'siteType') {
+      if (ruinEditMenu.step === 1) {
+        // First step: type selected, show examples
+        let exampleTable = [];
+        let exampleTitle = '';
+        
+        switch (option.type) {
+          case 'Residential Site':
+            exampleTable = residentialSiteExamples;
+            exampleTitle = 'Choose Residential Site Example';
+            break;
+          case 'Military Site':
+            exampleTable = militarySiteExamples;
+            exampleTitle = 'Choose Military Site Example';
+            break;
+          case 'Production Site':
+            exampleTable = productionSiteExamples;
+            exampleTitle = 'Choose Production Site Example';
+            break;
+          case 'Religious Site':
+            exampleTable = religiousSiteExamples;
+            exampleTitle = 'Choose Religious Site Example';
+            break;
+          case 'Cultural Site':
+            exampleTable = culturalSiteExamples;
+            exampleTitle = 'Choose Cultural Site Example';
+            break;
+          case 'Infrastructure Site':
+            exampleTable = infrastructureSiteExamples;
+            exampleTitle = 'Choose Infrastructure Site Example';
+            break;
+          default:
+            break;
+        }
+
+        const exampleOptions = exampleTable.map(entry => ({
+          type: option.type,
+          site: entry.site,
+          display: entry.site
+        }));
+
+        setRuinEditMenu({
+          ...ruinEditMenu,
+          options: exampleOptions,
+          title: exampleTitle,
+          step: 2,
+          selectedType: option.type
+        });
+        return;
+      } else {
+        // Second step: example selected, update ruin info
+        let updatedRuinInfo = { ...ruinInfo };
+        updatedRuinInfo.type = option.type;
+        updatedRuinInfo.site = option.site;
+        setRuinInfo(updatedRuinInfo);
+        closeRuinEditMenu();
+        return;
+      }
+    }
+
+    // Handle other single-step selections
+    let updatedRuinInfo = { ...ruinInfo };
+
+    switch (ruinEditMenu.editType) {
+      case 'importantInhabitants':
+        updatedRuinInfo.inhabitation.importantInhabitants = option;
+        break;
+      case 'hostilityReason':
+        updatedRuinInfo.inhabitation.hostilityReason = option;
+        break;
+      case 'whyTheyCame':
+        updatedRuinInfo.inhabitation.whyTheyCame = option;
+        break;
+      case 'allianceCause':
+        updatedRuinInfo.inhabitation.allianceCause = option;
+        break;
+      case 'whyStaying':
+        updatedRuinInfo.inhabitation.whyStaying = option;
+        break;
+      default:
+        break;
+    }
+
+    setRuinInfo(updatedRuinInfo);
+    closeRuinEditMenu();
+  };
+
+  const goBackToSiteTypeSelection = () => {
+    if (ruinEditMenu.editType === 'siteType' && ruinEditMenu.step === 2) {
+      const typeOptions = basicSiteTypesTable.map(entry => ({
+        type: entry.type,
+        display: entry.type
+      }));
+
+      setRuinEditMenu({
+        ...ruinEditMenu,
+        options: typeOptions,
+        title: 'Choose Site Type',
+        step: 1,
+        selectedType: null
+      });
+    }
+  };
+
   const handleMouseDown = (room, event) => {
     if (!isEditMode) return;
     
@@ -1190,7 +1417,10 @@ const RoomGenerator = ({ onBack }) => {
       exits: 'None',
       directions: [],
       contents: generateRoomContents(),
-      notes: '',
+      notes: (() => {
+        const roomOfInterest = generateRoomOfInterest();
+        return `${roomOfInterest.function}: ${roomOfInterest.example}`;
+      })(),
       connectedRooms: new Map(),
       coordinates: coordinates,
       maxConnections: null
@@ -1285,15 +1515,6 @@ const RoomGenerator = ({ onBack }) => {
             📁 Import JSON
           </button>
           
-          <button 
-            onClick={toggleEditMode}
-            disabled={generatedRooms.length === 0}
-            className={`edit-btn ${isEditMode ? 'active' : ''}`}
-            title="Toggle edit mode to add/remove connections between rooms"
-          >
-            ✏️ {isEditMode ? 'Exit Edit' : 'Edit Mode'}
-          </button>
-          
           <input
             type="file"
             accept=".json"
@@ -1304,9 +1525,92 @@ const RoomGenerator = ({ onBack }) => {
         </div>
       </div>
 
+      {ruinInfo && (
+            <div className="ruin-information">
+              <h3>🏛️ Ruin Information</h3>
+              <div className="ruin-details">
+                {/* Column 1: Site Information */}
+                <div className="ruin-column">
+                  <h4>📍 Site Details</h4>
+                  <div 
+                    className="ruin-detail-item clickable"
+                    onClick={() => handleRuinItemClick('siteType', `${ruinInfo.type} - ${ruinInfo.site}`)}
+                    title="Click to choose site type"
+                  >
+                    <strong>Site Type:</strong> {ruinInfo.type}
+                    <br />
+                    <strong>Example:</strong> {ruinInfo.site}
+                  </div>
+                  {ruinInfo.inhabitation && (
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('importantInhabitants', ruinInfo.inhabitation.importantInhabitants.description)}
+                      title="Click to choose important inhabitants"
+                    >
+                      <strong>Important Inhabitants:</strong> {ruinInfo.inhabitation.importantInhabitants.description}
+                    </div>
+                  )}
+                </div>
+
+                {/* Column 2: Social Dynamics */}
+                {ruinInfo.inhabitation && (
+                  <div className="ruin-column">
+                    <h4>⚔️ Social Dynamics</h4>
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('hostilityReason', ruinInfo.inhabitation.hostilityReason.reason)}
+                      title="Click to choose hostility reason"
+                    >
+                      <strong>Hostility Reason:</strong> {ruinInfo.inhabitation.hostilityReason.reason}
+                    </div>
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('allianceCause', ruinInfo.inhabitation.allianceCause.cause)}
+                      title="Click to choose alliance cause"
+                    >
+                      <strong>Alliance Cause:</strong> {ruinInfo.inhabitation.allianceCause.cause}
+                    </div>
+                  </div>
+                )}
+
+                {/* Column 3: Origins & Motivations */}
+                {ruinInfo.inhabitation && (
+                  <div className="ruin-column">
+                    <h4>🎯 Origins & Motivations</h4>
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('whyTheyCame', ruinInfo.inhabitation.whyTheyCame.reason)}
+                      title="Click to choose why they came"
+                    >
+                      <strong>Why They Came:</strong> {ruinInfo.inhabitation.whyTheyCame.reason}
+                    </div>
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('whyStaying', ruinInfo.inhabitation.whyStaying.reason)}
+                      title="Click to choose why they're staying"
+                    >
+                      <strong>Why They're Staying:</strong> {ruinInfo.inhabitation.whyStaying.reason}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {generatedRooms.length > 0 && (
-        <div className="connection-map">
-          <h3>🗺️ Dungeon Grid Layout</h3>
+        <div className="connection-map">          
+          <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0 }}>🗺️ Dungeon Grid Layout</h3>
+            <button 
+              onClick={toggleEditMode}
+              disabled={generatedRooms.length === 0}
+              className={`edit-btn ${isEditMode ? 'active' : ''}`}
+              title="Toggle edit mode to add/remove connections between rooms"
+              style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}
+            >
+              ✏️ {isEditMode ? 'Exit Edit' : 'Edit Mode'}
+            </button>
+          </div>
             {isEditMode && (
               <div className="edit-instructions">
                 <h4>✏️ Edit Mode Active</h4>
@@ -1738,6 +2042,43 @@ const RoomGenerator = ({ onBack }) => {
             <div className="modal-buttons">
               <button className="modal-button secondary" onClick={closeRoomEditMenu}>Cancel</button>
               <button className="modal-button primary" onClick={saveRoomChanges}>Save Changes</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Ruin Edit Menu Modal */}
+      {ruinEditMenu.isOpen && (
+        <div className="room-edit-overlay">
+          <div className="room-edit-modal">
+            <h3>{ruinEditMenu.title}</h3>
+            
+            <div className="room-edit-form">
+              <div className="form-group">
+                <label>Current Value:</label>
+                <div className="current-value-display">
+                  {ruinEditMenu.currentValue}
+                </div>
+              </div>
+              
+              <div className="options-list">
+                {ruinEditMenu.options.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`option-item ${option.display === ruinEditMenu.currentValue ? 'selected' : ''}`}
+                    onClick={() => selectRuinOption(option)}
+                  >
+                    <span className="option-text">{option.display}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="modal-buttons">
+              <button className="modal-button secondary" onClick={closeRuinEditMenu}>Cancel</button>
+              {ruinEditMenu.editType === 'siteType' && ruinEditMenu.step === 2 && (
+                <button className="modal-button secondary" onClick={goBackToSiteTypeSelection}>← Back to Types</button>
+              )}
             </div>
           </div>
         </div>
