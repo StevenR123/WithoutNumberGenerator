@@ -1617,10 +1617,8 @@ const RoomGenerator = ({ onBack }) => {
       {ruinInfo && (
             <div className="ruin-information">
               <h3>🏛️ Ruin Information</h3>
-              
-              {/* Row 1: Site Details and Inhabitant Details */}
               <div className="ruin-details">
-                {/* Column 1: Site Information */}
+                {/* Column 1: Site Details */}
                 <div className="ruin-column">
                   <h4>📍 Site Details</h4>
                   <div 
@@ -1632,12 +1630,7 @@ const RoomGenerator = ({ onBack }) => {
                     <br />
                     <strong>Example:</strong> {ruinInfo.site}
                   </div>
-                </div>
-
-                {/* Column 2: Inhabitant Details */}
-                {ruinInfo.inhabitant && (
-                  <div className="ruin-column">
-                    <h4>👥 Inhabitant Details</h4>
+                  {ruinInfo.inhabitant && (
                     <div 
                       className="ruin-detail-item clickable"
                       onClick={() => handleRuinItemClick('inhabitantInfo', `${ruinInfo.inhabitant.category} - ${ruinInfo.inhabitant.inhabitant}`)}
@@ -1647,24 +1640,20 @@ const RoomGenerator = ({ onBack }) => {
                       <br />
                       <strong>Specific Inhabitant:</strong> {ruinInfo.inhabitant.inhabitant}
                     </div>
-                    {ruinInfo.inhabitation && (
-                      <div 
-                        className="ruin-detail-item clickable"
-                        onClick={() => handleRuinItemClick('importantInhabitants', ruinInfo.inhabitation.importantInhabitants.description)}
-                        title="Click to choose important inhabitants"
-                      >
-                        <strong>Important Inhabitants:</strong> {ruinInfo.inhabitation.importantInhabitants.description}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
 
-              {/* Row 2: Social Dynamics and Origins & Motivations */}
-              {ruinInfo.inhabitation && (
-                <div className="ruin-details">
+                {/* Column 2: Social Dynamics */}
+                {ruinInfo.inhabitation && (
                   <div className="ruin-column">
                     <h4>⚔️ Social Dynamics</h4>
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('importantInhabitants', ruinInfo.inhabitation.importantInhabitants.description)}
+                      title="Click to choose important inhabitants"
+                    >
+                      <strong>Important Inhabitants:</strong> {ruinInfo.inhabitation.importantInhabitants.description}
+                    </div>
                     <div 
                       className="ruin-detail-item clickable"
                       onClick={() => handleRuinItemClick('hostilityReason', ruinInfo.inhabitation.hostilityReason.reason)}
@@ -1680,7 +1669,10 @@ const RoomGenerator = ({ onBack }) => {
                       <strong>Alliance Cause:</strong> {ruinInfo.inhabitation.allianceCause.cause}
                     </div>
                   </div>
+                )}
 
+                {/* Column 3: Origins & Motivations */}
+                {ruinInfo.inhabitation && (
                   <div className="ruin-column">
                     <h4>🎯 Origins & Motivations</h4>
                     <div 
@@ -1698,8 +1690,8 @@ const RoomGenerator = ({ onBack }) => {
                       <strong>Why They're Staying:</strong> {ruinInfo.inhabitation.whyStaying.reason}
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           )}
 

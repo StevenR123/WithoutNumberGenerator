@@ -402,10 +402,9 @@
 
 .ruin-details {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 1.5rem;
   align-items: start;
-  margin-bottom: 1rem;
 }
 
 .ruin-column {
@@ -432,7 +431,7 @@
 
 @media (max-width: 1024px) {
   .ruin-details {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
 }
