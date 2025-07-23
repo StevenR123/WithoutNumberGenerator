@@ -549,6 +549,21 @@ const RoomGenerator = ({ onBack }) => {
           requestedRooms: numRooms
         }
       },
+      ruinInformation: ruinInfo ? {
+        siteType: ruinInfo.type,
+        siteExample: ruinInfo.site,
+        inhabitant: ruinInfo.inhabitant ? {
+          category: ruinInfo.inhabitant.category,
+          specificInhabitant: ruinInfo.inhabitant.inhabitant
+        } : null,
+        inhabitation: ruinInfo.inhabitation ? {
+          importantInhabitants: ruinInfo.inhabitation.importantInhabitants.description,
+          hostilityReason: ruinInfo.inhabitation.hostilityReason.reason,
+          allianceCause: ruinInfo.inhabitation.allianceCause.cause,
+          whyTheyCame: ruinInfo.inhabitation.whyTheyCame.reason,
+          whyStaying: ruinInfo.inhabitation.whyStaying.reason
+        } : null
+      } : null,
       rooms: generatedRooms.map(room => ({
         ...room,
         // Convert Map to Object for JSON serialization
@@ -634,8 +649,33 @@ const RoomGenerator = ({ onBack }) => {
 
         // Update state
         setGeneratedRooms(processedRooms);
+        
+        // Import ruin information if it exists
+        if (importData.ruinInformation) {
+          const importedRuinInfo = {
+            type: importData.ruinInformation.siteType,
+            site: importData.ruinInformation.siteExample,
+            inhabitant: importData.ruinInformation.inhabitant ? {
+              category: importData.ruinInformation.inhabitant.category,
+              inhabitant: importData.ruinInformation.inhabitant.specificInhabitant
+            } : null,
+            inhabitation: importData.ruinInformation.inhabitation ? {
+              importantInhabitants: { description: importData.ruinInformation.inhabitation.importantInhabitants },
+              hostilityReason: { reason: importData.ruinInformation.inhabitation.hostilityReason },
+              allianceCause: { cause: importData.ruinInformation.inhabitation.allianceCause },
+              whyTheyCame: { reason: importData.ruinInformation.inhabitation.whyTheyCame },
+              whyStaying: { reason: importData.ruinInformation.inhabitation.whyStaying }
+            } : null
+          };
+          setRuinInfo(importedRuinInfo);
+        }
+        
         if (importData.metadata?.generatorSettings?.requestedRooms) {
           setNumRooms(importData.metadata.generatorSettings.requestedRooms);
+        }
+        
+        if (importData.metadata?.dungeonName) {
+          setDungeonName(importData.metadata.dungeonName);
         }
 
         alert(`Successfully imported ${processedRooms.length} rooms from ${importData.metadata?.exportDate ? new Date(importData.metadata.exportDate).toLocaleDateString() : 'unknown date'}`);

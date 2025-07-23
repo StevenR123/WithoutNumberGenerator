@@ -576,6 +576,18 @@ const DungeonPDFDocument = ({ rooms, ruinInfo = null, metadata = {} }) => {
               <Text style={{ fontWeight: 'bold' }}>Example:</Text> {ruinInfo.site}
             </Text>
           )}
+          
+          {/* Inhabitant Information */}
+          {ruinInfo.inhabitant && (
+            <>
+              <Text style={{ color: '#f1f5f9', fontSize: 10, marginBottom: 2 }}>
+                <Text style={{ fontWeight: 'bold' }}>Inhabitant Type:</Text> {ruinInfo.inhabitant.category}
+              </Text>
+              <Text style={{ color: '#f1f5f9', fontSize: 10, marginBottom: 6 }}>
+                <Text style={{ fontWeight: 'bold' }}>Specific Inhabitant:</Text> {ruinInfo.inhabitant.inhabitant}
+              </Text>
+            </>
+          )}
 
           {/* Social Dynamics Section */}
           {ruinInfo.inhabitation && (
