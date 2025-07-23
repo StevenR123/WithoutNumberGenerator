@@ -23,6 +23,7 @@ import {
   generateRoomOfInterest,
   generateBasicSiteType,
   generateInhabitationFramework,
+  generateInhabitant,
   basicSiteTypesTable,
   residentialSiteExamples,
   militarySiteExamples,
@@ -34,7 +35,13 @@ import {
   hostilityReasonsTable,
   whyDidTheyComeTable,
   allianceCausesTable,
-  whyStayingTable
+  whyStayingTable,
+  typesOfInhabitantsTable,
+  ancientSorcererKingRuinInhabitants,
+  alienArratuInhabitants,
+  subterraneanDeepInhabitants,
+  modernRuinSiteInhabitants,
+  tracklessWildernessInhabitants
 } from '../../components/Tables';
 
 const RoomGenerator = ({ onBack }) => {
@@ -79,11 +86,13 @@ const RoomGenerator = ({ onBack }) => {
     // Generate ruin information
     const ruinInformation = generateBasicSiteType();
     const inhabitationInfo = generateInhabitationFramework();
+    const inhabitantInfo = generateInhabitant();
     
     // Combine all ruin information
     const combinedRuinInfo = {
       ...ruinInformation,
-      inhabitation: inhabitationInfo
+      inhabitation: inhabitationInfo,
+      inhabitant: inhabitantInfo
     };
     
     setRuinInfo(combinedRuinInfo);
@@ -1053,6 +1062,13 @@ const RoomGenerator = ({ onBack }) => {
         }));
         title = 'Choose Why They\'re Staying';
         break;
+      case 'inhabitantInfo':
+        options = typesOfInhabitantsTable.map(entry => ({
+          category: entry.category,
+          display: entry.category
+        }));
+        title = 'Choose Inhabitant Type';
+        break;
       default:
         break;
     }
@@ -1144,6 +1160,65 @@ const RoomGenerator = ({ onBack }) => {
       }
     }
 
+    // Handle inhabitant info two-step selection
+    if (ruinEditMenu.editType === 'inhabitantInfo') {
+      if (ruinEditMenu.step === 1) {
+        // First step: category selected, show specific inhabitants
+        let inhabitantTable = [];
+        let inhabitantTitle = '';
+        
+        switch (option.category) {
+          case 'Ancient Sorcerer-King Ruin':
+            inhabitantTable = ancientSorcererKingRuinInhabitants;
+            inhabitantTitle = 'Choose Ancient Sorcerer-King Ruin Inhabitant';
+            break;
+          case 'Alien Arratu':
+            inhabitantTable = alienArratuInhabitants;
+            inhabitantTitle = 'Choose Alien Arratu Inhabitant';
+            break;
+          case 'Subterranean Deep':
+            inhabitantTable = subterraneanDeepInhabitants;
+            inhabitantTitle = 'Choose Subterranean Deep Inhabitant';
+            break;
+          case 'Modern Ruin Site':
+            inhabitantTable = modernRuinSiteInhabitants;
+            inhabitantTitle = 'Choose Modern Ruin Site Inhabitant';
+            break;
+          case 'Trackless Wilderness':
+            inhabitantTable = tracklessWildernessInhabitants;
+            inhabitantTitle = 'Choose Trackless Wilderness Inhabitant';
+            break;
+          default:
+            break;
+        }
+
+        const inhabitantOptions = inhabitantTable.map(entry => ({
+          category: option.category,
+          inhabitant: entry.inhabitant,
+          display: entry.inhabitant
+        }));
+
+        setRuinEditMenu({
+          ...ruinEditMenu,
+          options: inhabitantOptions,
+          title: inhabitantTitle,
+          step: 2,
+          selectedType: option.category
+        });
+        return;
+      } else {
+        // Second step: specific inhabitant selected, update ruin info
+        let updatedRuinInfo = { ...ruinInfo };
+        updatedRuinInfo.inhabitant = {
+          category: option.category,
+          inhabitant: option.inhabitant
+        };
+        setRuinInfo(updatedRuinInfo);
+        closeRuinEditMenu();
+        return;
+      }
+    }
+
     // Handle other single-step selections
     let updatedRuinInfo = { ...ruinInfo };
 
@@ -1182,6 +1257,19 @@ const RoomGenerator = ({ onBack }) => {
         ...ruinEditMenu,
         options: typeOptions,
         title: 'Choose Site Type',
+        step: 1,
+        selectedType: null
+      });
+    } else if (ruinEditMenu.editType === 'inhabitantInfo' && ruinEditMenu.step === 2) {
+      const typeOptions = typesOfInhabitantsTable.map(entry => ({
+        category: entry.category,
+        display: entry.category
+      }));
+
+      setRuinEditMenu({
+        ...ruinEditMenu,
+        options: typeOptions,
+        title: 'Choose Inhabitant Type',
         step: 1,
         selectedType: null
       });
@@ -1529,6 +1617,8 @@ const RoomGenerator = ({ onBack }) => {
       {ruinInfo && (
             <div className="ruin-information">
               <h3>🏛️ Ruin Information</h3>
+              
+              {/* Row 1: Site Details and Inhabitant Details */}
               <div className="ruin-details">
                 {/* Column 1: Site Information */}
                 <div className="ruin-column">
@@ -1542,19 +1632,37 @@ const RoomGenerator = ({ onBack }) => {
                     <br />
                     <strong>Example:</strong> {ruinInfo.site}
                   </div>
-                  {ruinInfo.inhabitation && (
-                    <div 
-                      className="ruin-detail-item clickable"
-                      onClick={() => handleRuinItemClick('importantInhabitants', ruinInfo.inhabitation.importantInhabitants.description)}
-                      title="Click to choose important inhabitants"
-                    >
-                      <strong>Important Inhabitants:</strong> {ruinInfo.inhabitation.importantInhabitants.description}
-                    </div>
-                  )}
                 </div>
 
-                {/* Column 2: Social Dynamics */}
-                {ruinInfo.inhabitation && (
+                {/* Column 2: Inhabitant Details */}
+                {ruinInfo.inhabitant && (
+                  <div className="ruin-column">
+                    <h4>👥 Inhabitant Details</h4>
+                    <div 
+                      className="ruin-detail-item clickable"
+                      onClick={() => handleRuinItemClick('inhabitantInfo', `${ruinInfo.inhabitant.category} - ${ruinInfo.inhabitant.inhabitant}`)}
+                      title="Click to choose inhabitant"
+                    >
+                      <strong>Inhabitant Type:</strong> {ruinInfo.inhabitant.category}
+                      <br />
+                      <strong>Specific Inhabitant:</strong> {ruinInfo.inhabitant.inhabitant}
+                    </div>
+                    {ruinInfo.inhabitation && (
+                      <div 
+                        className="ruin-detail-item clickable"
+                        onClick={() => handleRuinItemClick('importantInhabitants', ruinInfo.inhabitation.importantInhabitants.description)}
+                        title="Click to choose important inhabitants"
+                      >
+                        <strong>Important Inhabitants:</strong> {ruinInfo.inhabitation.importantInhabitants.description}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Row 2: Social Dynamics and Origins & Motivations */}
+              {ruinInfo.inhabitation && (
+                <div className="ruin-details">
                   <div className="ruin-column">
                     <h4>⚔️ Social Dynamics</h4>
                     <div 
@@ -1572,10 +1680,7 @@ const RoomGenerator = ({ onBack }) => {
                       <strong>Alliance Cause:</strong> {ruinInfo.inhabitation.allianceCause.cause}
                     </div>
                   </div>
-                )}
 
-                {/* Column 3: Origins & Motivations */}
-                {ruinInfo.inhabitation && (
                   <div className="ruin-column">
                     <h4>🎯 Origins & Motivations</h4>
                     <div 
@@ -1593,8 +1698,8 @@ const RoomGenerator = ({ onBack }) => {
                       <strong>Why They're Staying:</strong> {ruinInfo.inhabitation.whyStaying.reason}
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
 
