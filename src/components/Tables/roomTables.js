@@ -390,6 +390,90 @@ export const utilityRoomExamples = [
   { roll: [12], example: 'Barn or fodder storage' }
 ];
 
+// Types of Inhabitants tables
+export const typesOfInhabitantsTable = [
+  { roll: [1], category: 'Ancient Sorcerer-King Ruin' },
+  { roll: [2], category: 'Alien Arratu' },
+  { roll: [3], category: 'Subterranean Deep' },
+  { roll: [4], category: 'Modern Ruin Site' },
+  { roll: [5], category: 'Trackless Wilderness' }
+];
+
+export const ancientSorcererKingRuinInhabitants = [
+  { roll: [1], inhabitant: 'Altered human servitors of the former owner' },
+  { roll: [2], inhabitant: 'Magic-forged monstrous beast' },
+  { roll: [3], inhabitant: 'Adventurers searching for loot' },
+  { roll: [4], inhabitant: 'Heirs of the last human inhabitants' },
+  { roll: [5], inhabitant: 'Cult dedicated to a now-dead faith' },
+  { roll: [6], inhabitant: 'Summoned creature that broke its fetters' },
+  { roll: [7], inhabitant: 'Magical automaton servitors of the ruler' },
+  { roll: [8], inhabitant: 'Decorative magic animals gone feral' },
+  { roll: [9], inhabitant: 'Necromancer and their undead servitors' },
+  { roll: [10], inhabitant: 'Outsider prisoners gone native here' },
+  { roll: [11], inhabitant: 'Restless dead of the inhabitants' },
+  { roll: [12], inhabitant: 'Zealots in service to a long-dead mage' }
+];
+
+export const alienArratuInhabitants = [
+  { roll: [1], inhabitant: 'Animate and lethal plant life' },
+  { roll: [2], inhabitant: 'Remnants of the Outsiders who made it' },
+  { roll: [3], inhabitant: 'Adventurers daring the perilous terrain' },
+  { roll: [4], inhabitant: 'Human natives trapped here for generations' },
+  { roll: [5], inhabitant: 'Humanoids adapted to life there' },
+  { roll: [6], inhabitant: 'Blighted raiders semi-native to the place' },
+  { roll: [7], inhabitant: 'Automatons built to serve or fight the arratu' },
+  { roll: [8], inhabitant: 'Outsider ruler still controlling a site within' },
+  { roll: [9], inhabitant: 'Undead shades of swallowed cities or lands' },
+  { roll: [10], inhabitant: 'Vicious alien fauna' },
+  { roll: [11], inhabitant: 'Human cultist-servitors of the Outsiders' },
+  { roll: [12], inhabitant: 'Explorers searching for a route through' }
+];
+
+export const subterraneanDeepInhabitants = [
+  { roll: [1], inhabitant: 'Cruelly Outsider-warped original humans' },
+  { roll: [2], inhabitant: 'Outsider monster that once ruled here' },
+  { roll: [3], inhabitant: 'Swarm or pack of scavenger-beasts' },
+  { roll: [4], inhabitant: 'Blighted intruders that sacked the Deep' },
+  { roll: [5], inhabitant: 'Outsiders descended from the local lords' },
+  { roll: [6], inhabitant: 'Degenerate or crazed native humans' },
+  { roll: [7], inhabitant: 'Outcast surfacers lairing in the Deep' },
+  { roll: [8], inhabitant: 'Non-human sentients who now live here' },
+  { roll: [9], inhabitant: 'Undead relics of former inhabitants' },
+  { roll: [10], inhabitant: 'Still-sane human heirs of the original folk' },
+  { roll: [11], inhabitant: 'Surfacer colonists forgotten by their kin' },
+  { roll: [12], inhabitant: 'Automaton servitors now lacking their lord' }
+];
+
+export const modernRuinSiteInhabitants = [
+  { roll: [1], inhabitant: 'Local bandits or highwaymen' },
+  { roll: [2], inhabitant: 'Cult of some unacceptable god' },
+  { roll: [3], inhabitant: 'Deposed noble and their retinue' },
+  { roll: [4], inhabitant: 'Adventurers trying to plunder the place' },
+  { roll: [5], inhabitant: 'Troops garrisoned there by the local ruler' },
+  { roll: [6], inhabitant: 'Remnants of the original inhabitants' },
+  { roll: [7], inhabitant: 'Sorcerer of detestable inclinations' },
+  { roll: [8], inhabitant: 'Refugees or runaway peasants' },
+  { roll: [9], inhabitant: 'Vicious local monster lairing here' },
+  { roll: [10], inhabitant: 'Foreign raiders using it as a base' },
+  { roll: [11], inhabitant: 'Whatever ruined the place is still here' },
+  { roll: [12], inhabitant: 'Interlopers with some tie to the original place' }
+];
+
+export const tracklessWildernessInhabitants = [
+  { roll: [1], inhabitant: 'Alpha predator of the area' },
+  { roll: [2], inhabitant: 'Intelligent monstrous beings' },
+  { roll: [3], inhabitant: 'Swarms or packs of dangerous beasts' },
+  { roll: [4], inhabitant: 'Violently reclusive local natives' },
+  { roll: [5], inhabitant: 'Remnant of a destroyed state' },
+  { roll: [6], inhabitant: 'Survivors of a displaced ethnic group' },
+  { roll: [7], inhabitant: 'Demihumans who prefer isolation' },
+  { roll: [8], inhabitant: 'Bestially savage tribals, perhaps inhuman' },
+  { roll: [9], inhabitant: 'Expedition from a surrounding nation' },
+  { roll: [10], inhabitant: 'Prospectors or resource-hunters' },
+  { roll: [11], inhabitant: 'Spirit or elemental related to the wilderness' },
+  { roll: [12], inhabitant: 'Sorcerers, cultists, or other solitude-lovers' }
+];
+
 export const getRoomTypeIcon = (content) => {
   switch (content) {
     case 'Creature': return '👹';
@@ -495,6 +579,42 @@ export const generateRoomOfInterest = () => {
     example: exampleResult.example,
     functionRoll,
     exampleRoll
+  };
+};
+
+export const generateInhabitant = () => {
+  // First roll for the inhabitant category (d6, but we only have 5 entries so use rollDie(5))
+  const categoryRoll = rollDie(5); // Roll 1-5
+  const categoryResult = getTableResult(categoryRoll, typesOfInhabitantsTable);
+  const category = categoryResult.category;
+  
+  // Then roll for the specific inhabitant (d12)
+  const inhabitantRoll = rollD12();
+  let inhabitantResult;
+  
+  switch (category) {
+    case 'Ancient Sorcerer-King Ruin':
+      inhabitantResult = getTableResult(inhabitantRoll, ancientSorcererKingRuinInhabitants);
+      break;
+    case 'Alien Arratu':
+      inhabitantResult = getTableResult(inhabitantRoll, alienArratuInhabitants);
+      break;
+    case 'Subterranean Deep':
+      inhabitantResult = getTableResult(inhabitantRoll, subterraneanDeepInhabitants);
+      break;
+    case 'Modern Ruin Site':
+      inhabitantResult = getTableResult(inhabitantRoll, modernRuinSiteInhabitants);
+      break;
+    case 'Trackless Wilderness':
+      inhabitantResult = getTableResult(inhabitantRoll, tracklessWildernessInhabitants);
+      break;
+    default:
+      inhabitantResult = { inhabitant: 'Unknown inhabitant type' };
+  }
+  
+  return {
+    category: category,
+    inhabitant: inhabitantResult.inhabitant
   };
 };
 
